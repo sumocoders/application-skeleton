@@ -1,0 +1,15 @@
+{
+    "name": "sumocoders/application-skeleton",
+    "description": "A skeleton to start a new SumoCoders application",
+    "type": "project",
+    "require": {
+        "symfony/website-skeleton": "v4.1.4.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tijs Verkoyen",
+            "email": "tijs@sumocoders.be"
+        }
+    ]
+}
