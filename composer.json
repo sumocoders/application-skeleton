@@ -14,7 +14,6 @@
     },
     "require-dev": {
         "symfony/debug-pack": "*",
-        "symfony/web-server-bundle": "*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
         "symfony/web-server-bundle": "*"
