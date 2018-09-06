@@ -3,7 +3,8 @@
     "description": "A skeleton to start a new SumoCoders application",
     "type": "project",
     "require": {
-        "symfony/website-skeleton": "^4.1"
+        "symfony/website-skeleton": "^4.1",
+        "symfony/flex": "^1.1"
     },
     "license": "MIT",
     "authors": [
