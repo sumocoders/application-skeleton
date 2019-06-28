@@ -1,0 +1,141 @@
+stages:
+  - code quality
+  - dependency scanning
+  - build
+  - test
+  - deploy
+
+
+# Code Quality section
+Check code standards with PHP_CodeSniffer:
+  image: sumocoders/framework-php72:latest
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+  script:
+    - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: phpcs-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
+Check for bugs with PHPStan:
+  image: sumocoders/framework-php72:latest
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - bin/console cache:warmup --env=dev
+  script:
+    - vendor/bin/phpstan analyse --memory-limit=512M
+    - vendor/bin/phpstan analyse --memory-limit=512M --error-format=junit --no-progress > phpstan-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: phpstan-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
+
+## Dependency Scanning section
+Check NPM dependencies for vulnerabilities:
+  image: sumocoders/cli-tools-php72:latest
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+  script:
+    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(npm audit --json)" > npm-audit-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: npm-audit-report.xml
+  stage: dependency scanning
+  tags:
+    - docker
+  allow_failure: true
+
+Check Composer dependencies for vulnerabilities:
+  image: sumocoders/cli-tools-php72:latest
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+  script:
+    - vendor/bin/convert-to-junit-xml convert:sensiolabs-security-check "$(vendor/bin/security-checker security:check --format=json)" > security-checker-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: security-checker-report.xml
+  stage: dependency scanning
+  tags:
+    - docker
+  allow_failure: true
+
+
+## Build section
+#Build assets with Encore:
+#  image: node:11
+#  before_script:
+#    - npm install
+#  script:
+#    - npm run build
+#  cache:
+#    paths:
+#      - node_modules
+#      - public/build
+#  stage: build
+#  tags:
+#    - docker
+
+
+## Test section
+Run test with PHPUnit:
+  image: sumocoders/framework-php72:latest
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+  script:
+    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
+  artifacts:
+    reports:
+      junit: phpunit-report.xml
+  cache:
+    paths:
+      - public/build
+    policy: pull
+  stage: test
+  tags:
+    - docker
+
+
+## Deploy section
+#Deploy to staging:
+#  image: sumocoders/cli-tools-php72:latest
+#  before_script:
+#    # Add the private SSH key to the CI environment
+#    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+#    - eval $(ssh-agent -s)
+#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+#    - mkdir -p ~/.ssh
+#    - chmod 700 ~/.ssh
+#    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+#    - chmod 644 ~/.ssh/known_hosts
+#    # Install composer binary and install the vendors
+#    - curl -sS https://getcomposer.org/installer | php
+#    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+#    # Install NPM dependencies
+#    - npm install
+#  script:
+#    - vendor/bin/dep deploy staging
+#  environment:
+#    name: staging
+#    url: https://logger.tijs.php72.sumocoders.eu
+#  only:
+#    - staging
+#  stage: deploy
+#  tags:
+#    - docker
