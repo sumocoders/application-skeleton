@@ -9,6 +9,7 @@
         "ext-iconv": "*",
         "beberlei/DoctrineExtensions": "^1.2",
         "sentry/sentry-symfony": "^3.1",
+        "sumocoders/framework-core-bundle": "dev-master",
         "symfony/apache-pack": "^1.0.1",
         "symfony/dotenv": "^4.3",
         "symfony/flex": "^1.4.5",
