@@ -21,7 +21,8 @@
         "symfony/debug-pack": "*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/web-server-bundle": "*"
+        "symfony/web-server-bundle": "*",
+        "tijsverkoyen/deployer-sumo": "^1.1"
     },
     "config": {
         "sort-packages": true
