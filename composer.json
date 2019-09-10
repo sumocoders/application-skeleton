@@ -44,6 +44,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "post-create-project-cmd": [
+            "php scripts/post-create-project-cmd.php"
         ]
     }
 }
