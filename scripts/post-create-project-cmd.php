@@ -23,23 +23,11 @@ function installFrameworkStylePackage(): void
 function addJsAndSass(): void
 {
     echo "Add specific JS and SASS\n";
-    exec(
-        'cat scripts' . DIRECTORY_SEPARATOR .
-        'assets' . DIRECTORY_SEPARATOR .
-        'app.js >> assets' . DIRECTORY_SEPARATOR .
-        'js' . DIRECTORY_SEPARATOR . 'app.js'
-    );
+    exec('cat scripts/assets/app.js >> assets/js/app.js');
+    exec('sed -i \'\' \'s/app\.css/app.scss/g\' assets/js/app.js');
 
-    exec(
-        'sed -i \'\' \'s/app\.css/app.scss/g\' assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'app.js'
-    );
-
-    exec(
-        'cat scripts' . DIRECTORY_SEPARATOR .
-        'assets' . DIRECTORY_SEPARATOR .
-        'app.scss > assets' . DIRECTORY_SEPARATOR .
-        'css' . DIRECTORY_SEPARATOR . 'app.scss'
-    );
+    exec('mv assets/css/app.css assets/css/app.scss');
+    exec('cat scripts/assets/app.scss > assets/css/app.scss');
 }
 
 function cleanup(): void
