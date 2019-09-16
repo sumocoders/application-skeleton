@@ -44,7 +44,7 @@
         "auto-scripts": [
         ],
         "post-install-cmd": [
-            "scripts/post-install.php",
+            "php scripts/post-install.php",
             "@auto-scripts"
         ],
         "post-update-cmd": [
