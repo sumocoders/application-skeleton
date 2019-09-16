@@ -41,9 +41,21 @@ function addConfigurationToWebpack(): void
     echo "Adding default framework parameters to services.yaml\n";
     $filePath = 'webpack.config.js';
     $parameters = [
-        ".autoProvideVariables({",
-        "  moment: 'moment'",
-        "})",
+        ".autoProvideVariables({\n",
+        "  moment: 'moment'\n",
+        "})\n",
+        "\n",
+        ".addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))\n",
+        ".addPlugin(\n",
+        "  new WebpackShellPlugin(\n",
+        "    {\n",
+        "      onBuildStart: [\n",
+        "        'bin/console bazinga:js-translation:dump public/build --format=json --merge-domains',\n",
+        "        'bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json',\n",
+        "      ],\n",
+        "    }\n",
+        "  )\n",
+        ")\n",
     ];
 
     $content = file($filePath);
