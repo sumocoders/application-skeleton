@@ -31,10 +31,14 @@ function addJsAndSass(): void
     );
 
     exec(
+        'sed -i \'\' \'s/app\.css/app.scss/g\' assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'app.js'
+    );
+
+    exec(
         'cat scripts' . DIRECTORY_SEPARATOR .
         'assets' . DIRECTORY_SEPARATOR .
-        'app.scss >> assets' . DIRECTORY_SEPARATOR .
-        'js' . DIRECTORY_SEPARATOR . 'app.scss'
+        'app.scss > assets' . DIRECTORY_SEPARATOR .
+        'css' . DIRECTORY_SEPARATOR . 'app.scss'
     );
 }
 
