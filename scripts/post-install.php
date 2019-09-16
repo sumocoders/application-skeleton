@@ -1,6 +1,11 @@
 <?php
 
-$filePath = __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'services.yaml';
+echo 'Adding default framework parameters to services.yaml';
+$filePath =
+    __DIR__ . DIRECTORY_SEPARATOR .
+    '..' . DIRECTORY_SEPARATOR .
+    'config' . DIRECTORY_SEPARATOR .
+    'services.yaml';
 $parameters = [
     "    locale: 'nl'\n",
     "    locales:\n",
@@ -38,3 +43,8 @@ foreach ($finalContent as $item) {
 }
 
 fclose($handle);
+
+echo "Removing post-install-cmd from composer.json\n";
+exec(
+    'sed -i \'\' \'/"scripts\/post-install.php",/d\' composer.json'
+);
