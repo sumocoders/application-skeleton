@@ -82,7 +82,7 @@ addParameters();
 addJMSi18nParameters();
 
 
-echo "Removing post-install-cmd from composer.json\n";
+echo "Removing post-update-cmd from composer.json\n";
 exec(
-    'sed -i \'\' \'/"php scripts\/post-install\.php",/d\' composer.json'
+    'sed -i \'\' \'/"php scripts\/post-update-cmd\.php",/d\' composer.json'
 );
