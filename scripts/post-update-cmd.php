@@ -49,7 +49,7 @@ function addParameters(): void
 
 function addJMSi18nParameters()
 {
-    echo "Adding default framework parameters to services.yaml\n";
+    echo "Adding JMS i18n parameters to services.yaml\n";
     $filePath =
         __DIR__ . DIRECTORY_SEPARATOR .
         '..' . DIRECTORY_SEPARATOR .
