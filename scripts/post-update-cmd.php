@@ -47,7 +47,7 @@ function addParameters(): void
     fclose($handle);
 }
 
-function addJMSi18nParameters()
+function addJMSi18nParameters(): void
 {
     echo "Adding JMS i18n parameters to services.yaml\n";
     $filePath =
@@ -80,7 +80,6 @@ function addJMSi18nParameters()
 
 addParameters();
 addJMSi18nParameters();
-
 
 echo "Removing post-update-cmd from composer.json\n";
 exec(
