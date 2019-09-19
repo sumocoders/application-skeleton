@@ -77,19 +77,19 @@ Check Composer dependencies for vulnerabilities:
 
 
 ## Build section
-#Build assets with Encore:
-#  image: node:11
-#  before_script:
-#    - npm install
-#  script:
-#    - npm run build
-#  cache:
-#    paths:
-#      - node_modules
-#      - public/build
-#  stage: build
-#  tags:
-#    - docker
+Build assets with Encore:
+  image: node:11
+  before_script:
+    - npm install
+  script:
+    - npm run build
+  cache:
+    paths:
+      - node_modules
+      - public/build
+  stage: build
+  tags:
+    - docker
 
 
 ## Test section
