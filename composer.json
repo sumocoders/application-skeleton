@@ -4,19 +4,28 @@
     "license": "MIT",
     "description": "A skeleton to start a new SumoCoders application",
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "symfony/apache-pack": "^1.0",
-        "symfony/dotenv": "^4.1",
-        "symfony/flex": "^1.1",
-        "symfony/website-skeleton": "^4.1"
+        "beberlei/DoctrineExtensions": "^1.2",
+        "sentry/sentry-symfony": "^3.1",
+        "sumocoders/framework-core-bundle": "dev-master",
+        "symfony/apache-pack": "^1.0.1",
+        "symfony/dotenv": "^4.3",
+        "symfony/flex": "^1.4.5",
+        "symfony/webpack-encore-bundle": "^1.6.2",
+        "symfony/website-skeleton": "^4.3"
     },
     "require-dev": {
+        "mglaman/phpstan-junit": "^0.11.2",
+        "phpstan/phpstan-symfony": "^0.11.6",
+        "sensiolabs/security-checker": "^6.0",
+        "squizlabs/php_codesniffer": "^3.4",
         "symfony/debug-pack": "*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/web-server-bundle": "*"
+        "symfony/web-server-bundle": "*",
+        "tijsverkoyen/deployer-sumo": "^1.1"
     },
     "config": {
         "sort-packages": true
@@ -38,7 +47,11 @@
             "@auto-scripts"
         ],
         "post-update-cmd": [
+            "php scripts/post-update-cmd.php",
             "@auto-scripts"
+        ],
+        "post-create-project-cmd": [
+            "php scripts/post-create-project-cmd.php"
         ]
     }
 }
