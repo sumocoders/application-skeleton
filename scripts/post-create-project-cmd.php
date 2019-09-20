@@ -14,10 +14,12 @@ function runNpmInstall(): void
     exec('npm i');
 }
 
-function installFrameworkStylePackage(): void
+function installNpmPackages(): void
 {
     echo "Install framework style package\n";
     exec('npm i git+ssh://git@github.com/sumocoders/FrameworkStylePackage.git --save-dev');
+    exec('npm i webpack-shell-plugin-alt --save-dev');
+    exec('npm install sass-loader@^7.0.1 node-sass --save-dev');
 }
 
 function addJsAndSass(): void
@@ -73,7 +75,15 @@ function addConfigurationToWebpack(): void
                 $finalContent[] = $parameter;
             }
         }
+
+        $item = preg_replace('/\/\/\.enableSassLoader\(\)/', '.enableSassLoader()', $item);
+        $item = preg_replace('/\/\/\.autoProvidejQuery\(\)/', '.autoProvidejQuery()', $item);
         $finalContent[] = $item;
+
+        if (preg_match('/var\sEncore\s=/', $item)) {
+            $finalContent[] = 'var webpack = require(\'webpack\');';
+            $finalContent[] = 'var WebpackShellPlugin = require(\'webpack-shell-plugin-alt\');';
+        }
     }
 
     foreach ($finalContent as $item) {
@@ -85,7 +95,7 @@ function addConfigurationToWebpack(): void
 
 fixSecurityChecker();
 runNpmInstall();
-installFrameworkStylePackage();
+installNpmPackages();
 addJsAndSass();
 addConfigurationToWebpack();
 cleanup();
