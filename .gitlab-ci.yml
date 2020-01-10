@@ -41,6 +41,23 @@ Check for bugs with PHPStan:
     - docker
   allow_failure: true
 
+Check for unresolved TODOs:
+  image: sumocoders/cli-tools-php72
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
+  script:
+    - grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
+    - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: unresolved-todos-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
 
 ## Dependency Scanning section
 Check NPM dependencies for vulnerabilities:
