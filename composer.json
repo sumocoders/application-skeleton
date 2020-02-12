@@ -10,14 +10,15 @@
         "beberlei/doctrineextensions": "^1.2",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "sentry/sentry-symfony": "^3.1",
-        "sumocoders/framework-core-bundle": "dev-master",
+        "sumocoders/framework-core-bundle": "^1.0",
         "symfony/apache-pack": "^1.0.1",
-        "symfony/dotenv": "^4.3",
+        "symfony/dotenv": "^4.4",
         "symfony/flex": "^1.4.5",
         "symfony/webpack-encore-bundle": "^1.6.2",
-        "symfony/website-skeleton": "^4.3",
-        "symfony/yaml": "^4.3",
-        "tijsverkoyen/convert-to-junit-xml": "^1.3"
+        "symfony/website-skeleton": "^4.4",
+        "symfony/yaml": "^4.4",
+        "tijsverkoyen/convert-to-junit-xml": "^1.3",
+        "symfony/security-bundle": "^4.4"
     },
     "require-dev": {
         "mglaman/phpstan-junit": "^0.11.2",
@@ -27,7 +28,6 @@
         "symfony/debug-pack": "*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
-        "symfony/web-server-bundle": "*",
         "tijsverkoyen/deployer-sumo": "^1.1"
     },
     "config": {
