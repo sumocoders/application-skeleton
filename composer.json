@@ -22,7 +22,8 @@
         "phpstan/phpstan-symfony": "^0.12.4",
         "sensiolabs/security-checker": "^6.0",
         "squizlabs/php_codesniffer": "^3.4",
-        "tijsverkoyen/deployer-sumo": "^1.4"
+        "tijsverkoyen/deployer-sumo": "^1.4",
+        "symfony/debug-pack": "*"
     },
     "config": {
         "sort-packages": true
