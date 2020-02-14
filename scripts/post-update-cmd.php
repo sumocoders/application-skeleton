@@ -47,25 +47,29 @@ function addParameters(): void
     fclose($handle);
 }
 
-function addJMSi18nParameters(): void
+function addDefaulti18nPrefixes(): void
 {
-    echo "Adding JMS i18n parameters to services.yaml\n";
+    echo "Adding i18n prefixes to annotations.yaml\n";
     $filePath =
         __DIR__ . DIRECTORY_SEPARATOR .
         '..' . DIRECTORY_SEPARATOR .
         'config' . DIRECTORY_SEPARATOR .
-        'packages' . DIRECTORY_SEPARATOR .
-        'translation.yaml';
+        'routes' . DIRECTORY_SEPARATOR .
+        'annotations.yaml';
     $lines = [
+        "controllers:\n",
+        "   resource: ../../src/Controller/\n",
+        "   type: annotation\n",
+        "   prefix:\n",
+        "       '%locale%': '%locale%'\n",
         "\n",
-        "jms_i18n_routing:\n",
-        "    default_locale: '%locale%'\n",
-        "    locales: '%locales%'\n",
-        "    strategy: prefix_except_default\n",
-        "\n",
+        "kernel:\n",
+        "   resource: ../../src/Kernel.php\n",
+        "   type: annotation\n",
+        "\n"
     ];
 
-    $handle = fopen($filePath, 'a');
+    $handle = fopen($filePath, 'w');
     if ($handle === false) {
         echo "File $filePath cannot be opened to read/write\n";
         exit(2);
@@ -79,7 +83,7 @@ function addJMSi18nParameters(): void
 }
 
 addParameters();
-addJMSi18nParameters();
+addDefaulti18nPrefixes();
 
 echo "Removing post-update-cmd from composer.json\n";
 exec(
