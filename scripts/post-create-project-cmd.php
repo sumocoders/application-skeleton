@@ -17,7 +17,7 @@ function runNpmInstall(): void
 function installNpmPackages(): void
 {
     echo "Install framework style package\n";
-    exec('npm i git+https://git@github.com/sumocoders/FrameworkStylePackage.git --save-dev');
+    exec('npm i frameworkstylepackage@^1 --save-dev');
     exec('npm i webpack-shell-plugin-alt --save-dev');
     exec('npm install sass-loader@^7.0.1 node-sass --save-dev');
 }
