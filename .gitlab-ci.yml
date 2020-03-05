@@ -11,7 +11,7 @@ Check code standards with PHP_CodeSniffer:
   image: sumocoders/framework-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -27,15 +27,32 @@ Check for bugs with PHPStan:
   image: sumocoders/framework-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
     - bin/console cache:warmup --env=dev
   script:
-    - vendor/bin/phpstan analyse --memory-limit=512M
-    - vendor/bin/phpstan analyse --memory-limit=512M --error-format=junit --no-progress > phpstan-report.xml
+    - vendor/bin/phpstan analyse --memory-limit=-1
+    - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=junit --no-progress > phpstan-report.xml
   artifacts:
     expire_in: 1 week
     reports:
       junit: phpstan-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
+Check for unresolved TODOs:
+  image: sumocoders/cli-tools-php72
+  before_script:
+    - curl -sS https://getcomposer.org/installer | php
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
+  script:
+    - grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
+    - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: unresolved-todos-report.xml
   stage: code quality
   tags:
     - docker
@@ -47,7 +64,7 @@ Check NPM dependencies for vulnerabilities:
   image: sumocoders/cli-tools-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
   script:
     - vendor/bin/convert-to-junit-xml convert:npm-audit "$(npm audit --json)" > npm-audit-report.xml
   artifacts:
@@ -63,7 +80,7 @@ Check Composer dependencies for vulnerabilities:
   image: sumocoders/cli-tools-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
   script:
     - vendor/bin/convert-to-junit-xml convert:sensiolabs-security-check "$(vendor/bin/security-checker security:check --format=json)" > security-checker-report.xml
   artifacts:
@@ -97,7 +114,7 @@ Run test with PHPUnit:
   image: sumocoders/framework-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
   script:
     - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
   artifacts:
