@@ -11,7 +11,7 @@ Check code standards with PHP_CodeSniffer:
   image: sumocoders/framework-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
-    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
+    - php -d memory_limit=-1 composer.phar install --no-scripts
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
