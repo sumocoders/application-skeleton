@@ -1,3 +1,12 @@
+bin/*
+config/*
 public/bundles/*
+node_modules/*
 var/*
 vendor/*
+**/*.dist
+**/*.json
+**/*.lock
+**/*.yaml
+**/*.yml
+php.ini
