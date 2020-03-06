@@ -12,7 +12,6 @@
     <file>config/</file>
     <file>public/</file>
     <file>src/</file>
-    <file>tests/</file>
 
     <exclude-pattern>config/bootstrap.php</exclude-pattern>
     <exclude-pattern>public/index.php</exclude-pattern>
