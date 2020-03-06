@@ -13,7 +13,7 @@
         "symfony/apache-pack": "^1.0.1",
         "symfony/webpack-encore-bundle": "^1.6.2",
         "sumocoders/framework-core-bundle": "dev-symfony-5",
-        "tijsverkoyen/convert-to-junit-xml": "^1.6",
+        "tijsverkoyen/convert-to-junit-xml": "^1.7",
         "beberlei/doctrineextensions": "^1.2",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "sentry/sentry-symfony": "^3.1"
