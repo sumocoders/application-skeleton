@@ -6,6 +6,15 @@ stages:
   - test
   - deploy
 
+# Cache default configuration
+cache: &global_cache
+  key: "$CI_PIPELINE_ID"
+  paths:
+    - node_modules
+    - public/build
+    - vendor
+  policy: pull
+
 # Optimalisation
 Install composer dependencies:
   image: sumocoders/framework-php72:latest
@@ -24,10 +33,9 @@ Install npm dependencies:
   script:
     - nvm exec npm install
   cache:
-    paths:
-      - vendor
-      - node_modules
-  stage: optimalisation
+    <<: *global_cache
+    policy: pull-push
+  stage: build
   tags:
     - docker
 
@@ -41,10 +49,6 @@ Check code standards with PHP_CodeSniffer:
     expire_in: 1 week
     reports:
       junit: phpcs-report.xml
-  cache:
-    paths:
-      - vendor
-    policy: pull
   stage: code quality
   tags:
     - docker
@@ -63,10 +67,6 @@ Check for bugs with PHPStan:
     expire_in: 1 week
     reports:
       junit: phpstan-report.xml
-  cache:
-    paths:
-      - vendor
-    policy: pull
   stage: code quality
   tags:
     - docker
@@ -83,11 +83,6 @@ Check for code standards with stylelint:
     expire_in: 1 week
     reports:
       junit: stylelint-report.xml
-  cache:
-    paths:
-      - vendor
-      - node_modules
-    policy: pull
   stage: code quality
   tags:
     - docker
@@ -104,10 +99,6 @@ Check for unresolved TODOs:
     expire_in: 1 week
     reports:
       junit: unresolved-todos-report.xml
-  cache:
-    paths:
-      - vendor
-    policy: pull
   stage: code quality
   tags:
     - docker
@@ -126,11 +117,6 @@ Check NPM dependencies for vulnerabilities:
     expire_in: 1 week
     reports:
       junit: npm-audit-report.xml
-  cache:
-    paths:
-      - vendor
-      - node_modules
-    policy: pull
   stage: dependency scanning
   tags:
     - docker
@@ -147,10 +133,6 @@ Check Composer dependencies for vulnerabilities:
     expire_in: 1 week
     reports:
       junit: security-checker-report.xml
-  cache:
-    paths:
-      - vendor
-    policy: pull
   stage: dependency scanning
   tags:
     - docker
@@ -183,10 +165,6 @@ Build assets with Encore:
 #  artifacts:
 #    reports:
 #      junit: phpunit-report.xml
-#  cache:
-#    paths:
-#      - vendor
-#    policy: pull
 #  stage: test
 #  tags:
 #    - docker
@@ -203,10 +181,6 @@ Deploy to staging:
   artifacts:
     reports:
       junit: phpunit-report.xml
-  cache:
-    paths:
-      - public/build
-    policy: pull
   stage: test
   tags:
     - docker
