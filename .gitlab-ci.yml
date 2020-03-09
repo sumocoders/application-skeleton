@@ -1,8 +1,7 @@
 stages:
-  - optimalisation
+  - build
   - code quality
   - dependency scanning
-  - build
   - test
   - deploy
 
@@ -15,23 +14,16 @@ cache: &global_cache
     - vendor
   policy: pull
 
-# Optimalisation
-Install composer dependencies:
-  image: sumocoders/framework-php72:latest
-  script:
-    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts
-  cache:
-    paths:
-      - vendor
-      - node_modules
-  stage: optimalisation
-  tags:
-    - docker
 
-Install npm dependencies:
+## Build section
+Install dependencies and build assets:
   image: sumocoders/cli-tools-php72:latest
   script:
-    - nvm exec npm install
+    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+    - nvm exec npm install --no-progress
+    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
+    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
+    - nvm exec npm run build
   cache:
     <<: *global_cache
     policy: pull-push
@@ -137,23 +129,6 @@ Check Composer dependencies for vulnerabilities:
   tags:
     - docker
   allow_failure: true
-
-
-## Build section
-Build assets with Encore:
-  image: sumocoders/cli-tools-php72:latest
-  script:
-    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
-    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
-    - nvm exec npm run build
-  cache:
-    paths:
-      - node_modules
-      - public/build
-      - vendor
-  stage: build
-  tags:
-    - docker
 
 
 ## Test section
