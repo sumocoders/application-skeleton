@@ -171,22 +171,6 @@ Build assets with Encore:
 
 
 ## Deploy section
-Deploy to staging:
-  image: sumocoders/cli-tools-php72:latest
-  before_script:
-    - curl -sS https://getcomposer.org/installer | php
-    - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
-  script:
-    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
-  artifacts:
-    reports:
-      junit: phpunit-report.xml
-  stage: test
-  tags:
-    - docker
-
-
-## Deploy section
 #Deploy to staging:
 #  image: sumocoders/cli-tools-php72:latest
 #  before_script:
@@ -198,11 +182,6 @@ Deploy to staging:
 #    - chmod 700 ~/.ssh
 #    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 #    - chmod 644 ~/.ssh/known_hosts
-#    # Install composer binary and install the vendors
-#    - curl -sS https://getcomposer.org/installer | php
-#    - php composer.phar install --no-scripts --quiet --ignore-platform-reqs
-#    # Install NPM dependencies
-#    - npm install
 #  script:
 #    - vendor/bin/dep deploy staging
 #  environment:
