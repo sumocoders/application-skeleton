@@ -54,7 +54,7 @@ PHPStan - check for bugs:
     - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=junit --no-progress > phpstan-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - vendor/bin/phpstan analyse --memory-limit=-1
+    - vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
   artifacts:
     expire_in: 1 week
     reports:
