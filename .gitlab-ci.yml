@@ -33,7 +33,7 @@ Install dependencies and build assets:
 
 
 # Code Quality section
-Check code standards with PHP_CodeSniffer:
+PHP_CodeSniffer - check code styling:
   image: sumocoders/framework-php72:latest
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
@@ -46,7 +46,7 @@ Check code standards with PHP_CodeSniffer:
     - docker
   allow_failure: true
 
-Check for bugs with PHPStan:
+PHPStan - check for bugs:
   image: sumocoders/framework-php72:latest
   before_script:
     - bin/console cache:warmup --env=dev
@@ -64,7 +64,7 @@ Check for bugs with PHPStan:
     - docker
   allow_failure: true
 
-Check for code standards with stylelint:
+Stylelint - check code styling:
   image: sumocoders/cli-tools-php72
   script:
     - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
@@ -80,13 +80,13 @@ Check for code standards with stylelint:
     - docker
   allow_failure: true
 
-Check for unresolved TODOs:
+TODOs - check for unfinished code:
   image: sumocoders/cli-tools-php72
   script:
-    - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,config/packages/*,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
+    - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - grep --exclude=unresolved-todos-report.xml --exclude-dir={bin,config/packages/*,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
+    - grep --exclude=unresolved-todos-report.xml --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
   artifacts:
     expire_in: 1 week
     reports:
@@ -98,7 +98,7 @@ Check for unresolved TODOs:
 
 
 ## Dependency Scanning section
-Check NPM dependencies for vulnerabilities:
+NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php72:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:npm-audit "$(nvm exec --silent npm audit --json)" > npm-audit-report.xml
@@ -114,7 +114,7 @@ Check NPM dependencies for vulnerabilities:
     - docker
   allow_failure: true
 
-Check Composer dependencies for vulnerabilities:
+PHP packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php72:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:sensiolabs-security-check "$(vendor/bin/security-checker security:check --format=json)" > security-checker-report.xml
@@ -133,7 +133,7 @@ Check Composer dependencies for vulnerabilities:
 
 ## Test section
 ## Uncomment this if you have tests
-#Run test with PHPUnit:
+#PHPUnit - Run tests:
 #  image: sumocoders/framework-php72:latest
 #  script:
 #    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
@@ -146,7 +146,7 @@ Check Composer dependencies for vulnerabilities:
 
 
 ## Deploy section
-#Deploy to staging:
+#Deploy - to staging:
 #  image: sumocoders/cli-tools-php72:latest
 #  before_script:
 #    # Add the private SSH key to the CI environment
