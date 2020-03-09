@@ -159,11 +159,11 @@ Check Composer dependencies for vulnerabilities:
 
 ## Build section
 Build assets with Encore:
-  image: node:11
-  before_script:
-    - npm install
+  image: sumocoders/cli-tools-php72:latest
   script:
-    - npm run build
+    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
+    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
+    - nvm exec npm run build
   cache:
     paths:
       - node_modules
