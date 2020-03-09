@@ -80,6 +80,22 @@ Stylelint - check code styling:
     - docker
   allow_failure: true
 
+StandardJS - check code styling:
+  image: sumocoders/cli-tools-php72
+  script:
+    - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
+  after_script:
+    # Run it again so the output is visible in the job
+    - nvm exec node_modules/.bin/standard
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: standardjs-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
 TODOs - check for unfinished code:
   image: sumocoders/cli-tools-php72
   script:
