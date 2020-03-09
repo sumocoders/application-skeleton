@@ -175,8 +175,26 @@ Build assets with Encore:
 
 
 ## Test section
-Run test with PHPUnit:
-  image: sumocoders/framework-php72:latest
+## Uncomment this if you have tests
+#Run test with PHPUnit:
+#  image: sumocoders/framework-php72:latest
+#  script:
+#    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
+#  artifacts:
+#    reports:
+#      junit: phpunit-report.xml
+#  cache:
+#    paths:
+#      - vendor
+#    policy: pull
+#  stage: test
+#  tags:
+#    - docker
+
+
+## Deploy section
+Deploy to staging:
+  image: sumocoders/cli-tools-php72:latest
   before_script:
     - curl -sS https://getcomposer.org/installer | php
     - php -d memory_limit=-1 composer.phar install --no-scripts --quiet --ignore-platform-reqs
