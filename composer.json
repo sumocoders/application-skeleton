@@ -39,7 +39,6 @@
         }
     },
     "scripts": {
-        "foo": "App\\Skeleton\\PostCreateProject::run",
         "auto-scripts": [
         ],
         "post-install-cmd": [
@@ -49,8 +48,6 @@
             "php scripts/post-update-cmd.php",
             "@auto-scripts"
         ],
-        "post-create-project-cmd": [
-            "php scripts/post-create-project-cmd.php"
-        ]
+        "post-create-project-cmd": "App\\Skeleton\\PostCreateProject::run"
     }
 }
