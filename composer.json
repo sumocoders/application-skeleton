@@ -45,7 +45,7 @@
             "@auto-scripts"
         ],
         "post-update-cmd": [
-            "php scripts/post-update-cmd.php",
+            "App\\Skeleton\\PostUpdate::run",
             "@auto-scripts"
         ],
         "post-create-project-cmd": "App\\Skeleton\\PostCreateProject::run"
