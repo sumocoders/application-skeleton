@@ -1,8 +1,6 @@
 {
-    "name": "sumocoders/application-skeleton",
     "type": "project",
-    "license": "MIT",
-    "description": "A skeleton to start a new SumoCoders application",
+    "license": "proprietary",
     "require": {
         "php": "^7.2",
         "ext-ctype": "*",
@@ -47,11 +45,9 @@
             "@auto-scripts"
         ],
         "post-update-cmd": [
-            "php scripts/post-update-cmd.php",
+            "App\\Skeleton\\PostUpdate::run",
             "@auto-scripts"
         ],
-        "post-create-project-cmd": [
-            "php scripts/post-create-project-cmd.php"
-        ]
+        "post-create-project-cmd": "App\\Skeleton\\PostCreateProject::run"
     }
 }
