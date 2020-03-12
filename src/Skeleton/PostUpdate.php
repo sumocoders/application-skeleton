@@ -8,9 +8,9 @@ class PostUpdate
 {
     public static function run(Event $event)
     {
-        self::configureParameters($event);
+//        self::configureParameters($event);
         self::configureI18nPrefixes($event);
-        self::cleanup($event);
+//        self::cleanup($event);
     }
 
     public static function configureParameters(Event $event): void
@@ -67,21 +67,18 @@ class PostUpdate
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $content = file_get_contents($projectDir . '/config/routes/annotations.yaml');
+        $matches = [];
+        preg_match('|controllers:.*annotation|Ums', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = mb_strlen($matches[0][0]) + $matches[0][1];
+
         $insert = [
-            'controllers:',
-            '  resource: ../../src/Controller/',
-            '  type: annotation',
-            '  prefix:',
-            '    \'%locale%\': \'%locale%\'',
-            '',
-            'kernel:',
-            '  resource: ../../src/Kernel.php',
-            '  type: annotation',
+            '    prefix:',
+            '        \'%locale%\': \'%locale%\'',
         ];
         $content = self::insertStringAtPosition(
             $content,
-            0,
-            implode("\n", $insert) . "\n"
+            $offset,
+            "\n" . implode("\n", $insert)
         );
 
         file_put_contents($projectDir . '/config/routes/annotations.yaml', $content);
