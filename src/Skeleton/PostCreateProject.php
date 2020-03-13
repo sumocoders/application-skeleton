@@ -251,6 +251,20 @@ class PostCreateProject
             implode("\n", $insert) . "\n"
         );
 
+        $io->notice('→ add CopyFiles configuration');
+        $insert = [
+            '.copyFiles(',
+            '  {',
+            '    from: \'./assets/images\',',
+            '    to: \'images/[path][name].[hash:8].[ext]\',',
+            '  }',
+            ')',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            self::findEndOfEncoreConfiguration($content),
+            implode("\n", $insert) . "\n"
+        );
 
         file_put_contents($projectDir . '/webpack.config.js', $content);
 
