@@ -1,4 +1,5 @@
 {
+    "name": "sumocoders/framework",
     "type": "project",
     "license": "proprietary",
     "require": {
