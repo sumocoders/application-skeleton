@@ -59,7 +59,7 @@ class PostCreateProject
         $packages = [
             'standard',
             'stylelint',
-            'stylelint-config-standard'
+            'stylelint-config-standard',
         ];
 
         if ($io->isVerbose()) {
@@ -225,7 +225,7 @@ class PostCreateProject
 
         $io->notice('→ add IgnorePlugin configuration');
         $insert = [
-            '.addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))'
+            '.addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))',
         ];
         $content = self::insertStringAtPosition(
             $content,

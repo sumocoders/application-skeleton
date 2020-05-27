@@ -16,24 +16,24 @@ cache: &global_cache
 
 
 ## Build section
-Install dependencies and build assets:
-  image: sumocoders/cli-tools-php72:latest
-  script:
-    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
-    - nvm exec npm install --no-progress
-    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
-    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
-    - nvm exec npm run build
-  cache:
-    <<: *global_cache
-    policy: pull-push
-  stage: build
-  tags:
-    - docker
+#Install dependencies and build assets:
+#  image: sumocoders/cli-tools-php74:latest
+#  script:
+#    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+#    - nvm exec npm install --no-progress
+#    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
+#    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
+#    - nvm exec npm run build
+#  cache:
+#    <<: *global_cache
+#    policy: pull-push
+#  stage: build
+#  tags:
+#    - docker
 
 # Optimalisation
 Install composer dependencies:
-  image: sumocoders/framework-php72:latest
+  image: sumocoders/framework-php74:latest
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts
   stage: optimalisation
@@ -42,7 +42,7 @@ Install composer dependencies:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/framework-php72:latest
+  image: sumocoders/framework-php74:latest
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -55,7 +55,7 @@ PHP_CodeSniffer - check code styling:
   allow_failure: true
 
 PHPStan - check for bugs:
-  image: sumocoders/framework-php72:latest
+  image: sumocoders/framework-php74:latest
   before_script:
     - bin/console cache:warmup --env=dev
   script:
@@ -73,7 +73,7 @@ PHPStan - check for bugs:
   allow_failure: true
 
 Stylelint - check code styling:
-  image: sumocoders/cli-tools-php72
+  image: sumocoders/cli-tools-php74
   script:
     - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
   after_script:
@@ -89,7 +89,7 @@ Stylelint - check code styling:
   allow_failure: true
 
 StandardJS - check code styling:
-  image: sumocoders/cli-tools-php72
+  image: sumocoders/cli-tools-php74
   script:
     - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
   after_script:
@@ -105,7 +105,7 @@ StandardJS - check code styling:
   allow_failure: true
 
 TODOs - check for unfinished code:
-  image: sumocoders/cli-tools-php72
+  image: sumocoders/cli-tools-php74
   script:
     - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
   after_script:
@@ -123,7 +123,7 @@ TODOs - check for unfinished code:
 
 ## Dependency Scanning section
 NPM packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php72:latest
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:npm-audit "$(nvm exec --silent npm audit --json)" > npm-audit-report.xml
   after_script:
@@ -139,7 +139,7 @@ NPM packages - check for vulnerabilities:
   allow_failure: true
 
 PHP packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php72:latest
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:sensiolabs-security-check "$(vendor/bin/security-checker security:check --format=json)" > security-checker-report.xml
   after_script:
@@ -158,7 +158,7 @@ PHP packages - check for vulnerabilities:
 ## Test section
 ## Uncomment this if you have tests
 #PHPUnit - Run tests:
-#  image: sumocoders/framework-php72:latest
+#  image: sumocoders/framework-php74:latest
 #  script:
 #    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
 #  artifacts:
@@ -171,7 +171,7 @@ PHP packages - check for vulnerabilities:
 
 ## Deploy section
 #Deploy - to staging:
-#  image: sumocoders/cli-tools-php72:latest
+#  image: sumocoders/cli-tools-php74:latest
 #  before_script:
 #    # Add the private SSH key to the CI environment
 #    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -185,7 +185,7 @@ PHP packages - check for vulnerabilities:
 #    - vendor/bin/dep deploy staging
 #  environment:
 #    name: staging
-#    url: https://project.client.php72.sumocoders.eu
+#    url: https://project.client.php74.sumocoders.eu
 #  only:
 #    - staging
 #  stage: deploy
