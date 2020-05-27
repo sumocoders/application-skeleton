@@ -1,5 +1,5 @@
 stages:
-  - build
+  - optimalisation
   - code quality
   - dependency scanning
   - test
@@ -31,6 +31,14 @@ Install dependencies and build assets:
   tags:
     - docker
 
+# Optimalisation
+Install composer dependencies:
+  image: sumocoders/framework-php72:latest
+  script:
+    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts
+  stage: optimalisation
+  tags:
+    - docker
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
