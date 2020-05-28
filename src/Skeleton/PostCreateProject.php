@@ -86,8 +86,9 @@ class PostCreateProject
         $io->notice('→ Install required NPM packages for FrameworkStylePackage');
         $packages = [
             'frameworkstylepackage@^1.0.0',
+            'node-sass@^4.14.1',
+            'sass-loader@^8.0.0',
             'webpack-shell-plugin-alt',
-            'sass-loader@^7.0.1',
         ];
         if ($io->isVerbose()) {
             $io->write(
