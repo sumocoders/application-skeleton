@@ -14,6 +14,7 @@ class PostCreateProject
         self::installFrameworkStylePackage($event);
         self::reconfigureWebpack($event);
         self::createAssets($event);
+        self::cleanupFiles($event);
         self::cleanup($event);
     }
 
@@ -289,6 +290,26 @@ class PostCreateProject
         shell_exec(' node_modules/.bin/standard webpack.config.js --quiet --fix');
     }
 
+    private static function cleanupFiles(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Cleanup files');
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Remove app.scss');
+        $path = $projectDir . '/assets/css/app.scss';
+        if (file_exists($path)) {
+            unlink($projectDir . '/assets/css/app.scss');
+        }
+
+        $io->notice('→ Remove reference to app.scss');
+        $content = file_get_contents($projectDir . '/assets/js/app.js');
+        $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
+        $content = preg_replace('|import \'../css/app.scss\'\n|', '', $content);
+
+        file_put_contents($projectDir . '/assets/js/app.js', $content);
+    }
+
     private static function createAssets(Event $event): void
     {
         $io = $event->getIO();
@@ -371,7 +392,7 @@ class PostCreateProject
     {
         $files = scandir($source);
 
-        if(!file_exists($destination)) {
+        if (!file_exists($destination)) {
             mkdir($destination);
         }
 
