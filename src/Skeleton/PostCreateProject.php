@@ -13,6 +13,7 @@ class PostCreateProject
         self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
         self::reconfigureWebpack($event);
+        self::createAssets($event);
         self::cleanup($event);
     }
 
@@ -288,6 +289,25 @@ class PostCreateProject
         shell_exec(' node_modules/.bin/standard webpack.config.js --quiet --fix');
     }
 
+    private static function createAssets(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Create assets');
+
+        $io->notice('→ Copy sccs-files');
+        if ($io->isVerbose()) {
+            $io->write(
+                '   Import bootstrap variables and our base scss-file.'
+            );
+        }
+
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        self::copyDirectoryContent(
+            $projectDir . '/scripts/assets/css',
+            $projectDir . '/assets/css'
+        );
+    }
+
     private static function cleanup(Event $event): void
     {
         $io = $event->getIO();
@@ -344,5 +364,18 @@ class PostCreateProject
         preg_match('|.addEntry\(.*|', $content, $matches, PREG_OFFSET_CAPTURE);
 
         return $matches[0][1] + mb_strlen($matches[0][0]) + 1;
+    }
+
+    private static function copyDirectoryContent(string $source, string $destination): void
+    {
+        $files = scandir($source);
+        foreach ($files as $file) {
+            // skip current and previous virtual folders
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+
+            copy($source . '/' . $file, $destination . '/' . $file);
+        }
     }
 }
