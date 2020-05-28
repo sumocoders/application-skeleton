@@ -17,6 +17,7 @@ class PostCreateProject
         self::reconfigureApplication($event);
         self::cleanupFiles($event);
         self::cleanup($event);
+        self::runNpmBuild($event);
     }
 
     private static function fixSecurityChecker(Event $event): void
@@ -441,6 +442,17 @@ class PostCreateProject
 
         $io->notice('→ Remove scripts folder');
         shell_exec(sprintf('rm %1$s', $projectDir . '/scripts'));
+    }
+
+    private static function runNpmBuild(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Run `npm run build`');
+
+        $output = shell_exec('npm run build');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
     }
 
     // some helper methods
