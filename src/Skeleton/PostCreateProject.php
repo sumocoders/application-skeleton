@@ -441,7 +441,7 @@ class PostCreateProject
         }
 
         $io->notice('→ Remove scripts folder');
-        shell_exec(sprintf('rm %1$s', $projectDir . '/scripts'));
+        shell_exec(sprintf('rm -rf %1$s', $projectDir . '/scripts'));
     }
 
     private static function runNpmBuild(Event $event): void
