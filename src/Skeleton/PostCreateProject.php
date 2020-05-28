@@ -202,6 +202,21 @@ class PostCreateProject
             implode("\n", $insert) . "\n"
         );
 
+        $io->notice('→ remove useless entries');
+        $content = preg_replace('|// .addEntry\(.*|', '', $content);
+
+        $io->notice('→ add extra entrypoints');
+        $insert = [
+            '  .addEntry(\'mail\', \'./assets/css/mail.scss\')',
+            '  .addEntry(\'style\', \'./assets/css/style.scss\')',
+            '  .addEntry(\'style-dark\', \'./assets/css/style-dark.scss\')',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            self::findEndOfEncoreEntries($content),
+            implode("\n", $insert) . "\n"
+        );
+
 
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace('|//.enableSassLoader\(\)|', '.enableSassLoader()', $content);
@@ -318,8 +333,16 @@ class PostCreateProject
     private static function findEndOfEncoreConfiguration(string $content): int
     {
         $matches = [];
-        preg_match('|^(Encore\n.*);\n|ms', $content, $matches, PREG_OFFSET_CAPTURE);
+        preg_match('|module.exports|', $content, $matches, PREG_OFFSET_CAPTURE);
 
-        return $matches[1][1] + mb_strlen($matches[1][0]);
+        return $matches[0][1] - 1;
+    }
+
+    private static function findEndOfEncoreEntries(string $content): int
+    {
+        $matches = [];
+        preg_match('|.addEntry\(.*|', $content, $matches, PREG_OFFSET_CAPTURE);
+
+        return $matches[0][1] + mb_strlen($matches[0][0]) + 1;
     }
 }
