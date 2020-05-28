@@ -346,15 +346,15 @@ class PostCreateProject
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
         $insert = [
-            '  globals:',
-            '    fallbacks: "@framework.fallbacks"',
-            '    jsData: "@framework.jsdata"',
-            '    locales: "%locales%"',
-            '    theme: "@framework.theme"',
-            '  form_themes:',
-            '    - "bootstrap_4_layout.html.twig"',
-            '    - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
-            '    - "blocks.html.twig"',
+            '    globals:',
+            '        fallbacks: "@framework.fallbacks"',
+            '        jsData: "@framework.jsdata"',
+            '        locales: "%locales%"',
+            '        theme: "@framework.theme"',
+            '    form_themes:',
+            '        - "bootstrap_4_layout.html.twig"',
+            '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
+            '        - "blocks.html.twig"',
         ];
         $content = self::insertStringAtPosition(
             $content,
