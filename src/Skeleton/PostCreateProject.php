@@ -206,7 +206,7 @@ class PostCreateProject
         );
 
         $io->notice('→ remove useless entries');
-        $content = preg_replace('|// .addEntry\(.*|', '', $content);
+        $content = preg_replace('|//.addEntry\(.*|', '', $content);
 
         $io->notice('→ add extra entrypoints');
         $insert = [
@@ -459,9 +459,9 @@ class PostCreateProject
     private static function findEndOfEncoreConfiguration(string $content): int
     {
         $matches = [];
-        preg_match('|module.exports|', $content, $matches, PREG_OFFSET_CAPTURE);
+        preg_match('|Encore\n(.*)\n;|ms', $content, $matches, PREG_OFFSET_CAPTURE);
 
-        return $matches[0][1] - 1;
+        return $matches[0][1] + mb_strlen($matches[0][0]) - 1;
     }
 
     private static function findEndOfEncoreEntries(string $content): int
