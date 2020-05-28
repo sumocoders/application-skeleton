@@ -293,18 +293,19 @@ class PostCreateProject
     {
         $io = $event->getIO();
         $io->notice('Create assets');
-
-        $io->notice('→ Copy sccs-files');
-        if ($io->isVerbose()) {
-            $io->write(
-                '   Import bootstrap variables and our base scss-file.'
-            );
-        }
-
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Copy scss-files');
         self::copyDirectoryContent(
             $projectDir . '/scripts/assets/css',
             $projectDir . '/assets/css'
+        );
+
+
+        $io->notice('→ Copy image-files');
+        self::copyDirectoryContent(
+            $projectDir . '/scripts/assets/images',
+            $projectDir . '/assets/images'
         );
     }
 
@@ -369,6 +370,11 @@ class PostCreateProject
     private static function copyDirectoryContent(string $source, string $destination): void
     {
         $files = scandir($source);
+
+        if(!file_exists($destination)) {
+            mkdir($destination);
+        }
+
         foreach ($files as $file) {
             // skip current and previous virtual folders
             if (in_array($file, ['.', '..'])) {
