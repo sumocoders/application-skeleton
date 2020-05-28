@@ -1,5 +1,5 @@
 stages:
-  - optimalisation
+  - build
   - code quality
   - dependency scanning
   - test
@@ -16,27 +16,18 @@ cache: &global_cache
 
 
 ## Build section
-#Install dependencies and build assets:
-#  image: sumocoders/cli-tools-php74:latest
-#  script:
-#    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
-#    - nvm exec npm install --no-progress
-#    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
-#    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
-#    - nvm exec npm run build
-#  cache:
-#    <<: *global_cache
-#    policy: pull-push
-#  stage: build
-#  tags:
-#    - docker
-
-# Optimalisation
-Install composer dependencies:
-  image: sumocoders/framework-php74:latest
+Install dependencies and build assets:
+  image: sumocoders/cli-tools-php74:latest
   script:
-    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts
-  stage: optimalisation
+    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+    - nvm exec npm install --no-progress
+    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
+    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
+    - nvm exec node_modules/.bin/encore production
+  cache:
+    <<: *global_cache
+    policy: pull-push
+  stage: build
   tags:
     - docker
 
