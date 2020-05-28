@@ -328,6 +328,12 @@ class PostCreateProject
             $projectDir . '/scripts/assets/images',
             $projectDir . '/assets/images'
         );
+
+        $io->notice('→ Copy templates');
+        self::copyDirectoryContent(
+            $projectDir . '/scripts/templates',
+            $projectDir . '/templates'
+        );
     }
 
     private static function cleanup(Event $event): void
