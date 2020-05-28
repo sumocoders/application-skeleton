@@ -438,6 +438,9 @@ class PostCreateProject
         if (count(scandir($projectDir . '/src/Skeleton')) === 2) {
             shell_exec(sprintf('rm -rf %1$s', $projectDir . '/src/Skeleton'));
         }
+
+        $io->notice('→ Remove scripts folder');
+        shell_exec(sprintf('rm %1$s', $projectDir . '/scripts'));
     }
 
     // some helper methods
