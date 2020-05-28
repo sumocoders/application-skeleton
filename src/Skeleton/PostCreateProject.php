@@ -14,6 +14,7 @@ class PostCreateProject
         self::installFrameworkStylePackage($event);
         self::reconfigureWebpack($event);
         self::createAssets($event);
+        self::reconfigureApplication($event);
         self::cleanupFiles($event);
         self::cleanup($event);
     }
@@ -334,6 +335,80 @@ class PostCreateProject
             $projectDir . '/scripts/templates',
             $projectDir . '/templates'
         );
+    }
+
+    private static function reconfigureApplication(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Reconfigure application');
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Reconfigure Twig');
+        $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
+        $insert = [
+            '  globals:',
+            '    fallbacks: "@framework.fallbacks"',
+            '    jsData: "@framework.jsdata"',
+            '    locales: "%locales%"',
+            '    theme: "@framework.theme"',
+            '  form_themes:',
+            '    - "bootstrap_4_layout.html.twig"',
+            '    - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
+            '    - "blocks.html.twig"',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            mb_strlen($content) + 1,
+            implode("\n", $insert) . "\n"
+        );
+        file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
+
+
+        $io->notice('→ Reconfigure services');
+        $content = file_get_contents($projectDir . '/config/services.yaml');
+        $matches = [];
+        preg_match('|parameters:|', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = mb_strpos($content, "\n", $matches[0][1]) + 1;
+        $insert = [
+            '  # configuration of the locale, used for url and allowed locales',
+            '  locale: \'nl\'',
+            '  locales:',
+            '    - \'%locale%\'',
+            '',
+            '  # configuration of some fallback variables',
+            '  fallbacks:',
+            '    site_title: \'%env(resolve:SITE_TITLE)%\'',
+            '',
+            '  # Mailer configuration',
+            '  mailer.default_sender_name: \'%env(resolve:MAILER_DEFAULT_SENDER_NAME)%\'',
+            '  mailer.default_sender_email: \'%env(resolve:MAILER_DEFAULT_SENDER_EMAIL)%\'',
+            '  mailer.default_to_name: \'%env(resolve:MAILER_DEFAULT_TO_NAME)%\'',
+            '  mailer.default_to_email: \'%env(resolve:MAILER_DEFAULT_TO_EMAIL)%\'',
+            '  mailer.default_reply_to_name: \'%mailer.default_sender_name%\'',
+            '  mailer.default_reply_to_email: \'%mailer.default_sender_email%\'',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            $offset,
+            implode("\n", $insert) . "\n"
+        );
+        file_put_contents($projectDir . '/config/services.yaml', $content);
+
+
+        $io->notice('→ Reconfigure .env');
+        $content = file_get_contents($projectDir . '/.env');
+        $matches = [];
+        $insert = [
+            '###> sumocoders/framework-core-bundle ###',
+            'SITE_TITLE="Your application"',
+            '###< sumocoders/framework-core-bundle ###',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            mb_strlen($content),
+            "\n" . implode("\n", $insert)
+        );
+        file_put_contents($projectDir . '/.env', $content);
     }
 
     private static function cleanup(Event $event): void
