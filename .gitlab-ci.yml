@@ -160,25 +160,25 @@ PHP packages - check for vulnerabilities:
 #    - docker
 
 
-## Deploy section
-#Deploy - to staging:
-#  image: sumocoders/cli-tools-php74:latest
-#  before_script:
-#    # Add the private SSH key to the CI environment
-#    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-#    - eval $(ssh-agent -s)
-#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-#    - chmod 644 ~/.ssh/known_hosts
-#  script:
-#    - vendor/bin/dep deploy staging
-#  environment:
-#    name: staging
-#    url: https://project.client.php74.sumocoders.eu
-#  only:
-#    - staging
-#  stage: deploy
-#  tags:
-#    - docker
+# Deploy section
+Deploy - to staging:
+  image: sumocoders/cli-tools-php74:latest
+  before_script:
+    # Add the private SSH key to the CI environment
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - vendor/bin/dep deploy staging
+  environment:
+    name: staging
+    url: https://$project.$client.php74.sumocoders.eu
+  only:
+    - staging
+  stage: deploy
+  tags:
+    - docker

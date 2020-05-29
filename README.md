@@ -35,13 +35,14 @@ automatically. To do so, follow the steps below:
 2. Open Settings → Repository → Deploy Keys.
 3. Click the tab "Privately accessible deploy keys" and enable the key called 
    "Sumo deploy user".
-4. Open Settings → CI / CD → Variables
+4. Open Settings → CI / CD → Variables.
 5. Add a variable called `SSH_PRIVATE_KEY`, the value can be found in 1Password
    under "Sumo Deploy User private key". You can check the "Protect variable" 
    flag.
 5. Add a variable called `SSH_KNOWN_HOSTS`, the value should be the output of 
-    `ssh-keyscan -H dev02.sumocoders.eu`
-
+    `ssh-keyscan -H dev02.sumocoders.eu`.
+6. Open `.gitlab-ci.yaml`, scroll to `Deploy - to staging`.
+7. Alter the url under `environment → url`.
 
     
 ## Usage
