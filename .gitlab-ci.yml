@@ -98,10 +98,32 @@ StandardJS - check code styling:
 TODOs - check for unfinished code:
   image: sumocoders/cli-tools-php74
   script:
-    - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
+    - >
+      vendor/bin/convert-to-junit-xml convert:grep "$(
+      find .
+      -path "./.gitlab-ci.yml" -prune -o
+      -path "./unresolved-todos-report.xml" -prune -o
+      -path "./bin/*" -prune -o
+      -path "./node_modules/*" -prune -o
+      -path "./public/build/*" -prune -o
+      -path "./var/*" -prune -o
+      -path "./vendor/*" -prune -o
+      -not -type d
+      -exec grep -niH -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" {} \;
+      )" > unresolved-todos-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - grep --exclude=unresolved-todos-report.xml --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
+    - >
+      find .
+      -path "./.gitlab-ci.yml" -prune -o
+      -path "./unresolved-todos-report.xml" -prune -o
+      -path "./bin/*" -prune -o
+      -path "./node_modules/*" -prune -o
+      -path "./public/build/*" -prune -o
+      -path "./var/*" -prune -o
+      -path "./vendor/*" -prune -o
+      -not -type d
+      -exec grep -niH -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" {} \;
   artifacts:
     expire_in: 1 week
     reports:
