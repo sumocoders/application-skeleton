@@ -17,14 +17,14 @@ set('sentry_project_slug', '$sentryProjectSlug');
 set('sentry_token', '$sentryToken');
 
 // Define staging
-host('$host')
+host('dev02.sumocoders.eu')
     ->user('sites')
     ->stage('staging')
     ->set('deploy_path', '~/apps/{{client}}/{{project}}')
     ->set('branch', 'staging')
-    ->set('bin/php', '$phpBinary')
-    ->set('cachetool', '$socketPath')
-    ->set('document_root', '~/php72/{{client}}/{{project}}');
+    ->set('bin/php', 'php7.4')
+    ->set('cachetool', '/var/run/php_74_fpm_sites.sock')
+    ->set('document_root', '~/php74/{{client}}/{{project}}');
 
 // Define production
 //host('$host')
