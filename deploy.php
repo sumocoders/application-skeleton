@@ -52,6 +52,9 @@ add('writable_dirs', []);
 // Disallow stats
 set('allow_anonymous_stats', false);
 
+// Composer
+set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-suggest --no-scripts');
+
 // Sentry
 set(
     'sentry',
