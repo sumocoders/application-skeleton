@@ -1,28 +1,39 @@
 stages:
-  - optimalisation
+  - build
   - code quality
   - dependency scanning
-  - build
   - test
   - deploy
 
-cache:
+# Cache default configuration
+cache: &global_cache
+  key: "$CI_PIPELINE_ID"
   paths:
-    - vendor
     - node_modules
+    - public/build
+    - vendor
+  policy: pull
 
-# Optimalisation
-Install composer dependencies:
-  image: sumocoders/framework-php72:latest
+
+## Build section
+Install dependencies and build assets:
+  image: sumocoders/cli-tools-php74:latest
   script:
-    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts
-  stage: optimalisation
+    - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+    - nvm exec npm install --no-progress
+    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
+    - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
+    - nvm exec node_modules/.bin/encore production
+  cache:
+    <<: *global_cache
+    policy: pull-push
+  stage: build
   tags:
     - docker
 
 # Code Quality section
-Check code standards with PHP_CodeSniffer:
-  image: sumocoders/framework-php72:latest
+PHP_CodeSniffer - check code styling:
+  image: sumocoders/framework-php74:latest
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -34,15 +45,15 @@ Check code standards with PHP_CodeSniffer:
     - docker
   allow_failure: true
 
-Check for bugs with PHPStan:
-  image: sumocoders/framework-php72:latest
+PHPStan - check for bugs:
+  image: sumocoders/framework-php74:latest
   before_script:
     - bin/console cache:warmup --env=dev
   script:
     - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=junit --no-progress > phpstan-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - vendor/bin/phpstan analyse --memory-limit=-1
+    - vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
   artifacts:
     expire_in: 1 week
     reports:
@@ -52,13 +63,45 @@ Check for bugs with PHPStan:
     - docker
   allow_failure: true
 
-Check for unresolved TODOs:
-  image: sumocoders/cli-tools-php72
+Stylelint - check code styling:
+  image: sumocoders/cli-tools-php74
+  script:
+    - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
+  after_script:
+    # Run it again so the output is visible in the job
+    - nvm exec node_modules/.bin/stylelint .
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: stylelint-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
+StandardJS - check code styling:
+  image: sumocoders/cli-tools-php74
+  script:
+    - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
+  after_script:
+    # Run it again so the output is visible in the job
+    - nvm exec node_modules/.bin/standard
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: standardjs-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
+TODOs - check for unfinished code:
+  image: sumocoders/cli-tools-php74
   script:
     - vendor/bin/convert-to-junit-xml convert:grep "$(grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *)" > unresolved-todos-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - grep --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
+    - grep --exclude=unresolved-todos-report.xml --exclude-dir={bin,node_modules,var,vendor} -rni -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" *
   artifacts:
     expire_in: 1 week
     reports:
@@ -70,13 +113,13 @@ Check for unresolved TODOs:
 
 
 ## Dependency Scanning section
-Check NPM dependencies for vulnerabilities:
-  image: sumocoders/cli-tools-php72:latest
+NPM packages - check for vulnerabilities:
+  image: sumocoders/cli-tools-php74:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(nvm exec npm audit --json)" > npm-audit-report.xml
+    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(nvm exec --silent npm audit --json)" > npm-audit-report.xml
   after_script:
     # Run it again so the output is visible in the job output
-    - nvm exec npm audit --json
+    - nvm exec npm audit
   artifacts:
     expire_in: 1 week
     reports:
@@ -86,8 +129,8 @@ Check NPM dependencies for vulnerabilities:
     - docker
   allow_failure: true
 
-Check Composer dependencies for vulnerabilities:
-  image: sumocoders/cli-tools-php72:latest
+PHP packages - check for vulnerabilities:
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:sensiolabs-security-check "$(vendor/bin/security-checker security:check --format=json)" > security-checker-report.xml
   after_script:
@@ -103,42 +146,23 @@ Check Composer dependencies for vulnerabilities:
   allow_failure: true
 
 
-## Build section
-Build assets with Encore:
-  image: node:11
-  before_script:
-    - npm install
-  script:
-    - npm run build
-  cache:
-    paths:
-      - node_modules
-      - public/build
-  stage: build
-  tags:
-    - docker
-
-
 ## Test section
-Run test with PHPUnit:
-  image: sumocoders/framework-php72:latest
-  script:
-    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
-  artifacts:
-    reports:
-      junit: phpunit-report.xml
-  cache:
-    paths:
-      - public/build
-    policy: pull
-  stage: test
-  tags:
-    - docker
+## Uncomment this if you have tests
+#PHPUnit - Run tests:
+#  image: sumocoders/framework-php74:latest
+#  script:
+#    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
+#  artifacts:
+#    reports:
+#      junit: phpunit-report.xml
+#  stage: test
+#  tags:
+#    - docker
 
 
 ## Deploy section
-#Deploy to staging:
-#  image: sumocoders/cli-tools-php72:latest
+#Deploy - to staging:
+#  image: sumocoders/cli-tools-php74:latest
 #  before_script:
 #    # Add the private SSH key to the CI environment
 #    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -152,7 +176,7 @@ Run test with PHPUnit:
 #    - vendor/bin/dep deploy staging
 #  environment:
 #    name: staging
-#    url: https://project.client.php72.sumocoders.eu
+#    url: https://project.client.php74.sumocoders.eu
 #  only:
 #    - staging
 #  stage: deploy

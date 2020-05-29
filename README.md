@@ -3,9 +3,20 @@
 Use the following commands to create a new project:
 
     composer create-project sumocoders/application-skeleton my_project
-    npm install
     
 ## Usage
+
+### Testing `create-project`
+
+There is a test-script `scripts/test.sh` which you can use:
+
+    COMPOSER_MEMORY_LIMIT=-1 ./scripts/test.sh BRANCH-TO_TEST TARGETDIR
+
+This will create a new project that uses the commited code in the selected branch.
+The new project will be located in the TARGETDIR
+
+Kudos to [beporter](https://gist.github.com/beporter/31e7d1f5beeffda0da94).
+
 
 ### Using Encore
 
