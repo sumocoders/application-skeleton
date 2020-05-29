@@ -74,7 +74,11 @@ set(
 task(
     'build:assets:npm',
     function () {
-        run('npm run build');
+        if (commandExist('nvm')) {
+            run('nvm exec npm run build');
+        } else {
+            run('npm run build');
+        }
     }
 )
     ->desc('Run the build script which will build our needed assets.')
