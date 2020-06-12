@@ -271,6 +271,7 @@ class PostCreateProject
             implode("\n", $insert) . "\n"
         );
 
+
         $io->notice('→ add CopyFiles configuration');
         $insert = [
             '.copyFiles(',
@@ -285,6 +286,28 @@ class PostCreateProject
             self::findEndOfEncoreConfiguration($content),
             implode("\n", $insert) . "\n"
         );
+
+
+        $io->notice('→ insert configureBabel');
+        $insert = [
+            '.configureBabel(() => {}, {',
+            '  useBuiltIns: \'usage\',',
+            '  corejs: 3,',
+            '  includeNodeModules: [\'frameworkstylepackage\']',
+            '})',
+        ];
+        $matches = [];
+        preg_match('|\.configureBabelPresetEnv|', $content, $matches, PREG_OFFSET_CAPTURE);
+        $content = self::insertStringAtPosition(
+            $content,
+            $matches[0][1],
+            implode("\n", $insert) . "\n"
+        );
+
+
+        $io->notice('→ do not use configureBabelPresetEnv');
+        $content = preg_replace('|\.configureBabelPresetEnv.*\}\)|smU', '', $content);
+
 
         file_put_contents($projectDir . '/webpack.config.js', $content);
 
