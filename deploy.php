@@ -75,6 +75,7 @@ task(
     'build:assets:npm',
     function () {
         if (commandExist('nvm')) {
+            run('nvm install');
             run('nvm exec npm run build');
         } else {
             run('npm run build');
