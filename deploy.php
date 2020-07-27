@@ -17,14 +17,14 @@ set('sentry_project_slug', '$sentryProjectSlug');
 set('sentry_token', '$sentryToken');
 
 // Define staging
-host('$host')
+host('dev02.sumocoders.eu')
     ->user('sites')
     ->stage('staging')
     ->set('deploy_path', '~/apps/{{client}}/{{project}}')
     ->set('branch', 'staging')
-    ->set('bin/php', '$phpBinary')
-    ->set('cachetool', '$socketPath')
-    ->set('document_root', '~/php72/{{client}}/{{project}}');
+    ->set('bin/php', 'php7.4')
+    ->set('cachetool', '/var/run/php_74_fpm_sites.sock')
+    ->set('document_root', '~/php74/{{client}}/{{project}}');
 
 // Define production
 //host('$host')
@@ -52,6 +52,9 @@ add('writable_dirs', []);
 // Disallow stats
 set('allow_anonymous_stats', false);
 
+// Composer
+set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-suggest --no-scripts');
+
 // Sentry
 set(
     'sentry',
@@ -71,7 +74,12 @@ set(
 task(
     'build:assets:npm',
     function () {
-        run('npm run build');
+        if (commandExist('nvm')) {
+            run('nvm install');
+            run('nvm exec npm run build');
+        } else {
+            run('npm run build');
+        }
     }
 )
     ->desc('Run the build script which will build our needed assets.')
