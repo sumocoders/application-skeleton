@@ -107,6 +107,19 @@ class PostCreateProject
             $io->write($output);
         }
 
+        $io->notice('→ Copy the imports');
+        if ($io->isVerbose()) {
+            $io->write('   Copy the Index.js file so we can manipulate the import specifically for this project.');
+        }
+        $assetsJsPath = $projectDir . '/assets/js';
+        if (!mkdir($assetsJsPath) && !is_dir($assetsJsPath)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $assetsJsPath));
+        }
+        copy(
+            $projectDir .'/node_modules/frameworkstylepackage/src/js/Index.js',
+            $projectDir . $assetsJsPath .'/imports.js'
+        );
+
 
         $io->notice('→ Import our Framework JS');
         if ($io->isVerbose()) {
@@ -114,7 +127,7 @@ class PostCreateProject
         }
         $content = file_get_contents($projectDir . '/assets/app.js');
         $insert = [
-            'import { Framework } from \'frameworkstylepackage/src/js/Index\'',
+            'import { Framework } from \'./js/imports\'',
         ];
         $matches = [];
         preg_match('|import\s.*styles\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
@@ -140,8 +153,8 @@ class PostCreateProject
         );
 
 
-        $io->notice('→ Replace app.css with app.scss');
-        $content = preg_replace('|app\.css|', 'app.scss', $content);
+        $io->notice('→ Remove app.css');
+        $content = preg_replace('|import \'./styles/app.scss\'|', '', $content);
 
 
         // store the file
@@ -153,38 +166,7 @@ class PostCreateProject
                 '   Apply StandardJS as the default app.js is not following these standards.'
             );
         }
-        shell_exec(' node_modules/.bin/standard assets/js/app.js --quiet --fix');
-
-
-        if (file_exists($projectDir . '/assets/styles/app.css') && !file_exists($projectDir . '/assets/styles/app.scss')) {
-            $io->notice('→ Rename app.css to app.scss');
-            if ($io->isVerbose()) {
-                $io->write(
-                    '   We use SCSS instead of CSS files, so we rename the original file.'
-                );
-            }
-            rename($projectDir . '/assets/styles/app.css', $projectDir . '/assets/styles/app.scss');
-        }
-
-
-        $io->notice('→ Import sccs-files');
-        if ($io->isVerbose()) {
-            $io->write(
-                '   Import bootstrap variables and our base scss-file.'
-            );
-        }
-        $content = file_get_contents($projectDir . '/assets/styles/app.scss');
-        $insert = [
-            '@import \'~bootstrap/scss/functions\';',
-            '@import \'~bootstrap/scss/variables\';',
-            '@import \'~frameworkstylepackage/src/sass/style\';',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            0,
-            implode("\n", $insert)
-        );
-        file_put_contents($projectDir . '/assets/styles/app.scss', $content);
+        shell_exec(' node_modules/.bin/standard assets/app.js --quiet --fix');
     }
 
     private static function reconfigureWebpack(Event $event): void
@@ -321,16 +303,16 @@ class PostCreateProject
         $io->notice('Cleanup files');
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
-        $io->notice('→ Remove app.scss');
-        $path = $projectDir . '/assets/styles/app.scss';
+        $io->notice('→ Remove app.css');
+        $path = $projectDir . '/assets/styles/app.css';
         if (file_exists($path)) {
-            unlink($projectDir . '/assets/styles/app.scss');
+            unlink($projectDir . '/assets/styles/app.css');
         }
 
-        $io->notice('→ Remove reference to app.scss');
+        $io->notice('→ Remove reference to app.css');
         $content = file_get_contents($projectDir . '/assets/app.js');
         $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
-        $content = preg_replace('|import \'../styles/app.scss\'\n|', '', $content);
+        $content = preg_replace('|import \'../styles/app.css\'\n|', '', $content);
 
         file_put_contents($projectDir . '/assets/app.js', $content);
     }
