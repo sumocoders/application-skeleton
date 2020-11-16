@@ -117,7 +117,7 @@ class PostCreateProject
             'import { Framework } from \'frameworkstylepackage/src/js/Index\'',
         ];
         $matches = [];
-        preg_match('|import\s.*css\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
+        preg_match('|import\s.*styles\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
         $offset = mb_strpos($content, "\n", $matches[0][1]);
         $content = self::insertStringAtPosition(
             $content,
@@ -156,14 +156,14 @@ class PostCreateProject
         shell_exec(' node_modules/.bin/standard assets/js/app.js --quiet --fix');
 
 
-        if (file_exists($projectDir . '/assets/css/app.css') && !file_exists($projectDir . '/assets/css/app.scss')) {
+        if (file_exists($projectDir . '/assets/styles/app.css') && !file_exists($projectDir . '/assets/styles/app.scss')) {
             $io->notice('→ Rename app.css to app.scss');
             if ($io->isVerbose()) {
                 $io->write(
                     '   We use SCSS instead of CSS files, so we rename the original file.'
                 );
             }
-            rename($projectDir . '/assets/css/app.css', $projectDir . '/assets/css/app.scss');
+            rename($projectDir . '/assets/styles/app.css', $projectDir . '/assets/styles/app.scss');
         }
 
 
@@ -173,7 +173,7 @@ class PostCreateProject
                 '   Import bootstrap variables and our base scss-file.'
             );
         }
-        $content = file_get_contents($projectDir . '/assets/css/app.scss');
+        $content = file_get_contents($projectDir . '/assets/styles/app.scss');
         $insert = [
             '@import \'~bootstrap/scss/functions\';',
             '@import \'~bootstrap/scss/variables\';',
@@ -184,7 +184,7 @@ class PostCreateProject
             0,
             implode("\n", $insert)
         );
-        file_put_contents($projectDir . '/assets/css/app.scss', $content);
+        file_put_contents($projectDir . '/assets/styles/app.scss', $content);
     }
 
     private static function reconfigureWebpack(Event $event): void
@@ -211,9 +211,9 @@ class PostCreateProject
 
         $io->notice('→ add extra entrypoints');
         $insert = [
-            '  .addEntry(\'mail\', \'./assets/css/mail.scss\')',
-            '  .addEntry(\'style\', \'./assets/css/style.scss\')',
-            '  .addEntry(\'style-dark\', \'./assets/css/style-dark.scss\')',
+            '  .addEntry(\'mail\', \'./assets/styles/mail.scss\')',
+            '  .addEntry(\'style\', \'./assets/styles/style.scss\')',
+            '  .addEntry(\'style-dark\', \'./assets/styles/style-dark.scss\')',
         ];
         $content = self::insertStringAtPosition(
             $content,
@@ -322,15 +322,15 @@ class PostCreateProject
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Remove app.scss');
-        $path = $projectDir . '/assets/css/app.scss';
+        $path = $projectDir . '/assets/styles/app.scss';
         if (file_exists($path)) {
-            unlink($projectDir . '/assets/css/app.scss');
+            unlink($projectDir . '/assets/styles/app.scss');
         }
 
         $io->notice('→ Remove reference to app.scss');
         $content = file_get_contents($projectDir . '/assets/app.js');
         $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
-        $content = preg_replace('|import \'../css/app.scss\'\n|', '', $content);
+        $content = preg_replace('|import \'../styles/app.scss\'\n|', '', $content);
 
         file_put_contents($projectDir . '/assets/app.js', $content);
     }
@@ -344,7 +344,7 @@ class PostCreateProject
         $io->notice('→ Copy scss-files');
         self::copyDirectoryContent(
             $projectDir . '/scripts/assets/css',
-            $projectDir . '/assets/css'
+            $projectDir . '/assets/styles'
         );
 
 
