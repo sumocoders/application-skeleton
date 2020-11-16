@@ -112,7 +112,7 @@ class PostCreateProject
         if ($io->isVerbose()) {
             $io->write('   Import the frameworkstylepackage index file');
         }
-        $content = file_get_contents($projectDir . '/assets/js/app.js');
+        $content = file_get_contents($projectDir . '/assets/app.js');
         $insert = [
             'import { Framework } from \'frameworkstylepackage/src/js/Index\'',
         ];
@@ -145,7 +145,7 @@ class PostCreateProject
 
 
         // store the file
-        file_put_contents($projectDir . '/assets/js/app.js', $content);
+        file_put_contents($projectDir . '/assets/app.js', $content);
 
         // fix code styling, as the default
         if ($io->isVerbose()) {
@@ -328,11 +328,11 @@ class PostCreateProject
         }
 
         $io->notice('→ Remove reference to app.scss');
-        $content = file_get_contents($projectDir . '/assets/js/app.js');
+        $content = file_get_contents($projectDir . '/assets/app.js');
         $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
         $content = preg_replace('|import \'../css/app.scss\'\n|', '', $content);
 
-        file_put_contents($projectDir . '/assets/js/app.js', $content);
+        file_put_contents($projectDir . '/assets/app.js', $content);
     }
 
     private static function createAssets(Event $event): void
