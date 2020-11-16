@@ -112,13 +112,12 @@ class PostCreateProject
             $io->write('   Copy the Index.js file so we can manipulate the import specifically for this project.');
         }
         $assetsJsPath = $projectDir . '/assets/js';
-        if (!mkdir($assetsJsPath) && !is_dir($assetsJsPath)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $assetsJsPath));
+        if (!is_dir($assetsJsPath)) {
+            mkdir($assetsJsPath);
         }
-        copy(
-            $projectDir .'/node_modules/frameworkstylepackage/src/js/Index.js',
-            $projectDir . $assetsJsPath .'/imports.js'
-        );
+        $content = file_get_contents($projectDir .'/node_modules/frameworkstylepackage/src/js/Index.js');
+        $content = preg_replace('|from \'./Framework/|', 'from \'frameworkstylepackage/src/js/Framework/', $content);
+        file_put_contents($assetsJsPath .'/imports.js', $content);
 
 
         $io->notice('→ Import our Framework JS');
