@@ -107,17 +107,29 @@ class PostCreateProject
             $io->write($output);
         }
 
+        $io->notice('→ Copy the imports');
+        if ($io->isVerbose()) {
+            $io->write('   Copy the Index.js file so we can manipulate the import specifically for this project.');
+        }
+        $assetsJsPath = $projectDir . '/assets/js';
+        if (!is_dir($assetsJsPath)) {
+            mkdir($assetsJsPath);
+        }
+        $content = file_get_contents($projectDir .'/node_modules/frameworkstylepackage/src/js/Index.js');
+        $content = preg_replace('|from \'./Framework/|', 'from \'frameworkstylepackage/src/js/Framework/', $content);
+        file_put_contents($assetsJsPath .'/imports.js', $content);
+
 
         $io->notice('→ Import our Framework JS');
         if ($io->isVerbose()) {
             $io->write('   Import the frameworkstylepackage index file');
         }
-        $content = file_get_contents($projectDir . '/assets/js/app.js');
+        $content = file_get_contents($projectDir . '/assets/app.js');
         $insert = [
-            'import { Framework } from \'frameworkstylepackage/src/js/Index\'',
+            'import { Framework } from \'./js/imports\'',
         ];
         $matches = [];
-        preg_match('|import\s.*css\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
+        preg_match('|import\s.*styles\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
         $offset = mb_strpos($content, "\n", $matches[0][1]);
         $content = self::insertStringAtPosition(
             $content,
@@ -140,12 +152,8 @@ class PostCreateProject
         );
 
 
-        $io->notice('→ Replace app.css with app.scss');
-        $content = preg_replace('|app\.css|', 'app.scss', $content);
-
-
         // store the file
-        file_put_contents($projectDir . '/assets/js/app.js', $content);
+        file_put_contents($projectDir . '/assets/app.js', $content);
 
         // fix code styling, as the default
         if ($io->isVerbose()) {
@@ -153,38 +161,7 @@ class PostCreateProject
                 '   Apply StandardJS as the default app.js is not following these standards.'
             );
         }
-        shell_exec(' node_modules/.bin/standard assets/js/app.js --quiet --fix');
-
-
-        if (file_exists($projectDir . '/assets/css/app.css') && !file_exists($projectDir . '/assets/css/app.scss')) {
-            $io->notice('→ Rename app.css to app.scss');
-            if ($io->isVerbose()) {
-                $io->write(
-                    '   We use SCSS instead of CSS files, so we rename the original file.'
-                );
-            }
-            rename($projectDir . '/assets/css/app.css', $projectDir . '/assets/css/app.scss');
-        }
-
-
-        $io->notice('→ Import sccs-files');
-        if ($io->isVerbose()) {
-            $io->write(
-                '   Import bootstrap variables and our base scss-file.'
-            );
-        }
-        $content = file_get_contents($projectDir . '/assets/css/app.scss');
-        $insert = [
-            '@import \'~bootstrap/scss/functions\';',
-            '@import \'~bootstrap/scss/variables\';',
-            '@import \'~frameworkstylepackage/src/sass/style\';',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            0,
-            implode("\n", $insert)
-        );
-        file_put_contents($projectDir . '/assets/css/app.scss', $content);
+        shell_exec(' node_modules/.bin/standard assets/app.js --quiet --fix');
     }
 
     private static function reconfigureWebpack(Event $event): void
@@ -211,9 +188,9 @@ class PostCreateProject
 
         $io->notice('→ add extra entrypoints');
         $insert = [
-            '  .addEntry(\'mail\', \'./assets/css/mail.scss\')',
-            '  .addEntry(\'style\', \'./assets/css/style.scss\')',
-            '  .addEntry(\'style-dark\', \'./assets/css/style-dark.scss\')',
+            '  .addEntry(\'mail\', \'./assets/styles/mail.scss\')',
+            '  .addEntry(\'style\', \'./assets/styles/style.scss\')',
+            '  .addEntry(\'style-dark\', \'./assets/styles/style-dark.scss\')',
         ];
         $content = self::insertStringAtPosition(
             $content,
@@ -321,18 +298,18 @@ class PostCreateProject
         $io->notice('Cleanup files');
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
-        $io->notice('→ Remove app.scss');
-        $path = $projectDir . '/assets/css/app.scss';
+        $io->notice('→ Remove app.css');
+        $path = $projectDir . '/assets/styles/app.css';
         if (file_exists($path)) {
-            unlink($projectDir . '/assets/css/app.scss');
+            unlink($projectDir . '/assets/styles/app.css');
         }
 
-        $io->notice('→ Remove reference to app.scss');
-        $content = file_get_contents($projectDir . '/assets/js/app.js');
+        $io->notice('→ Remove reference to app.css');
+        $content = file_get_contents($projectDir . '/assets/app.js');
         $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
-        $content = preg_replace('|import \'../css/app.scss\'\n|', '', $content);
+        $content = preg_replace('|import \'./styles/app.css\'\n|', '', $content);
 
-        file_put_contents($projectDir . '/assets/js/app.js', $content);
+        file_put_contents($projectDir . '/assets/app.js', $content);
     }
 
     private static function createAssets(Event $event): void
@@ -344,7 +321,7 @@ class PostCreateProject
         $io->notice('→ Copy scss-files');
         self::copyDirectoryContent(
             $projectDir . '/scripts/assets/css',
-            $projectDir . '/assets/css'
+            $projectDir . '/assets/styles'
         );
 
 
