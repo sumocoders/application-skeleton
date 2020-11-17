@@ -152,10 +152,6 @@ class PostCreateProject
         );
 
 
-        $io->notice('→ Remove app.css');
-        $content = preg_replace('|import \'./styles/app.scss\'|', '', $content);
-
-
         // store the file
         file_put_contents($projectDir . '/assets/app.js', $content);
 
@@ -311,7 +307,7 @@ class PostCreateProject
         $io->notice('→ Remove reference to app.css');
         $content = file_get_contents($projectDir . '/assets/app.js');
         $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
-        $content = preg_replace('|import \'../styles/app.css\'\n|', '', $content);
+        $content = preg_replace('|import \'./styles/app.css\'\n|', '', $content);
 
         file_put_contents($projectDir . '/assets/app.js', $content);
     }
