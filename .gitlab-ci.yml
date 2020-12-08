@@ -20,6 +20,8 @@ Install dependencies and build assets:
   image: sumocoders/cli-tools-php74:latest
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+    - nvm install
+    - nvm use
     - nvm exec npm install --no-progress
     - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
