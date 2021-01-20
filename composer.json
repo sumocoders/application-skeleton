@@ -21,7 +21,7 @@
         "symfony/website-skeleton": "^5.0",
         "symfony/yaml": "^5.0",
         "tijsverkoyen/convert-to-junit-xml": "^1.7",
-        "willdurand/js-translation-bundle": "^3.0"
+        "willdurand/js-translation-bundle": "^4.0"
     },
     "require-dev": {
         "mglaman/phpstan-junit": "^0.12",
