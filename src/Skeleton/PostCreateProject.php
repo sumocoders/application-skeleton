@@ -8,7 +8,6 @@ class PostCreateProject
 {
     public static function run(Event $event)
     {
-        self::fixSecurityChecker($event);
         self::runNpmInstall($event);
         self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
@@ -18,30 +17,6 @@ class PostCreateProject
         self::cleanupFiles($event);
         self::cleanup($event);
         self::runNpmBuild($event);
-    }
-
-    private static function fixSecurityChecker(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->notice('Fix Security Checker');
-        if ($io->isVerbose()) {
-            $io->write(
-                [
-                    '   We alter the composer.json file so security-checker security:check is',
-                    '   only run when composer is not in dev-mode.',
-                    '',
-                ]
-            );
-        }
-
-        $file = $event->getComposer()->getConfig()->get('vendor-dir') . '/../composer.json';
-        $content = file_get_contents($file);
-        $content = preg_replace(
-            '|"security-checker security:check": "script"|',
-            '"[ $COMPOSER_DEV_MODE -eq 0 ] || security-checker security:check": "script"',
-            $content
-        );
-        file_put_contents($file, $content);
     }
 
     private static function runNpmInstall(Event $event): void
