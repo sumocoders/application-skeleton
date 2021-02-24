@@ -1,6 +1,9 @@
+assets/images/*.svg
 bin/*
 config/*
+public/build/*
 public/bundles/*
+public/files/*
 node_modules/*
 var/*
 vendor/*
