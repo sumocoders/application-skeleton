@@ -378,7 +378,7 @@ class PostCreateProject
         $offset = $matches[0][1] + mb_strlen($matches[0][0]);
         $insert = [
             '    prefix:',
-            '        locale: \'%locale%\'',
+            '        en: \'\'',
         ];
         $content = self::insertStringAtPosition(
             $content,
