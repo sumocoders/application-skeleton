@@ -189,16 +189,20 @@ PHP packages - check for vulnerabilities:
 
 ## Test section
 ## Uncomment this if you have tests
-#PHPUnit - Run tests:
-#  image: sumocoders/framework-php74:latest
-#  script:
-#    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
-#  artifacts:
-#    reports:
-#      junit: phpunit-report.xml
-#  stage: test
-#  tags:
-#    - docker
+PHPUnit - Run tests:
+  image: sumocoders/framework-php74:latest
+  before_script:
+    - apt-get install chromium-chromedriver firefox-geckodriver -y -qq
+    - export PANTHER_NO_SANDBOX=1
+    - export PANTHER_WEB_SERVER_PORT=9080
+  script:
+    - bin/phpunit --log-junit phpunit-report.xml
+  artifacts:
+    reports:
+      junit: phpunit-report.xml
+  stage: test
+  tags:
+    - docker
 
 
 # Deploy section
