@@ -239,6 +239,16 @@ class PostCreateProject
             implode("\n", $insert) . "\n"
         );
 
+        $io->notice('→ add Vue loader');
+        $insert = [
+            '.enableVueLoader()',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            self::findEndOfEncoreConfiguration($content),
+            implode("\n", $insert) . "\n"
+        );
+
 
         $io->notice('→ insert configureBabel');
         $insert = [
