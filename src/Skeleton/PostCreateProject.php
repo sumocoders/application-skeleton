@@ -387,6 +387,19 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/routes/annotations.yaml', $content);
 
+        $io->notice('→ Reconfigure framework');
+        $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
+        $insert = [
+            '    trusted_proxies: \'127.0.0.1,REMOTE_ADDR\'',
+            '    trusted_headers: [ \'x-forwarded-for\', \'x-forwarded-host\', \'x-forwarded-proto\', \'x-forwarded-port\' ]',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            mb_strlen($content) + 1,
+            implode("\n", $insert) . "\n"
+        );
+        file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
+
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
