@@ -65,6 +65,19 @@ PHPStan - check for bugs:
     - docker
   allow_failure: true
 
+Twigcs - check code styling:
+  image: sumocoders/framework-php74:latest
+  script:
+    - vendor/bin/twigcs --report-full --report-junit=phpcs-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: phpcs-report.xml
+  stage: code quality
+  tags:
+    - docker
+  allow_failure: true
+
 Stylelint - check code styling:
   image: sumocoders/cli-tools-php74
   script:
