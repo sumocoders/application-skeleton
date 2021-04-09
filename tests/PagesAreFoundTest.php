@@ -26,7 +26,7 @@ class PagesAreFoundTest extends PantherTestCase
     public function testLoggedInPagesAreFound($route): void
     {
         $client = static::createPantherClient();
-        $this->loggin($client);
+        $this->login($client);
         $client->request('GET', $route);
         self::assertEquals(200, $client->getInternalResponse()->getStatusCode());
     }
@@ -45,7 +45,7 @@ class PagesAreFoundTest extends PantherTestCase
         ];
     }
 
-    private function loggin(Client $client): void
+    private function login(Client $client): void
     {
         // $userRepository = static::$container->get(UserRepository::class);
         // $user = $userRepository->findOneByEmail($this:LOGGED_IN_EMAIL);
