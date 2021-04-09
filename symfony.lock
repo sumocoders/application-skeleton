@@ -1,0 +1,41 @@
+{
+    "dbrekelmans/bdi": {
+        "version": "0.3"
+    },
+    "friendsoftwig/twigcs": {
+        "version": "v5.0.0"
+    },
+    "php-webdriver/webdriver": {
+        "version": "1.10.0"
+    },
+    "symfony/browser-kit": {
+        "version": "v5.2.4"
+    },
+    "symfony/dom-crawler": {
+        "version": "v5.2.4"
+    },
+    "symfony/panther": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "93d9baa582d0a755cc9ef81bc38a921d5fa16973"
+        }
+    },
+    "symfony/phpunit-bridge": {
+        "version": "5.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.1",
+            "ref": "bf16921ef8309a81d9f046e9b6369c46bcbd031f"
+        },
+        "files": [
+            ".env.test",
+            "bin/phpunit",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
+    }
+}
