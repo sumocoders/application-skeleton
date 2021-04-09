@@ -2,6 +2,9 @@
 
 namespace App\Tests;
 
+/**
+ * Remove all commented code if you want to test pages after a login screen.
+ */
 //use App\Repository\UserRepository;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Panther\PantherTestCase;
