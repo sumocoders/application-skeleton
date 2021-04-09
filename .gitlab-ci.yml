@@ -189,16 +189,28 @@ PHP packages - check for vulnerabilities:
 
 ## Test section
 ## Uncomment this if you have tests
-#PHPUnit - Run tests:
-#  image: sumocoders/framework-php74:latest
-#  script:
-#    - vendor/bin/simple-phpunit --log-junit phpunit-report.xml
-#  artifacts:
-#    reports:
-#      junit: phpunit-report.xml
-#  stage: test
-#  tags:
-#    - docker
+PHPUnit - Run tests:
+  image: sumocoders/framework-php74:latest
+  services:
+    - mysql:5.7
+  before_script:
+    - mysql -h mysql -u root -proot -e "create database ci_test"
+    - apt-get install chromium-chromedriver firefox-geckodriver -y -qq
+    - export PANTHER_NO_SANDBOX=1
+    - export PANTHER_WEB_SERVER_PORT=9080
+  script:
+    - bin/console doctrine:migrations:migrate
+    - bin/console doctrine:fixtures:load
+    - bin/phpunit --log-junit phpunit-report.xml
+  artifacts:
+    reports:
+      junit: phpunit-report.xml
+  stage: test
+  tags:
+    - docker
+  variables:
+    MYSQL_DATABASE: ci_test
+    MYSQL_ROOT_PASSWORD: root
 
 
 # Deploy section

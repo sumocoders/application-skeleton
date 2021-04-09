@@ -73,3 +73,9 @@ This will create a new project that uses the commited code in the selected branc
 The new project will be located in the TARGETDIR
 
 Kudos to [beporter](https://gist.github.com/beporter/31e7d1f5beeffda0da94).
+
+## Tests
+We use [panther](https://github.com/symfony/panther) to add functional tests to our project.
+By default a page response 200 should be tested on al pages. To do this you can add your urls to the `providePublicUrls` and/or `provideLoggedInUrls`.
+
+

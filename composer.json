@@ -24,11 +24,15 @@
         "willdurand/js-translation-bundle": "^4.0"
     },
     "require-dev": {
+        "dbrekelmans/bdi": "^0.3.0",
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "friendsoftwig/twigcs": "^5.0",
         "mglaman/phpstan-junit": "^0.12",
         "phpstan/phpstan-symfony": "^0.12.4",
         "squizlabs/php_codesniffer": "^3.4",
         "symfony/debug-pack": "*",
+        "symfony/panther": "^1.0",
+        "symfony/phpunit-bridge": "^5.2",
         "tijsverkoyen/deployer-sumo": "^1.4"
     },
     "config": {
