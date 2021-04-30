@@ -9,6 +9,7 @@ class PostCreateProject
     public static function run(Event $event)
     {
         self::runNpmInstall($event);
+        self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
         self::reconfigureWebpack($event);
         self::createAssets($event);
@@ -25,6 +26,32 @@ class PostCreateProject
         $io->info('Run `npm install`');
 
         $output = shell_exec('npm install');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+    }
+
+    private static function installNpmPackages(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Install required NPM packages');
+
+        $packages = [
+            'standard',
+            'stylelint',
+            'stylelint-config-standard',
+        ];
+
+        if ($io->isVerbose()) {
+            $io->write(
+                sprintf(
+                    '   Install packages (%1$s) that are required for our git hooks.',
+                    implode(', ', $packages)
+                )
+            );
+        }
+
+        $output = shell_exec(sprintf('npm install %1$s --save-dev', implode(' ', $packages)));
         if ($io->isVerbose()) {
             $io->write($output);
         }
