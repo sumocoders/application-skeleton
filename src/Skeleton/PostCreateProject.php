@@ -6,8 +6,12 @@ use Composer\Script\Event;
 
 class PostCreateProject
 {
+    const PHP_VERSION = '7.4';
+    const NODE_VERSION = 'lts/fermium';
+
     public static function run(Event $event)
     {
+        self::generateUtilityVersionFiles($event);
         self::runNpmInstall($event);
         self::installFrameworkStylePackage($event);
         self::reconfigureWebpack($event);
@@ -17,6 +21,18 @@ class PostCreateProject
         self::cleanup($event);
         self::runNpmBuild($event);
         self::findChromeAndGeckoDriver($event);
+    }
+
+    private static function generateUtilityVersionFiles(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Locking PHP and Node version');
+
+        shell_exec('echo ' . self::PHP_VERSION . ' > .php-version');
+
+        shell_exec('echo ' . self::NODE_VERSION . ' > .nvmrc');
+        shell_exec('nvm install ' . self::NODE_VERSION);
+        shell_exec('nvm use');
     }
 
     private static function runNpmInstall(Event $event): void
