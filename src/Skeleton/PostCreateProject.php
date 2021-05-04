@@ -8,6 +8,7 @@ class PostCreateProject
 {
     public static function run(Event $event)
     {
+        self::runNvm($event);
         self::runNpmInstall($event);
         self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
@@ -18,6 +19,22 @@ class PostCreateProject
         self::cleanup($event);
         self::runNpmBuild($event);
         self::findChromeAndGeckoDriver($event);
+    }
+
+    private static function runNvm(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Use the correct Node version from the .nvmrc file');
+
+        $output = shell_exec('nvm install');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+
+        $output = shell_exec('nvm use');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
     }
 
     private static function runNpmInstall(Event $event): void
