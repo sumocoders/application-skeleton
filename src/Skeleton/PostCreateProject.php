@@ -8,7 +8,6 @@ class PostCreateProject
 {
     public static function run(Event $event)
     {
-        self::runNvm($event);
         self::runNpmInstall($event);
         self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
@@ -19,22 +18,7 @@ class PostCreateProject
         self::cleanup($event);
         self::runNpmBuild($event);
         self::findChromeAndGeckoDriver($event);
-    }
-
-    private static function runNvm(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->info('Use the correct Node version from the .nvmrc file');
-
-        $output = shell_exec('nvm install');
-        if ($io->isVerbose()) {
-            $io->write($output);
-        }
-
-        $output = shell_exec('nvm use');
-        if ($io->isVerbose()) {
-            $io->write($output);
-        }
+        self::dumpInitialTranslations($event);
     }
 
     private static function runNpmInstall(Event $event): void
@@ -42,7 +26,7 @@ class PostCreateProject
         $io = $event->getIO();
         $io->info('Run `npm install`');
 
-        $output = shell_exec('npm install');
+        $output = self::runWithNvm('npm install');
         if ($io->isVerbose()) {
             $io->write($output);
         }
@@ -68,7 +52,9 @@ class PostCreateProject
             );
         }
 
-        $output = shell_exec(sprintf('npm install %1$s --save-dev', implode(' ', $packages)));
+        $command = sprintf('npm install %1$s --save-dev', implode(' ', $packages));
+        $output = self::runWithNvm($command);
+
         if ($io->isVerbose()) {
             $io->write($output);
         }
@@ -92,7 +78,10 @@ class PostCreateProject
                 )
             );
         }
-        $output = shell_exec(sprintf('npm install %1$s --save-dev', implode(' ', $packages)));
+
+        $command = sprintf('npm install %1$s --save-dev', implode(' ', $packages));
+        $output = self::runWithNvm($command);
+
         if ($io->isVerbose()) {
             $io->write($output);
         }
@@ -542,5 +531,29 @@ class PostCreateProject
         if ($io->isVerbose()) {
             $io->write($output);
         }
+    }
+
+    private static function testCommandLocally(string $command): bool
+    {
+        return shell_exec(sprintf("which %s", escapeshellcmd($command))) !== null;
+    }
+
+    private static function runWithNvm(string $command): string
+    {
+        /*
+         * If we use env variables like $HOME directly in a path,
+         * it won't resolve. But if we echo it out first, we can
+         * use the absolute path from the output just fine.
+         */
+        $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
+
+        if (file_exists($nvmPath)) {
+            $command = sprintf(
+                '. ' . $nvmPath . ' && nvm use && nvm exec %s',
+                $command
+            );
+        }
+
+        return shell_exec($command);
     }
 }
