@@ -469,7 +469,24 @@ class PostCreateProject
         $io = $event->getIO();
         $io->info('Run `npm run build`');
 
-        $output = shell_exec('npm run build');
+        $output = self::runWithNvm('npm run build');
+
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+    }
+
+    private static function dumpInitialTranslations(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Generating the initial translations`');
+
+        if (!self::testCommandLocally('symfony')) {
+            $io->notice('Could\'nt find symfony binary, skipping translations dump.');
+            return;
+        }
+
+        $output = shell_exec('symfony console translation:update nl --force --output-format yaml');
         if ($io->isVerbose()) {
             $io->write($output);
         }
