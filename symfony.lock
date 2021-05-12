@@ -17,17 +17,53 @@
             "src/DataFixtures/AppFixtures.php"
         ]
     },
+    "egulias/email-validator": {
+        "version": "3.1.1"
+    },
     "friendsoftwig/twigcs": {
         "version": "v5.0.0"
     },
     "php-webdriver/webdriver": {
         "version": "1.10.0"
     },
+    "symfony/amqp-messenger": {
+        "version": "v5.2.7"
+    },
     "symfony/browser-kit": {
         "version": "v5.2.4"
     },
+    "symfony/doctrine-messenger": {
+        "version": "v5.2.7"
+    },
     "symfony/dom-crawler": {
         "version": "v5.2.4"
+    },
+    "symfony/mailer": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "15658c2a0176cda2e7dba66276a2030b52bd81b2"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
+    },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "e9a414b113ceadbf4e52abe37bf8f1b443f06ccb"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
+    },
+    "symfony/mime": {
+        "version": "v5.2.7"
     },
     "symfony/panther": {
         "version": "1.0",
@@ -51,6 +87,25 @@
             "bin/phpunit",
             "phpunit.xml.dist",
             "tests/bootstrap.php"
+        ]
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.22.1"
+    },
+    "symfony/redis-messenger": {
+        "version": "v5.2.7"
+    },
+    "symfony/validator": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "d902da3e4952f18d3bf05aab29512eb61cabd869"
+        },
+        "files": [
+            "config/packages/test/validator.yaml",
+            "config/packages/validator.yaml"
         ]
     }
 }
