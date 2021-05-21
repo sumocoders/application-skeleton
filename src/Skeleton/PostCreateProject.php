@@ -426,6 +426,20 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
 
+        $io->notice('→ Reconfigure sentry');
+        $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
+        $insert = [
+            '    options:',
+            '        excluded_exceptions:',
+            '            - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
+            '            - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            mb_strlen($content) + 1,
+            implode("\n", $insert) . "\n"
+        );
+        file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
