@@ -15,7 +15,7 @@ cache: &global_cache
   policy: pull
 
 
-## Build section
+# Build section
 Install dependencies and build assets:
   image: sumocoders/cli-tools-php74:latest
   script:
@@ -149,7 +149,7 @@ TODOs - check for unfinished code:
   allow_failure: true
 
 
-## Dependency Scanning section
+# Dependency Scanning section
 NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php74:latest
   script:
@@ -187,8 +187,7 @@ PHP packages - check for vulnerabilities:
   allow_failure: true
 
 
-## Test section
-## Uncomment this if you have tests
+# Test section
 PHPUnit - Run tests:
   image: sumocoders/framework-php74:latest
   services:
