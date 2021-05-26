@@ -193,7 +193,6 @@ PHPUnit - Run tests:
   services:
     - mysql:5.7
   before_script:
-    - mysql -h mysql -u root -proot -e "create database ci_test"
     - apt-get install chromium-chromedriver firefox-geckodriver -y -qq
     - export PANTHER_NO_SANDBOX=1
     - export PANTHER_WEB_SERVER_PORT=9080
