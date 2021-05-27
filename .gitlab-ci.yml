@@ -35,7 +35,7 @@ Install dependencies and build assets:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -48,7 +48,7 @@ PHP_CodeSniffer - check code styling:
   allow_failure: true
 
 PHPStan - check for bugs:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   before_script:
     - bin/console cache:warmup --env=dev
   script:
@@ -66,7 +66,7 @@ PHPStan - check for bugs:
   allow_failure: true
 
 Twigcs - check code styling:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   script:
     - vendor/bin/twigcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -189,7 +189,7 @@ PHP packages - check for vulnerabilities:
 
 # Test section
 PHPUnit - Run tests:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   services:
     - mysql:5.7
   before_script:
