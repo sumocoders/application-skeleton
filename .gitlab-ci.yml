@@ -199,9 +199,6 @@ PHPUnit - Run tests:
     - |
       curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
       unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
-    # export some ENV variables
-    - export PANTHER_NO_SANDBOX=1
-    - export PANTHER_WEB_SERVER_PORT=9080
   script:
     - bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
     - bin/console doctrine:fixtures:load
@@ -216,6 +213,8 @@ PHPUnit - Run tests:
     MYSQL_DATABASE: ci_test
     MYSQL_ROOT_PASSWORD: root
     DATABASE_URL: mysql://root:root@mysql:3306/ci_test?serverVersion=5.7
+    PANTHER_NO_SANDBOX: 1
+    PANTHER_WEB_SERVER_PORT: 9080
 
 
 # Deploy section
