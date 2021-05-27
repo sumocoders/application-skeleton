@@ -79,7 +79,7 @@ Twigcs - check code styling:
   allow_failure: true
 
 Stylelint - check code styling:
-  image: sumocoders/cli-tools-php74
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
   after_script:
@@ -95,7 +95,7 @@ Stylelint - check code styling:
   allow_failure: true
 
 StandardJS - check code styling:
-  image: sumocoders/cli-tools-php74
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
   after_script:
@@ -111,7 +111,7 @@ StandardJS - check code styling:
   allow_failure: true
 
 TODOs - check for unfinished code:
-  image: sumocoders/cli-tools-php74
+  image: sumocoders/cli-tools-php74:latest
   script:
     - >
       vendor/bin/convert-to-junit-xml convert:grep "$(
