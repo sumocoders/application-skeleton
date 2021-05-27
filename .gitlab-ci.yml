@@ -217,6 +217,7 @@ PHPUnit - Run tests:
   variables:
     MYSQL_DATABASE: ci_test
     MYSQL_ROOT_PASSWORD: root
+    DATABASE_URL: mysql://root:root@mysql:3306/ci_test?serverVersion=5.7
 
 
 # Deploy section
