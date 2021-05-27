@@ -23,9 +23,9 @@ Install dependencies and build assets:
     - nvm install
     - nvm use
     - nvm exec npm install --no-progress
+    - nvm exec node_modules/.bin/encore production
     - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
-    - nvm exec node_modules/.bin/encore production
   cache:
     <<: *global_cache
     policy: pull-push
