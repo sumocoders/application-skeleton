@@ -193,6 +193,8 @@ PHPUnit - Run tests:
   services:
     - mysql:5.7
   before_script:
+    # install Chromium
+    - apt-get update && apt-get install -y chromium
     # install Chromium Chromedriver
     - |
       curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
