@@ -97,7 +97,7 @@ class PostCreateProject
         $content = file_get_contents($projectDir .'/node_modules/frameworkstylepackage/src/js/Index.js');
         $content = preg_replace('|from \'./Framework/|', 'from \'frameworkstylepackage/src/js/Framework/', $content);
         file_put_contents($assetsJsPath .'/imports.js', $content);
-
+        shell_exec(' node_modules/.bin/standard assets/js/imports.js --quiet --fix');
 
         $io->notice('→ Import our Framework JS');
         if ($io->isVerbose()) {
@@ -141,6 +141,10 @@ class PostCreateProject
             );
         }
         shell_exec(' node_modules/.bin/standard assets/app.js --quiet --fix');
+
+        if (file_exists($projectDir . '/assets/bootstrap.js')) {
+            shell_exec(' node_modules/.bin/standard assets/bootstrap.js --quiet --fix');
+        }
     }
 
     private static function reconfigureWebpack(Event $event): void
