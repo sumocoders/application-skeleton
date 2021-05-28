@@ -141,6 +141,10 @@ class PostCreateProject
             );
         }
         shell_exec(' node_modules/.bin/standard assets/app.js --quiet --fix');
+
+        if (file_exists($projectDir . '/assets/bootstrap.js')) {
+            shell_exec(' node_modules/.bin/standard assets/bootstrap.js --quiet --fix');
+        }
     }
 
     private static function reconfigureWebpack(Event $event): void
