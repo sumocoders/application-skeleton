@@ -66,13 +66,16 @@ PHPStan - check for bugs:
   allow_failure: true
 
 Twigcs - check code styling:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   script:
-    - vendor/bin/twigcs --report-full --report-junit=phpcs-report.xml
+    - vendor/bin/twigcs --no-interaction --exclude=vendor --reporter=junit > twigcs-report.xml
+  after_script:
+    # Run it again so the output is visible in the job
+    - vendor/bin/twigcs --no-interaction --exclude=vendor
   artifacts:
     expire_in: 1 week
     reports:
-      junit: phpcs-report.xml
+      junit: twigcs-report.xml
   stage: code quality
   tags:
     - docker
