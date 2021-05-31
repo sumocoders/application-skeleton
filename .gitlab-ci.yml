@@ -15,7 +15,7 @@ cache: &global_cache
   policy: pull
 
 
-## Build section
+# Build section
 Install dependencies and build assets:
   image: sumocoders/cli-tools-php74:latest
   script:
@@ -23,9 +23,9 @@ Install dependencies and build assets:
     - nvm install
     - nvm use
     - nvm exec npm install --no-progress
+    - nvm exec node_modules/.bin/encore production
     - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
-    - nvm exec node_modules/.bin/encore production
   cache:
     <<: *global_cache
     policy: pull-push
@@ -35,7 +35,7 @@ Install dependencies and build assets:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -48,7 +48,7 @@ PHP_CodeSniffer - check code styling:
   allow_failure: true
 
 PHPStan - check for bugs:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   before_script:
     - bin/console cache:warmup --env=dev
   script:
@@ -82,7 +82,7 @@ Twigcs - check code styling:
   allow_failure: true
 
 Stylelint - check code styling:
-  image: sumocoders/cli-tools-php74
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
   after_script:
@@ -98,7 +98,7 @@ Stylelint - check code styling:
   allow_failure: true
 
 StandardJS - check code styling:
-  image: sumocoders/cli-tools-php74
+  image: sumocoders/cli-tools-php74:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
   after_script:
@@ -114,7 +114,7 @@ StandardJS - check code styling:
   allow_failure: true
 
 TODOs - check for unfinished code:
-  image: sumocoders/cli-tools-php74
+  image: sumocoders/cli-tools-php74:latest
   script:
     - >
       vendor/bin/convert-to-junit-xml convert:grep "$(
@@ -152,7 +152,7 @@ TODOs - check for unfinished code:
   allow_failure: true
 
 
-## Dependency Scanning section
+# Dependency Scanning section
 NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php74:latest
   script:
@@ -190,21 +190,24 @@ PHP packages - check for vulnerabilities:
   allow_failure: true
 
 
-## Test section
-## Uncomment this if you have tests
+# Test section
 PHPUnit - Run tests:
-  image: sumocoders/framework-php74:latest
+  image: sumocoders/framework-php74:5.7.0
   services:
     - mysql:5.7
   before_script:
-    - mysql -h mysql -u root -proot -e "create database ci_test"
-    - apt-get install chromium-chromedriver firefox-geckodriver -y -qq
-    - export PANTHER_NO_SANDBOX=1
-    - export PANTHER_WEB_SERVER_PORT=9080
+    # install Chromium
+    - apt-get update && apt-get install -y chromium
+    # install Chromium Chromedriver
+    - |
+      curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
+      unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
   script:
-    - bin/console doctrine:migrations:migrate
-    - bin/console doctrine:fixtures:load
-    - bin/phpunit --log-junit phpunit-report.xml
+    - php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
+    # Uncomment this if you have fixtures that need to be loaded
+    # Make sure that you have installed doctrine/doctrine-fixtures-bundle
+    #- php bin/console doctrine:fixtures:load --env=test
+    - php vendor/bin/simple-phpunit --log-junit phpunit-report.xml
   artifacts:
     reports:
       junit: phpunit-report.xml
@@ -214,6 +217,9 @@ PHPUnit - Run tests:
   variables:
     MYSQL_DATABASE: ci_test
     MYSQL_ROOT_PASSWORD: root
+    DATABASE_URL: mysql://root:root@mysql:3306/ci_test?serverVersion=5.7
+    PANTHER_NO_SANDBOX: 1
+    PANTHER_WEB_SERVER_PORT: 9080
 
 
 # Deploy section
