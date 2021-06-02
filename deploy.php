@@ -23,6 +23,7 @@ host('dev02.sumocoders.eu')
     ->set('deploy_path', '~/apps/{{client}}/{{project}}')
     ->set('branch', 'staging')
     ->set('bin/php', 'php7.4')
+    ->set('bin/composer', '{{bin/php}} /home/sites/apps/{{client}}/{{project}}/shared/composer.phar')
     ->set('cachetool', '/var/run/php_74_fpm_sites.sock')
     ->set('document_root', '~/php74/{{client}}/{{project}}');
 
