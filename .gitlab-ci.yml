@@ -201,7 +201,7 @@ PHPUnit - Run tests:
     - apt-get update && apt-get install -y chromium
     # install Chromium Chromedriver
     - |
-      curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
+      curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_90`/chromedriver_linux64.zip
       unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
   script:
     - php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
