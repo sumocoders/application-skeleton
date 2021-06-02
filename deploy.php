@@ -53,7 +53,7 @@ add('writable_dirs', []);
 set('allow_anonymous_stats', false);
 
 // Composer
-set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-suggest --no-scripts');
+set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-suggest');
 
 // Sentry
 set(
