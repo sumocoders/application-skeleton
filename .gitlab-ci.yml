@@ -20,6 +20,7 @@ Install dependencies and build assets:
   image: sumocoders/cli-tools-php74:latest
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
+    - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
     - nvm install
     - nvm use
     - nvm exec npm install --no-progress
