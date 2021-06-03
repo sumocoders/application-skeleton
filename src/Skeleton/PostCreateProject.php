@@ -422,7 +422,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            implode("\n", $insert) . "\n"
+            "\n" . implode("\n", $insert) . "\n"
         );
         file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
 
