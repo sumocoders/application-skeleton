@@ -412,14 +412,17 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
+        $matches = [];
+        preg_match('|framework:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
         $insert = [
             '    trusted_proxies: \'127.0.0.1,REMOTE_ADDR\'',
             '    trusted_headers: [ \'x-forwarded-for\', \'x-forwarded-host\', \'x-forwarded-proto\', \'x-forwarded-port\' ]',
         ];
         $content = self::insertStringAtPosition(
             $content,
-            mb_strlen($content) + 1,
-            implode("\n", $insert) . "\n"
+            $offset,
+            "\n" . implode("\n", $insert) . "\n"
         );
         file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
 
