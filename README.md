@@ -9,10 +9,9 @@ Use the following commands to create a new project:
     
 Start you project by running:
 
-    symfony server:start
-    npm run-script watch
+    symfony serve
+    npm run watch
 
-    
 ## Configuration
 ### Deployment
 Open `deploy.php` and check the configuration, replace the example values 
@@ -22,10 +21,8 @@ Try to deploy to staging by running:
 
     symfony php vendor/bin/dep deploy staging
     
-    
-Log in thru `ssh` on the dev-server and alter the `.env.local`-file to use the
+Log in through `ssh` on the dev-server and alter the `.env.local`-file to use the
 correct credentials.
-
 
 ### Continuous deployment to staging
 Each time something is merged into the staging branch it can be deployed 
@@ -43,7 +40,6 @@ automatically. To do so, follow the steps below:
     `ssh-keyscan -H dev02.sumocoders.eu`.
 6. Open `.gitlab-ci.yaml`, scroll to `Deploy - to staging`.
 7. Alter the url under `environment → url`.
-
     
 ## Usage
 ### Using Encore
@@ -51,16 +47,19 @@ automatically. To do so, follow the steps below:
 Building assets:
 
     # compile assets once
-    npm run-script dev
+    npm run dev
     
     # or, recomile assets automatically when files change
-    npm run-script watch
+    npm run watch
     
     # on deploy, create a production build
-    npm run-script build
+    npm run build
 
 For more information about Encore, see the [official documentation](https://symfony.com/doc/current/frontend.html#webpack-encore).
 
+## Tests
+We use [panther](https://github.com/symfony/panther) to add functional tests to our project.
+By default, a page response 200 should be tested on al pages. To do this you can add your urls to the `providePublicUrls` and/or `provideLoggedInUrls`.
 
 ## Working on the Skeleton
 ### Testing `create-project` locally
@@ -73,9 +72,3 @@ This will create a new project that uses the commited code in the selected branc
 The new project will be located in the TARGETDIR
 
 Kudos to [beporter](https://gist.github.com/beporter/31e7d1f5beeffda0da94).
-
-## Tests
-We use [panther](https://github.com/symfony/panther) to add functional tests to our project.
-By default a page response 200 should be tested on al pages. To do this you can add your urls to the `providePublicUrls` and/or `provideLoggedInUrls`.
-
-
