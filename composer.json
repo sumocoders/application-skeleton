@@ -12,7 +12,7 @@
         "beberlei/doctrineextensions": "^1.2",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "sentry/sentry-symfony": "^3.1",
-        "sumocoders/framework-core-bundle": "^4.0",
+        "sumocoders/framework-core-bundle": "^4.1",
         "symfony/apache-pack": "^1.0.1",
         "symfony/debug-bundle": "^5.1",
         "symfony/dotenv": "^5.0",
