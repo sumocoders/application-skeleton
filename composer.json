@@ -41,7 +41,7 @@
         "symfony/debug-pack": "*",
         "symfony/panther": "^1.0",
         "symfony/phpunit-bridge": "^5.2",
-        "tijsverkoyen/deployer-sumo": "^1.4"
+        "tijsverkoyen/deployer-sumo": "^1.5"
     },
     "config": {
         "optimize-autoloader": true,
