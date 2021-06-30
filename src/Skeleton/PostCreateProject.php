@@ -339,6 +339,9 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
+        $matches = [];
+        preg_match('|twig:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
         $insert = [
             '    globals:',
             '        fallbacks: "@framework.fallbacks"',
@@ -351,13 +354,13 @@ class PostCreateProject
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
             '        - "blocks.html.twig"',
             '    paths:',
-            '        # We add our public folder to the default twig path so we can load the',
-            '        # mail stylesheet into the inline_css inside the base email template.',
+            '        # Add the public folder to the default twig path so we can access the',
+            '        # mail stylesheet through the inline_css method in the base email template.',
             '        \'%kernel.project_dir%/public/\': ~',
         ];
         $content = self::insertStringAtPosition(
             $content,
-            mb_strlen($content) + 1,
+            $offset,
             implode("\n", $insert) . "\n"
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
