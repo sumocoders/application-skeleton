@@ -350,7 +350,7 @@ class PostCreateProject
             '        theme: "@framework.theme"',
             '        breadcrumbs: \'@SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail\'',
             '    form_themes:',
-            '        - "bootstrap_4_layout.html.twig"',
+            '        - "bootstrap_5_layout.html.twig"',
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
             '        - "blocks.html.twig"',
             '    paths:',
