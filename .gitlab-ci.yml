@@ -34,6 +34,7 @@ Install dependencies and build assets:
   tags:
     - docker
 
+
 # Code Quality section
 PHP_CodeSniffer - check code styling:
   image: sumocoders/framework-php74:5.7.0
@@ -44,6 +45,7 @@ PHP_CodeSniffer - check code styling:
     reports:
       junit: phpcs-report.xml
   stage: code quality
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -62,6 +64,7 @@ PHPStan - check for bugs:
     reports:
       junit: phpstan-report.xml
   stage: code quality
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -78,6 +81,7 @@ Twigcs - check code styling:
     reports:
       junit: twigcs-report.xml
   stage: code quality
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -94,6 +98,7 @@ Stylelint - check code styling:
     reports:
       junit: stylelint-report.xml
   stage: code quality
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -110,6 +115,7 @@ StandardJS - check code styling:
     reports:
       junit: standardjs-report.xml
   stage: code quality
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -148,6 +154,7 @@ TODOs - check for unfinished code:
     reports:
       junit: unresolved-todos-report.xml
   stage: code quality
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -166,6 +173,7 @@ NPM packages - check for vulnerabilities:
     reports:
       junit: npm-audit-report.xml
   stage: dependency scanning
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -186,6 +194,7 @@ PHP packages - check for vulnerabilities:
     reports:
       junit: security-checker-report.xml
   stage: dependency scanning
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
@@ -213,6 +222,7 @@ PHPUnit - Run tests:
     reports:
       junit: phpunit-report.xml
   stage: test
+  needs: ["Install dependencies and build assets"]
   tags:
     - docker
   variables:
