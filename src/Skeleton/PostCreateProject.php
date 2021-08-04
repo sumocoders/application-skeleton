@@ -447,9 +447,11 @@ class PostCreateProject
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         $matches = [];
+        $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $insert = [
             '###> sumocoders/framework-core-bundle ###',
             'SITE_TITLE="Your application"',
+            'ENCRYPTION_KEY="' . $encryptionKey . '"',
             '###< sumocoders/framework-core-bundle ###',
         ];
         $content = self::insertStringAtPosition(
