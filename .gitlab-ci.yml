@@ -53,6 +53,11 @@ PHP_CodeSniffer - check code styling:
 PHPStan - check for bugs:
   image: sumocoders/framework-php74:5.7.0
   before_script:
+    # disable Xdebug and Blackfire extensions
+    - |
+      mkdir /usr/local/etc/php/conf.d/disabled
+      mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini
+      mv /usr/local/etc/php/conf.d/blackfire.ini /usr/local/etc/php/conf.d/disabled/blackfire.ini
     - bin/console cache:warmup --env=dev
   script:
     - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=junit --no-progress > phpstan-report.xml
@@ -212,6 +217,11 @@ PHPUnit - Run tests:
     - |
       curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_90`/chromedriver_linux64.zip
       unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+    # disable Xdebug and Blackfire extensions
+    - |
+      mkdir /usr/local/etc/php/conf.d/disabled
+      mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini
+      mv /usr/local/etc/php/conf.d/blackfire.ini /usr/local/etc/php/conf.d/disabled/blackfire.ini
   script:
     - php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
     # Uncomment this if you have fixtures that need to be loaded
