@@ -116,6 +116,11 @@ class PostCreateProject
             "\n" . implode("\n", $insert)
         );
 
+        if ($io->isVerbose()) {
+            $io->write('   Fix the app.js file');
+        }
+        $content = str_replace("\nimport './styles/app.css';", '', $content);
+
 
         $io->notice('→ Initialize Framework JS');
         if ($io->isVerbose()) {
