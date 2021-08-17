@@ -4,6 +4,7 @@ services:
   errorFormatter.junit:
     class: PHPStan\Command\ErrorFormatter\JUnitErrorFormatter
 parameters:
+  checkGenericClassInNonGenericObjectType: false
   inferPrivatePropertyTypeFromConstructor: true
   symfony:
     container_xml_path: %rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml
