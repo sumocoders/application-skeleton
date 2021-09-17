@@ -210,7 +210,10 @@ class PostCreateProject
 
         $io->notice('→ add IgnorePlugin configuration');
         $insert = [
-            '.addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))',
+            '.addPlugin(new webpack.IgnorePlugin({',
+            '   resourceRegExp: /^\.\/locale$/,',
+            '   contextRegExp: /moment$/,',
+            '}))',
         ];
         $content = self::insertStringAtPosition(
             $content,
