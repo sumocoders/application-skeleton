@@ -12,7 +12,7 @@
     "flex-require": {
         "beberlei/doctrineextensions": "^1.2",
         "doctrine/doctrine-migrations-bundle": "^2.0",
-        "sentry/sentry-symfony": "^3.1",
+        "sentry/sentry-symfony": "^4.0",
         "sumocoders/framework-core-bundle": "^5.0",
         "symfony/apache-pack": "^1.0.1",
         "symfony/debug-bundle": "^5.3",
