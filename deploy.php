@@ -2,9 +2,8 @@
 
 namespace Deployer;
 
-require 'recipe/symfony4.php';
-require 'recipe/cachetool.php';
-require 'recipe/sentry.php';
+require 'recipe/symfony.php';
+require 'contrib/cachetool.php';
 require __DIR__ . '/vendor/tijsverkoyen/deployer-sumo/sumo.php';
 
 // Define some variables
@@ -12,30 +11,28 @@ set('client', '$client');
 set('project', '$project');
 set('repository', '$repository');
 set('production_url', '$productionUrl');
-set('sentry_organization', '$sentryOrganization');
-set('sentry_project_slug', '$sentryProjectSlug');
-set('sentry_token', '$sentryToken');
+set('production_user', '$productionUser');
 
 // Define staging
 host('dev02.sumocoders.eu')
-    ->user('sites')
-    ->stage('staging')
+    ->setRemoteUser('sites')
+    ->set('labels', ['stage' => 'staging'])
     ->set('deploy_path', '~/apps/{{client}}/{{project}}')
     ->set('branch', 'staging')
-    ->set('bin/php', 'php7.4')
-    ->set('bin/composer', '{{bin/php}} /home/sites/apps/{{client}}/{{project}}/shared/composer.phar')
-    ->set('cachetool', '/var/run/php_74_fpm_sites.sock')
+    ->set('bin/php', 'php8.0')
     ->set('document_root', '~/php74/{{client}}/{{project}}');
 
 // Define production
 //host('$host')
-//    ->user('sites')
-//    ->stage('production')
-//    ->set('deploy_path', '~/apps/{{client}}/{{project}}')
+//    ->setRemoteUser(get('production_user'))
+//    ->set('labels', ['stage' => 'production'])
+//    ->port(2244)
+//    ->set('deploy_path', '~/wwwroot')
 //    ->set('branch', 'master')
-//    ->set('bin/php', '$phpBinary')
-//    ->set('cachetool', '$socketPath')
-//    ->set('document_root', '~/php72/{{client}}/{{project}}');
+//    ->set('bin/php', 'php8.0')
+//    ->set('document_root', '~/wwwroot/www')
+//    ->set('http_user', get('production_user'))
+//    ->set('writable_mode', 'chmod'); Cloudstar only
 
 /*************************
  * No need to edit below *
@@ -54,19 +51,15 @@ add('writable_dirs', []);
 set('allow_anonymous_stats', false);
 
 // Composer
-set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader --no-suggest');
+set('shared_folder', '{{deploy_path}}/shared');
+set('bin/composer', function () {
+    if (!test('[ -f {{shared_folder}}/composer.phar ]')) {
+        run("cd {{shared_folder}} && curl -sLO https://getcomposer.org/download/latest-stable/composer.phar");
+    }
+    return '{{bin/php}} {{shared_folder}}/composer.phar';
+});
 
-// Sentry
-set(
-    'sentry',
-    [
-        'organization' => get('sentry_organization'),
-        'projects' => [
-            get('sentry_project_slug'),
-        ],
-        'token' => get('sentry_token')
-    ]
-);
+set('composer_options', '--verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader');
 
 /*****************
  * Task sections *
@@ -75,9 +68,10 @@ set(
 task(
     'build:assets:npm',
     function () {
-        if (commandExist('nvm')) {
-            run('nvm install');
-            run('nvm exec npm run build');
+        $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
+
+        if (file_exists($nvmPath)) {
+            run('. ' . $nvmPath . ' && nvm use && nvm exec npm run build');
         } else {
             run('npm run build');
         }
