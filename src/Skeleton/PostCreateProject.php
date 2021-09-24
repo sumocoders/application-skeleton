@@ -441,9 +441,16 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
         $insert = [
             '    options:',
-            '        excluded_exceptions:',
-            '            - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
-            '            - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+            '        integrations:',
+            '            - \'Sentry\Integration\IgnoreErrorsIntegration\'',
+            '',
+            '    services:',
+            '        Sentry\Integration\IgnoreErrorsIntegration:',
+            '    arguments:',
+            '        $options:',
+            '            ignore_exceptions:',
+            '                - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
+            '                - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
         ];
         $content = self::insertStringAtPosition(
             $content,
