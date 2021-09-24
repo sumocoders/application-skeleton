@@ -2,6 +2,7 @@
     "name": "sumocoders/framework",
     "type": "project",
     "license": "proprietary",
+    "minimum-stability": "beta",
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-ctype": "*",
@@ -27,7 +28,7 @@
         "symfony/messenger": "^5.3",
         "symfony/mailer": "^5.3",
         "symfony/runtime": "^5.3",
-        "tijsverkoyen/convert-to-junit-xml": "^1.7",
+        "tijsverkoyen/convert-to-junit-xml": "dev-deployer-7",
         "willdurand/js-translation-bundle": "^4.0"
     },
     "require-dev": {
