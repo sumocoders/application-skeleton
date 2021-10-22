@@ -37,7 +37,7 @@ Install dependencies and build assets:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/framework-php80:5.7.0
+  image: sumocoders/framework-php80:latest
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -51,7 +51,7 @@ PHP_CodeSniffer - check code styling:
   allow_failure: true
 
 PHPStan - check for bugs:
-  image: sumocoders/framework-php80:5.7.0
+  image: sumocoders/framework-php80:latest
   before_script:
     # disable Xdebug and Blackfire extensions
     - |
@@ -75,7 +75,7 @@ PHPStan - check for bugs:
   allow_failure: true
 
 Twigcs - check code styling:
-  image: sumocoders/framework-php80:5.7.0
+  image: sumocoders/framework-php80:latest
   script:
     - vendor/bin/twigcs --no-interaction --exclude=vendor --reporter=junit > twigcs-report.xml
   after_script:
@@ -207,7 +207,7 @@ PHP packages - check for vulnerabilities:
 
 # Test section
 PHPUnit - Run tests:
-  image: sumocoders/framework-php80:5.7.0
+  image: sumocoders/framework-php80:latest
   services:
     - mysql:5.7
   before_script:
@@ -256,7 +256,7 @@ Deploy - to staging:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - vendor/bin/dep deploy staging
+    - vendor/bin/dep deploy stage=staging
   environment:
     name: staging
     url: https://$project.$client.php80.sumocoders.eu
