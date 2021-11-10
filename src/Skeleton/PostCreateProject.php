@@ -174,6 +174,7 @@ class PostCreateProject
             '  .addEntry(\'mail\', \'./assets/styles/mail.scss\')',
             '  .addEntry(\'style\', \'./assets/styles/style.scss\')',
             '  .addEntry(\'style-dark\', \'./assets/styles/style-dark.scss\')',
+            '  .addEntry(\'error\', \'./assets/styles/error.scss\')',
         ];
         $content = self::insertStringAtPosition(
             $content,
