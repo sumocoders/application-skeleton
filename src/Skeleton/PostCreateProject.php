@@ -116,6 +116,11 @@ class PostCreateProject
             "\n" . implode("\n", $insert)
         );
 
+        if ($io->isVerbose()) {
+            $io->write('   Fix the app.js file');
+        }
+        $content = str_replace("\nimport './styles/app.css';", '', $content);
+
 
         $io->notice('→ Initialize Framework JS');
         if ($io->isVerbose()) {
@@ -206,7 +211,10 @@ class PostCreateProject
 
         $io->notice('→ add IgnorePlugin configuration');
         $insert = [
-            '.addPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))',
+            '.addPlugin(new webpack.IgnorePlugin({',
+            '   resourceRegExp: /^\.\/locale$/,',
+            '   contextRegExp: /moment$/,',
+            '}))',
         ];
         $content = self::insertStringAtPosition(
             $content,
@@ -351,7 +359,7 @@ class PostCreateProject
             '        theme: "@framework.theme"',
             '        breadcrumbs: \'@SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail\'',
             '    form_themes:',
-            '        - "bootstrap_4_layout.html.twig"',
+            '        - "bootstrap_5_layout.html.twig"',
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
             '        - "blocks.html.twig"',
             '    paths:',
@@ -362,7 +370,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            implode("\n", $insert) . "\n"
+            "\n" . implode("\n", $insert) . "\n"
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
 
@@ -434,9 +442,16 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
         $insert = [
             '    options:',
-            '        excluded_exceptions:',
-            '            - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
-            '            - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+            '        integrations:',
+            '            - \'Sentry\Integration\IgnoreErrorsIntegration\'',
+            '',
+            'services:',
+            '    Sentry\Integration\IgnoreErrorsIntegration:',
+            '        arguments:',
+            '            $options:',
+            '                ignore_exceptions:',
+            '                    - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
+            '                    - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
         ];
         $content = self::insertStringAtPosition(
             $content,
@@ -445,12 +460,23 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
 
+        $io->notice('→ Reconfigure doctrine test environment');
+        $content = file_get_contents($projectDir . '/config/packages/test/doctrine.yaml');
+        $content = preg_replace(
+            '/dbname_suffix: \'.*?\'/smU',
+            'dbname_suffix: \'%env(string:default::TEST_TOKEN)%\'',
+            $content
+        );
+        file_put_contents($projectDir . '/config/packages/test/doctrine.yaml', $content);
+
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         $matches = [];
+        $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $insert = [
             '###> sumocoders/framework-core-bundle ###',
             'SITE_TITLE="Your application"',
+            'ENCRYPTION_KEY="' . $encryptionKey . '"',
             '###< sumocoders/framework-core-bundle ###',
         ];
         $content = self::insertStringAtPosition(
