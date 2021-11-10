@@ -68,7 +68,7 @@ class PostCreateProject
 
         $io->notice('→ Install required NPM packages for FrameworkStylePackage');
         $packages = [
-            'frameworkstylepackage@^1.5.0',
+            'frameworkstylepackage@^2.0.6',
         ];
         if ($io->isVerbose()) {
             $io->write(
