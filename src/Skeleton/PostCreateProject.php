@@ -68,7 +68,7 @@ class PostCreateProject
 
         $io->notice('→ Install required NPM packages for FrameworkStylePackage');
         $packages = [
-            'frameworkstylepackage@^2.0.6',
+            'frameworkstylepackage@^2.0.7',
         ];
         if ($io->isVerbose()) {
             $io->write(
@@ -189,8 +189,7 @@ class PostCreateProject
 
 
         $io->notice('→ enable Sass/SCSS support');
-        $content = preg_replace('|//.enableSassLoader\(\)|', '.enableSassLoader()', $content);
-
+        $content = preg_replace('|//.enableSassLoader\(\)|', '.enableSassLoader(options => { options.implementation = require(\'sass\') })', $content);
 
         $io->notice('→ enable autoProvidejQuery');
         $content = preg_replace('|//.autoProvidejQuery\(\)|', '.autoProvidejQuery()', $content);
