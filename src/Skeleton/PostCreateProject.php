@@ -586,17 +586,19 @@ class PostCreateProject
         }
 
         foreach ($files as $file) {
-            var_dump($file);
+            $fullSource = $source . '/' . $file;
+            $fullDestination = $destination . '/' . $file;
+
             // skip current and previous virtual folders
             if (in_array($file, ['.', '..'])) {
                 continue;
             }
 
-            if (is_dir($file)) {
+            if (is_dir($fullSource)) {
                 mkdir($destination . '/' . $file);
-                self::copyDirectoryContent($source . '/' . $file, $destination . '/' . $file);
+                self::copyDirectoryContent($fullSource, $fullDestination);
             } else {
-                copy($source . '/' . $file, $destination . '/' . $file);
+                copy($fullSource, $fullDestination);
             }
         }
     }
