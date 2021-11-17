@@ -577,10 +577,8 @@ class PostCreateProject
 
     private static function copyDirectoryContent(string $source, string $destination): void
     {
-        var_dump($source);
-        var_dump($destination);
         $files = scandir($source);
-        var_dump($files);
+
         if (!file_exists($destination)) {
             mkdir($destination);
         }
