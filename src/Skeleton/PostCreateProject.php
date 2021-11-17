@@ -353,9 +353,7 @@ class PostCreateProject
         $insert = [
             '    globals:',
             '        fallbacks: "@framework.fallbacks"',
-            '        jsData: "@framework.jsdata"',
             '        locales: "%locales%"',
-            '        theme: "@framework.theme"',
             '        breadcrumbs: \'@SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail\'',
             '    form_themes:',
             '        - "bootstrap_5_layout.html.twig"',
