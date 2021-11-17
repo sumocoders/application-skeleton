@@ -589,7 +589,12 @@ class PostCreateProject
                 continue;
             }
 
-            copy($source . '/' . $file, $destination . '/' . $file);
+            if (is_dir($file)) {
+                mkdir($destination . '/' . $file);
+                self::copyDirectoryContent($source . '/' . $file, $destination . '/' . $file);
+            } else {
+                copy($source . '/' . $file, $destination . '/' . $file);
+            }
         }
     }
 
