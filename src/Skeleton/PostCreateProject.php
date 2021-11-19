@@ -466,6 +466,21 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/packages/test/doctrine.yaml', $content);
 
+        $io->notice('→ Reconfigure doctrine migrations');
+        $content = file_get_contents($projectDir . '/config/packages/doctrine_migrations.yaml');
+        $matches = [];
+        preg_match('|doctrine_migrations:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
+        $insert = [
+            '    transactional: false',
+        ];
+        $content = self::insertStringAtPosition(
+            $content,
+            $offset,
+            "\n" . implode("\n", $insert) . "\n"
+        );
+        file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
+
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         $matches = [];
