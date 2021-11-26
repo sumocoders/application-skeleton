@@ -479,7 +479,7 @@ class PostCreateProject
             $offset,
             "\n" . implode("\n", $insert) . "\n"
         );
-        file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
+        file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
