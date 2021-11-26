@@ -457,6 +457,15 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
 
+        $io->notice('→ Reconfigure default locale');
+        $content = file_get_contents($projectDir . '/config/packages/translation.yaml');
+        $content = preg_replace(
+            ' en',
+            '\'%locale%\'',
+            $content
+        );
+        file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
+
         $io->notice('→ Reconfigure doctrine test environment');
         $content = file_get_contents($projectDir . '/config/packages/test/doctrine.yaml');
         $content = preg_replace(
@@ -553,7 +562,7 @@ class PostCreateProject
             return;
         }
 
-        $output = shell_exec('symfony console translation:update nl --force --output-format yaml');
+        $output = shell_exec('symfony console translation:extract nl --force --format yaml');
         if ($io->isVerbose()) {
             $io->write($output);
         }
