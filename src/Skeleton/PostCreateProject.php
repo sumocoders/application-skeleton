@@ -461,7 +461,7 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/translation.yaml');
         $content = preg_replace(
             ' en',
-            '\'%locale%\'',
+            '/\'%locale%\'',
             $content
         );
         file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
