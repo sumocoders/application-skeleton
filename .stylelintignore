@@ -6,6 +6,7 @@ public/bundles/*
 public/files/*
 node_modules/*
 var/*
+src/*
 vendor/*
 **/*.dist
 **/*.json
