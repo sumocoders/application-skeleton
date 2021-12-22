@@ -620,7 +620,7 @@ class PostCreateProject
             } else {
                 copy($fullSource, $fullDestination);
             }
-        }
+        }W
     }
 
     private static function findChromeAndGeckoDriver(Event $event): void
