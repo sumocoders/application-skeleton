@@ -41,6 +41,7 @@ class PostCreateProject
             'standard',
             'stylelint',
             'stylelint-config-standard',
+            'stylelint-config-standard-scss',
         ];
 
         if ($io->isVerbose()) {
