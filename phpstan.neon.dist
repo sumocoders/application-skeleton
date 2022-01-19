@@ -12,5 +12,10 @@ parameters:
   paths:
     - public/
     - src/
-  excludes_analyse:
+  excludePaths:
     - %rootDir%/../../../src/Migrations
+  ignoreErrors:
+    - '#array of function array_map expects array, iterable<.*>#'
+    -
+      message: '#Property .*\$id is never written, only read.#'
+      path: src/Entity
