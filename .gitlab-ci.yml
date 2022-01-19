@@ -131,6 +131,7 @@ TODOs - check for unfinished code:
     - >
       vendor/bin/convert-to-junit-xml convert:grep "$(
       find .
+      -path "./.git/*" -prune -o
       -path "./.gitlab-ci.yml" -prune -o
       -path "./unresolved-todos-report.xml" -prune -o
       -path "./bin/*" -prune -o
@@ -145,6 +146,7 @@ TODOs - check for unfinished code:
     # Run it again so the output is visible in the job
     - >
       find .
+      -path "./.git/*" -prune -o
       -path "./.gitlab-ci.yml" -prune -o
       -path "./unresolved-todos-report.xml" -prune -o
       -path "./bin/*" -prune -o
