@@ -84,14 +84,13 @@ task(
         $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
 
         if (file_exists($nvmPath)) {
-            run('. ' . $nvmPath . ' && nvm use && nvm exec npm run build');
+            runLocally('. ' . $nvmPath . ' && nvm use && nvm exec npm run build');
         } else {
-            run('npm run build');
+            runLocally('npm run build');
         }
     }
 )
-    ->desc('Run the build script which will build our needed assets.')
-    ->local();
+    ->desc('Run the build script which will build our needed assets.');
 
 // Upload tasks
 task(
