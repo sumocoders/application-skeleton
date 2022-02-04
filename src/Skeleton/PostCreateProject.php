@@ -128,14 +128,13 @@ class PostCreateProject
             $io->write('   Create new instance of the Framework object');
         }
         $insert = [
-            'new Framework()',
+            'window.framework = Framework()',
         ];
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content),
             "\n" . implode("\n", $insert) . "\n"
         );
-
 
         // store the file
         file_put_contents($projectDir . '/assets/app.js', $content);
@@ -150,6 +149,14 @@ class PostCreateProject
 
         if (file_exists($projectDir . '/assets/bootstrap.js')) {
             shell_exec(' node_modules/.bin/standard assets/bootstrap.js --quiet --fix');
+        }
+
+        /*
+         * Remove the Symfony default Stimulus controller. We don't use it
+         * and it doesn't pass our StandardJS CI checks.
+         */
+        if (file_exists($projectDir . '/assets/controllers/hello_controller.js')) {
+            shell_exec(sprintf('rm -rf %1$s', $projectDir . '/assets/controllers/hello_controller.js'));
         }
     }
 
