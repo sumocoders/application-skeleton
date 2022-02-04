@@ -41,6 +41,7 @@ class PostCreateProject
             'standard',
             'stylelint',
             'stylelint-config-standard',
+            'stylelint-config-standard-scss',
         ];
 
         if ($io->isVerbose()) {
@@ -559,6 +560,7 @@ class PostCreateProject
 
         if (!self::testCommandLocally('symfony')) {
             $io->notice('Could\'nt find symfony binary, skipping translations dump.');
+
             return;
         }
 
@@ -620,7 +622,7 @@ class PostCreateProject
             } else {
                 copy($fullSource, $fullDestination);
             }
-        }W
+        }
     }
 
     private static function findChromeAndGeckoDriver(Event $event): void
