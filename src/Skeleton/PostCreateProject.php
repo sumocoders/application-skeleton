@@ -128,7 +128,7 @@ class PostCreateProject
             $io->write('   Create new instance of the Framework object');
         }
         $insert = [
-            'window.framework = Framework()',
+            'window.framework = new Framework()',
         ];
         $content = self::insertStringAtPosition(
             $content,
