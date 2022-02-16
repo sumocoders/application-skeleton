@@ -71,7 +71,6 @@ PHPStan - check for bugs:
   needs: ["Install dependencies and build assets"]
   tags:
     - docker
-  allow_failure: true
 
 Twigcs - check code styling:
   image: sumocoders/framework-php80:latest
