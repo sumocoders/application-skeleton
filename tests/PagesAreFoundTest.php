@@ -18,6 +18,8 @@ class PagesAreFoundTest extends PantherTestCase
      */
     public function testPublicPagesAreFound($route): void
     {
+        $this->markTestSkipped('Remove this if you have Symfony Panther configured');
+
         $client = static::createPantherClient();
         $client->request('GET', $route);
         self::assertEquals(200, $client->getInternalResponse()->getStatusCode());
@@ -28,6 +30,8 @@ class PagesAreFoundTest extends PantherTestCase
      */
     public function testLoggedInPagesAreFound($route): void
     {
+        $this->markTestSkipped('Remove this if you have Symfony Panther configured');
+
         $client = static::createPantherClient();
         $this->login($client);
         $client->request('GET', $route);
