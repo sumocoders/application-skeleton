@@ -48,7 +48,6 @@ PHP_CodeSniffer - check code styling:
   needs: ["Install dependencies and build assets"]
   tags:
     - docker
-  allow_failure: true
 
 PHPStan - check for bugs:
   image: sumocoders/framework-php80:latest
@@ -72,7 +71,6 @@ PHPStan - check for bugs:
   needs: ["Install dependencies and build assets"]
   tags:
     - docker
-  allow_failure: true
 
 Twigcs - check code styling:
   image: sumocoders/framework-php80:latest
