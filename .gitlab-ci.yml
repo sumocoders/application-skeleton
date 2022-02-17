@@ -17,7 +17,7 @@ cache: &global_cache
 
 # Build section
 Install dependencies and build assets:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
@@ -37,7 +37,7 @@ Install dependencies and build assets:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/framework-php80:latest
+  image: sumocoders/framework-php81:latest
   script:
     - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
   artifacts:
@@ -50,7 +50,7 @@ PHP_CodeSniffer - check code styling:
     - docker
 
 PHPStan - check for bugs:
-  image: sumocoders/framework-php80:latest
+  image: sumocoders/framework-php81:latest
   before_script:
     # disable Xdebug and Blackfire extensions
     - |
@@ -73,7 +73,7 @@ PHPStan - check for bugs:
     - docker
 
 Twigcs - check code styling:
-  image: sumocoders/framework-php80:latest
+  image: sumocoders/framework-php81:latest
   script:
     - vendor/bin/twigcs --no-interaction --exclude=vendor --reporter=junit > twigcs-report.xml
   after_script:
@@ -90,7 +90,7 @@ Twigcs - check code styling:
   allow_failure: true
 
 Stylelint - check code styling:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
   after_script:
@@ -107,7 +107,7 @@ Stylelint - check code styling:
   allow_failure: true
 
 StandardJS - check code styling:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
   after_script:
@@ -124,7 +124,7 @@ StandardJS - check code styling:
   allow_failure: true
 
 TODOs - check for unfinished code:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   script:
     - >
       vendor/bin/convert-to-junit-xml convert:grep "$(
@@ -167,7 +167,7 @@ TODOs - check for unfinished code:
 
 # Dependency Scanning section
 NPM packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   script:
     - vendor/bin/convert-to-junit-xml convert:npm-audit "$(nvm exec --silent npm audit --json)" > npm-audit-report.xml
   after_script:
@@ -184,7 +184,7 @@ NPM packages - check for vulnerabilities:
   allow_failure: true
 
 PHP packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   before_script:
     - PHP_SC_VERSION=$(curl -s "https://api.github.com/repos/fabpot/local-php-security-checker/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/;s/^v//')
     - curl -LSs https://github.com/fabpot/local-php-security-checker/releases/download/v${PHP_SC_VERSION}/local-php-security-checker_${PHP_SC_VERSION}_linux_amd64 > ./php-security-checker
@@ -207,7 +207,7 @@ PHP packages - check for vulnerabilities:
 
 # Test section
 PHPUnit - Run tests:
-  image: sumocoders/framework-php80:latest
+  image: sumocoders/framework-php81:latest
   services:
     - mysql:5.7
   before_script:
@@ -245,7 +245,7 @@ PHPUnit - Run tests:
 
 # Deploy section
 Deploy - to staging:
-  image: sumocoders/cli-tools-php80:latest
+  image: sumocoders/cli-tools-php81:latest
   before_script:
     # Add the private SSH key to the CI environment
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -259,7 +259,7 @@ Deploy - to staging:
     - vendor/bin/dep deploy stage=staging
   environment:
     name: staging
-    url: https://$project.$client.php80.sumocoders.eu
+    url: https://$project.$client.php81.sumocoders.eu
   only:
     - staging
   stage: deploy
