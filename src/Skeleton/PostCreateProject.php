@@ -475,13 +475,13 @@ class PostCreateProject
         file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
 
         $io->notice('→ Reconfigure doctrine test environment');
-        $content = file_get_contents($projectDir . '/config/packages/test/doctrine.yaml');
+        $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
         $content = preg_replace(
             '/dbname_suffix: \'.*?\'/smU',
             'dbname_suffix: \'%env(string:default::TEST_TOKEN)%\'',
             $content
         );
-        file_put_contents($projectDir . '/config/packages/test/doctrine.yaml', $content);
+        file_put_contents($projectDir . '/config/packages/doctrine.yaml', $content);
 
         $io->notice('→ Reconfigure doctrine migrations');
         $content = file_get_contents($projectDir . '/config/packages/doctrine_migrations.yaml');
