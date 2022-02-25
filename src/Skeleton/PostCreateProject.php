@@ -17,7 +17,6 @@ class PostCreateProject
         self::cleanupFiles($event);
         self::cleanup($event);
         self::runNpmBuild($event);
-        self::findChromeAndGeckoDriver($event);
         self::dumpInitialTranslations($event);
     }
 
@@ -629,17 +628,6 @@ class PostCreateProject
             } else {
                 copy($fullSource, $fullDestination);
             }
-        }
-    }
-
-    private static function findChromeAndGeckoDriver(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->info('Run `vendor/bin/bdi detect drivers`');
-
-        $output = shell_exec('vendor/bin/bdi detect drivers');
-        if ($io->isVerbose()) {
-            $io->write($output);
         }
     }
 
