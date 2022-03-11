@@ -17,7 +17,6 @@ class PostCreateProject
         self::cleanupFiles($event);
         self::cleanup($event);
         self::runNpmBuild($event);
-        self::findChromeAndGeckoDriver($event);
         self::dumpInitialTranslations($event);
     }
 
@@ -128,14 +127,13 @@ class PostCreateProject
             $io->write('   Create new instance of the Framework object');
         }
         $insert = [
-            'new Framework()',
+            'window.framework = new Framework()',
         ];
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content),
             "\n" . implode("\n", $insert) . "\n"
         );
-
 
         // store the file
         file_put_contents($projectDir . '/assets/app.js', $content);
@@ -150,6 +148,14 @@ class PostCreateProject
 
         if (file_exists($projectDir . '/assets/bootstrap.js')) {
             shell_exec(' node_modules/.bin/standard assets/bootstrap.js --quiet --fix');
+        }
+
+        /*
+         * Remove the Symfony default Stimulus controller. We don't use it
+         * and it doesn't pass our StandardJS CI checks.
+         */
+        if (file_exists($projectDir . '/assets/controllers/hello_controller.js')) {
+            shell_exec(sprintf('rm -rf %1$s', $projectDir . '/assets/controllers/hello_controller.js'));
         }
     }
 
@@ -468,13 +474,13 @@ class PostCreateProject
         file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
 
         $io->notice('→ Reconfigure doctrine test environment');
-        $content = file_get_contents($projectDir . '/config/packages/test/doctrine.yaml');
+        $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
         $content = preg_replace(
             '/dbname_suffix: \'.*?\'/smU',
             'dbname_suffix: \'%env(string:default::TEST_TOKEN)%\'',
             $content
         );
-        file_put_contents($projectDir . '/config/packages/test/doctrine.yaml', $content);
+        file_put_contents($projectDir . '/config/packages/doctrine.yaml', $content);
 
         $io->notice('→ Reconfigure doctrine migrations');
         $content = file_get_contents($projectDir . '/config/packages/doctrine_migrations.yaml');
@@ -622,17 +628,6 @@ class PostCreateProject
             } else {
                 copy($fullSource, $fullDestination);
             }
-        }
-    }
-
-    private static function findChromeAndGeckoDriver(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->info('Run `vendor/bin/bdi detect drivers`');
-
-        $output = shell_exec('vendor/bin/bdi detect drivers');
-        if ($io->isVerbose()) {
-            $io->write($output);
         }
     }
 
