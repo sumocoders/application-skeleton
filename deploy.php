@@ -74,38 +74,7 @@ set('bin/composer', function () {
     return '{{bin/php}} {{shared_folder}}/composer.phar';
 });
 
-// Limit the number of releases that should be kept
 set('keep_releases', 3);
-
-
-/*****************
- * Task sections *
- *****************/
-// Build tasks
-task(
-    'build:assets:npm',
-    function () {
-        $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
-
-        if (file_exists($nvmPath)) {
-            runLocally('. ' . $nvmPath . ' && nvm use && nvm exec npm run build');
-        } else {
-            runLocally('npm run build');
-        }
-    }
-)
-    ->desc('Run the build script which will build our needed assets.');
-
-// Upload tasks
-task(
-    'upload:assets',
-    function () {
-        upload(__DIR__ . '/public/build', '{{release_path}}/public');
-    }
-)
-    ->desc('Uploads the assets')
-    ->addBefore('build:assets:npm');
-after('deploy:update_code', 'upload:assets');
 
 /**********************
  * Flow configuration *
