@@ -258,7 +258,7 @@ Deploy - to staging:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - vendor/bin/dep deploy stage=staging
+    - vendor/bin/deployer.phar deploy stage=staging
   environment:
     name: staging
     url: https://$project.$client.php81.sumocoders.eu
