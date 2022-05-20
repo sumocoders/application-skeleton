@@ -424,7 +424,7 @@ class PostCreateProject
             $offset,
             "\n" . implode("\n", $insert)
         );
-        file_put_contents($projectDir . '/config/routes/annotations.yaml', $content);
+        file_put_contents($projectDir . '/config/routes.yaml', $content);
 
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
