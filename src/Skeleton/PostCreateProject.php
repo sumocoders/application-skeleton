@@ -411,9 +411,9 @@ class PostCreateProject
 
 
         $io->notice('→ Reconfigure annotations');
-        $content = file_get_contents($projectDir . '/config/routes/annotations.yaml');
+        $content = file_get_contents($projectDir . '/config/routes.yaml');
         $matches = [];
-        preg_match('|controllers:.*annotation|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+        preg_match('|controllers:.*attribute|smU', $content, $matches, PREG_OFFSET_CAPTURE);
         $offset = $matches[0][1] + mb_strlen($matches[0][0]);
         $insert = [
             '    prefix:',
@@ -424,7 +424,7 @@ class PostCreateProject
             $offset,
             "\n" . implode("\n", $insert)
         );
-        file_put_contents($projectDir . '/config/routes/annotations.yaml', $content);
+        file_put_contents($projectDir . '/config/routes.yaml', $content);
 
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
