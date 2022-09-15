@@ -7,7 +7,7 @@
     <arg name="colors"/>
     <arg name="extensions" value="php"/>
 
-    <rule ref="PSR2"/>
+    <rule ref="PSR12"/>
 
     <file>config/</file>
     <file>public/</file>
@@ -16,4 +16,5 @@
     <exclude-pattern>config/bootstrap.php</exclude-pattern>
     <exclude-pattern>public/index.php</exclude-pattern>
     <exclude-pattern>vendor</exclude-pattern>
+    <exclude-pattern>assets</exclude-pattern>
 </ruleset>
