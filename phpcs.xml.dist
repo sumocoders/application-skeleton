@@ -13,7 +13,7 @@
     <file>public/</file>
     <file>src/</file>
 
-    <exclude-pattern>config/bootstrap.php</exclude-pattern>
+    <exclude-pattern>config/preload.php</exclude-pattern>
     <exclude-pattern>public/index.php</exclude-pattern>
     <exclude-pattern>vendor</exclude-pattern>
     <exclude-pattern>assets</exclude-pattern>
