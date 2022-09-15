@@ -72,6 +72,22 @@ PHPStan - check for bugs:
   tags:
     - docker
 
+Semgrep - check for bugs, security issues and bad practices:
+  image: returntocorp/semgrep
+  script: semgrep ci --config=auto --use-git-ignore --quiet --junit-xml --output=semgrep-report.xml
+  after_script:
+    # Run it again so the output is visible in the job
+    - semgrep ci --config=auto --use-git-ignore --force-color --exclude=semgrep-report.xml
+  artifacts:
+    expire_in: 1 week
+    reports:
+      junit: semgrep-report.xml
+  stage: code quality
+  needs: ["Install dependencies and build assets"]
+  tags:
+    - docker
+  allow_failure: true
+
 Twigcs - check code styling:
   image: sumocoders/framework-php81:latest
   script:
