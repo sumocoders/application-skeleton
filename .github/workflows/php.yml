@@ -7,9 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
-  phpstan:
+  create-project:
     runs-on: "ubuntu-latest"
 
     steps:
-    - name: Set up new project
-      run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
+    - uses: actions/setup-node@v3
+      with:
+        node-version: lts/fermium
+    - run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
