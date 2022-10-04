@@ -14,4 +14,5 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: lts/fermium
+    - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
     - run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
