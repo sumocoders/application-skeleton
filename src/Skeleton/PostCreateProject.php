@@ -445,7 +445,7 @@ class PostCreateProject
         $io->notice('→ Reconfigure sentry');
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
         $insert = [
-            '       options:',
+            '        options:',
             '           integrations:',
             '               - \'Sentry\Integration\IgnoreErrorsIntegration\'',
             '',
