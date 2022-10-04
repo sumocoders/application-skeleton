@@ -1,0 +1,15 @@
+name: Test project skeleton
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  phpstan:
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - name: Set up new project
+      run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
