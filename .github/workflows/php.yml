@@ -11,9 +11,12 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-    - uses: actions/setup-node@v3
-      with:
-        node-version: lts/fermium
-    - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-    - run: nvm install lts/fermium
-    - run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/fermium
+      - name: Run nvm install
+        shell: bash -l {0}
+        run: nvm install
+      - name: Run composer create-project
+        run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
