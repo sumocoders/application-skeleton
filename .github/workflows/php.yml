@@ -19,4 +19,5 @@ jobs:
         shell: bash -l {0}
         run: nvm install lts/fermium
       - name: Run composer create-project
+        shell: bash
         run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test &>
