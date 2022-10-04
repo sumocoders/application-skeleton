@@ -15,6 +15,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: lts/fermium
-      - name: Run composer create-project
+      - name: Run nvm install
         shell: bash -l {0}
+        run: nvm install lts/fermium
+      - name: Run composer create-project
         run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
