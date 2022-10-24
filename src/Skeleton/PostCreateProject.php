@@ -636,26 +636,9 @@ class PostCreateProject
     {
         return shell_exec(sprintf("which %s", escapeshellcmd($command))) !== null;
     }
+
     private static function pinVolta(): void
     {
         shell_exec('volta pin node@lts');
     }
-    // private static function runWithNvm(string $command): string
-    // {
-    //     /*
-    //      * If we use env variables like $HOME directly in a path,
-    //      * it won't resolve. But if we echo it out first, we can
-    //      * use the absolute path from the output just fine.
-    //      */
-    //     $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
-    //
-    //     if (file_exists($nvmPath)) {
-    //         $command = sprintf(
-    //             '. ' . $nvmPath . ' && nvm use && nvm exec %s',
-    //             $command
-    //         );
-    //     }
-    //
-    //     return shell_exec($command);
-    // }
 }
