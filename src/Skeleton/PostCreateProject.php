@@ -8,6 +8,7 @@ class PostCreateProject
 {
     public static function run(Event $event)
     {
+        self::pinVolta();
         self::runNpmInstall($event);
         self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
@@ -25,7 +26,7 @@ class PostCreateProject
         $io = $event->getIO();
         $io->info('Run `npm install`');
 
-        $output = self::runWithNvm('npm install');
+        $output = shell_exec('npm install');
         if ($io->isVerbose()) {
             $io->write($output);
         }
@@ -53,7 +54,7 @@ class PostCreateProject
         }
 
         $command = sprintf('npm install %1$s --save-dev', implode(' ', $packages));
-        $output = self::runWithNvm($command);
+        $output = shell_exec($command);
 
         if ($io->isVerbose()) {
             $io->write($output);
@@ -80,7 +81,7 @@ class PostCreateProject
         }
 
         $command = sprintf('npm install %1$s --save-dev', implode(' ', $packages));
-        $output = self::runWithNvm($command);
+        $output = shell_exec($command);
 
         if ($io->isVerbose()) {
             $io->write($output);
@@ -552,7 +553,7 @@ class PostCreateProject
         $io = $event->getIO();
         $io->info('Run `npm run build`');
 
-        $output = self::runWithNvm('npm run build');
+        $output = shell_exec('npm run build');
 
         if ($io->isVerbose()) {
             $io->write($output);
@@ -635,23 +636,26 @@ class PostCreateProject
     {
         return shell_exec(sprintf("which %s", escapeshellcmd($command))) !== null;
     }
-
-    private static function runWithNvm(string $command): string
+    private static function pinVolta(): string
     {
-        /*
-         * If we use env variables like $HOME directly in a path,
-         * it won't resolve. But if we echo it out first, we can
-         * use the absolute path from the output just fine.
-         */
-        $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
-
-        if (file_exists($nvmPath)) {
-            $command = sprintf(
-                '. ' . $nvmPath . ' && nvm use && nvm exec %s',
-                $command
-            );
-        }
-
-        return shell_exec($command);
+        return shell_exec('volta pin node@lts');
     }
+    // private static function runWithNvm(string $command): string
+    // {
+    //     /*
+    //      * If we use env variables like $HOME directly in a path,
+    //      * it won't resolve. But if we echo it out first, we can
+    //      * use the absolute path from the output just fine.
+    //      */
+    //     $nvmPath = trim(shell_exec('echo $HOME/.nvm/nvm.sh'));
+    //
+    //     if (file_exists($nvmPath)) {
+    //         $command = sprintf(
+    //             '. ' . $nvmPath . ' && nvm use && nvm exec %s',
+    //             $command
+    //         );
+    //     }
+    //
+    //     return shell_exec($command);
+    // }
 }
