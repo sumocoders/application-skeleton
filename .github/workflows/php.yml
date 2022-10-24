@@ -18,4 +18,4 @@ jobs:
       - name: Install volta
         uses: volta-cli/action@v3
       - name: Run composer create-project
-        run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-master test
+        run: composer create-project --no-progress --stability=dev sumocoders/application-skeleton:dev-${GITHUB_REF##*/} test
