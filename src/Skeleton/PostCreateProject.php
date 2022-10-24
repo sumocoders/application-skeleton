@@ -636,9 +636,9 @@ class PostCreateProject
     {
         return shell_exec(sprintf("which %s", escapeshellcmd($command))) !== null;
     }
-    private static function pinVolta(): string
+    private static function pinVolta(): void
     {
-        return shell_exec('volta pin node@lts');
+        shell_exec('volta pin node@lts');
     }
     // private static function runWithNvm(string $command): string
     // {
