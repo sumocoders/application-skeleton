@@ -197,11 +197,7 @@ class PostCreateProject
 
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace('|//.enableSassLoader\(\)|', '.enableSassLoader(options => { options.implementation = require(\'sass\') })', $content);
-
-        $io->notice('→ enable autoProvidejQuery');
-        $content = preg_replace('|//.autoProvidejQuery\(\)|', '.autoProvidejQuery()', $content);
-
-
+        
         $io->notice('→ enable autoProvideVariables');
         $insert = [
             '.autoProvideVariables({',
