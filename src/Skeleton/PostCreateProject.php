@@ -6,7 +6,7 @@ use Composer\Script\Event;
 
 class PostCreateProject
 {
-    public static function run(Event $event)
+    public static function run(Event $event): void
     {
         self::pinVolta();
         self::runNpmInstall($event);
@@ -95,9 +95,9 @@ class PostCreateProject
         if (!is_dir($assetsJsPath)) {
             mkdir($assetsJsPath);
         }
-        $content = file_get_contents($projectDir .'/node_modules/frameworkstylepackage/src/js/Index.js');
+        $content = file_get_contents($projectDir . '/node_modules/frameworkstylepackage/src/js/Index.js');
         $content = preg_replace('|from \'./Framework/|', 'from \'frameworkstylepackage/src/js/Framework/', $content);
-        file_put_contents($assetsJsPath .'/imports.js', $content);
+        file_put_contents($assetsJsPath . '/imports.js', $content);
         shell_exec(' node_modules/.bin/standard assets/js/imports.js --quiet --fix');
 
         $io->notice('→ Import our Framework JS');
@@ -197,8 +197,12 @@ class PostCreateProject
 
 
         $io->notice('→ enable Sass/SCSS support');
-        $content = preg_replace('|//.enableSassLoader\(\)|', '.enableSassLoader(options => { options.implementation = require(\'sass\') })', $content);
-        
+        $content = preg_replace(
+            '|//.enableSassLoader\(\)|',
+            '.enableSassLoader(options => { options.implementation = require(\'sass\') })',
+            $content
+        );
+
         $io->notice('→ enable autoProvideVariables');
         $insert = [
             '.autoProvideVariables({',
