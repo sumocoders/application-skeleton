@@ -21,10 +21,9 @@ Install dependencies and build assets:
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
-    - nvm install
-    - nvm use
-    - nvm exec npm install --no-progress
-    - nvm exec node_modules/.bin/encore production
+    - volta install node
+    - npm install --no-progress
+    - node_modules/.bin/encore production
     - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
   cache:
@@ -92,10 +91,10 @@ Twigcs - check code styling:
 Stylelint - check code styling:
   image: sumocoders/cli-tools-php81:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:stylelint "$(nvm exec --silent node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
+    - vendor/bin/convert-to-junit-xml convert:stylelint "$(node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - nvm exec node_modules/.bin/stylelint .
+    - node_modules/.bin/stylelint .
   artifacts:
     expire_in: 1 week
     reports:
@@ -109,10 +108,10 @@ Stylelint - check code styling:
 StandardJS - check code styling:
   image: sumocoders/cli-tools-php81:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:standardjs "$(nvm exec --silent node_modules/.bin/standard)" > standardjs-report.xml
+    - vendor/bin/convert-to-junit-xml convert:standardjs "$(node_modules/.bin/standard)" > standardjs-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - nvm exec node_modules/.bin/standard
+    - node_modules/.bin/standard
   artifacts:
     expire_in: 1 week
     reports:
@@ -169,10 +168,10 @@ TODOs - check for unfinished code:
 NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php81:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(nvm exec --silent npm audit --production --json)" > npm-audit-report.xml
+    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(npm audit --production --json)" > npm-audit-report.xml
   after_script:
     # Run it again so the output is visible in the job output
-    - nvm exec npm audit --production
+    - npm audit --production
   artifacts:
     expire_in: 1 week
     reports:
