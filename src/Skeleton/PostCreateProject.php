@@ -195,7 +195,6 @@ class PostCreateProject
             implode("\n", $insert) . "\n"
         );
 
-
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace(
             '|//.enableSassLoader\(\)|',
@@ -546,6 +545,9 @@ class PostCreateProject
 
         $io->notice('→ Remove scripts folder');
         shell_exec(sprintf('rm -rf %1$s', $projectDir . '/scripts'));
+
+        $io->notice('→ Remove the Github action config');
+        shell_exec(sprintf('rm -rf %1$s', $projectDir . '/.github'));
     }
 
     private static function runNpmBuild(Event $event): void
