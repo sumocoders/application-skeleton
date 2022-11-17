@@ -110,11 +110,11 @@ class PostCreateProject
         ];
         $matches = [];
         preg_match('|import\s.*styles\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = mb_strpos($content, "\n", $matches[0][1]);
+        $offset = mb_strpos($content, PHP_EOL, $matches[0][1]);
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            "\n" . implode("\n", $insert)
+            PHP_EOL . implode(PHP_EOL, $insert)
         );
 
         if ($io->isVerbose()) {
@@ -133,7 +133,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content),
-            "\n" . implode("\n", $insert) . "\n"
+            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
 
         // store the file
@@ -176,7 +176,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             0,
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
         $io->notice('→ remove useless entries');
@@ -192,9 +192,8 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             self::findEndOfEncoreEntries($content),
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
-
 
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace(
@@ -212,7 +211,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             self::findEndOfEncoreConfiguration($content),
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
 
@@ -226,7 +225,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             self::findEndOfEncoreConfiguration($content),
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
 
@@ -244,7 +243,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             self::findEndOfEncoreConfiguration($content),
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
 
@@ -260,7 +259,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             self::findEndOfEncoreConfiguration($content),
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
         $io->notice('→ add Vue loader');
@@ -270,7 +269,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             self::findEndOfEncoreConfiguration($content),
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
 
@@ -287,7 +286,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $matches[0][1],
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
 
 
@@ -375,7 +374,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            "\n" . implode("\n", $insert) . "\n"
+            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
 
@@ -384,7 +383,7 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/services.yaml');
         $matches = [];
         preg_match('|parameters:|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = mb_strpos($content, "\n", $matches[0][1]) + 1;
+        $offset = mb_strpos($content, PHP_EOL, $matches[0][1]) + 1;
         $insert = [
             '  # configuration of the locale, used for url and allowed locales',
             '  locale: \'nl\'',
@@ -406,7 +405,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/services.yaml', $content);
 
@@ -423,7 +422,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            "\n" . implode("\n", $insert)
+            PHP_EOL . implode(PHP_EOL, $insert)
         );
         file_put_contents($projectDir . '/config/routes.yaml', $content);
 
@@ -439,7 +438,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            "\n" . implode("\n", $insert) . "\n"
+            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
 
@@ -461,7 +460,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content) + 1,
-            implode("\n", $insert) . "\n"
+            implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
 
@@ -494,7 +493,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             $offset,
-            "\n" . implode("\n", $insert) . "\n"
+            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
 
@@ -511,7 +510,7 @@ class PostCreateProject
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content),
-            "\n" . implode("\n", $insert)
+            PHP_EOL . implode(PHP_EOL, $insert)
         );
         file_put_contents($projectDir . '/.env', $content);
     }
@@ -546,6 +545,9 @@ class PostCreateProject
 
         $io->notice('→ Remove scripts folder');
         shell_exec(sprintf('rm -rf %1$s', $projectDir . '/scripts'));
+
+        $io->notice('→ Remove the Github action config');
+        shell_exec(sprintf('rm -rf %1$s', $projectDir . '/.github'));
     }
 
     private static function runNpmBuild(Event $event): void
