@@ -2,7 +2,6 @@
     "name": "sumocoders/framework",
     "type": "project",
     "license": "proprietary",
-    "minimum-stability": "beta",
     "require": {
         "php": "^8.1",
         "ext-ctype": "*",
