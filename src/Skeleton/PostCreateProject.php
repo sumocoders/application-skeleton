@@ -368,9 +368,6 @@ class PostCreateProject
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
             '        - "blocks.html.twig"',
             '    paths:',
-            '        # Add the public folder to the default twig path so we can access the',
-            '        # mail stylesheet through the inline_css method in the base email template.',
-            '        \'%kernel.project_dir%/public/\': ~',
         ];
         $content = self::insertStringAtPosition(
             $content,
