@@ -367,7 +367,6 @@ class PostCreateProject
             '        - "bootstrap_5_layout.html.twig"',
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
             '        - "blocks.html.twig"',
-            '    paths:',
         ];
         $content = self::insertStringAtPosition(
             $content,
