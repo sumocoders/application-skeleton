@@ -493,6 +493,15 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
 
+        $io->notice('→ Reconfigure validator');
+        $content = file_get_contents($projectDir . '/config/packages/validator.yaml');
+        $content = preg_replace(
+            '/email_validation_mode: .+/',
+            'email_validation_mode: strict',
+            $content
+        );
+        file_put_contents($projectDir . '/config/packages/validator.yaml', $content);
+
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         $matches = [];
