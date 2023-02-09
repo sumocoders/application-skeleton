@@ -504,7 +504,12 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
-        $matches = [];
+        // Set the default env to prod
+        $content = str_replace(
+            'APP_ENV=dev',
+            'APP_ENV=prod',
+            $content
+        );
         $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $insert = [
             '###> sumocoders/framework-core-bundle ###',
