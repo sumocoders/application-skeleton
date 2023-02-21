@@ -266,3 +266,5 @@ Deploy - to staging:
   stage: deploy
   tags:
     - docker
+  variables:
+    USER: "CI/CD gitlab-runner"
