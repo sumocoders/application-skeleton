@@ -3,6 +3,8 @@ name: Test project skeleton
 on:
   push:
     branches: ['*']
+  workflow_dispatch:
+    branches: ['*']
 
 jobs:
   create-project:
