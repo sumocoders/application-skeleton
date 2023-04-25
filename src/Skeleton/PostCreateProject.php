@@ -505,13 +505,13 @@ class PostCreateProject
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         var_dump($content);
-        file_put_contents($projectDir . '/.env.backup', $content);
         // Set the default env to prod
         $content = str_replace(
             'APP_ENV=dev',
             'APP_ENV=prod',
             $content
         );
+        var_dump($content);
         $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $insert = [
             '###> sumocoders/framework-core-bundle ###',
@@ -519,7 +519,6 @@ class PostCreateProject
             'ENCRYPTION_KEY="' . $encryptionKey . '"',
             '###< sumocoders/framework-core-bundle ###',
         ];
-        var_dump($content);
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content),
@@ -527,6 +526,8 @@ class PostCreateProject
         );
         var_dump($content);
         file_put_contents($projectDir . '/.env', $content);
+        $foobar = file_get_contents($projectDir . '/.env');
+        var_dump($foobar);
     }
 
     private static function cleanup(Event $event): void
