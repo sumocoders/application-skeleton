@@ -8,13 +8,13 @@ class PostCreateProject
 {
     public static function run(Event $event): void
     {
+        self::reconfigureApplication($event);
         self::pinVolta();
         self::runNpmInstall($event);
         self::installNpmPackages($event);
         self::installFrameworkStylePackage($event);
         self::reconfigureWebpack($event);
         self::createAssets($event);
-        self::reconfigureApplication($event);
         self::cleanupFiles($event);
         self::cleanup($event);
         self::runNpmBuild($event);
@@ -504,6 +504,8 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
+        var_dump($content);
+        file_put_contents($projectDir . '/.env.backup', $content);
         // Set the default env to prod
         $content = str_replace(
             'APP_ENV=dev',
@@ -517,11 +519,13 @@ class PostCreateProject
             'ENCRYPTION_KEY="' . $encryptionKey . '"',
             '###< sumocoders/framework-core-bundle ###',
         ];
+        var_dump($content);
         $content = self::insertStringAtPosition(
             $content,
             mb_strlen($content),
             PHP_EOL . implode(PHP_EOL, $insert)
         );
+        var_dump($content);
         file_put_contents($projectDir . '/.env', $content);
     }
 
