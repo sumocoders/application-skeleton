@@ -504,14 +504,14 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
-        var_dump($content);
+
         // Set the default env to prod
         $content = str_replace(
             'APP_ENV=dev',
             'APP_ENV=prod',
             $content
         );
-        var_dump($content);
+
         $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $insert = [
             '###> sumocoders/framework-core-bundle ###',
@@ -524,10 +524,8 @@ class PostCreateProject
             mb_strlen($content),
             PHP_EOL . implode(PHP_EOL, $insert)
         );
-        var_dump($content);
+
         file_put_contents($projectDir . '/.env', $content);
-        $foobar = file_get_contents($projectDir . '/.env');
-        var_dump($foobar);
     }
 
     private static function cleanup(Event $event): void
