@@ -10,7 +10,17 @@ jobs:
   create-project:
     runs-on: "ubuntu-latest"
 
+    strategy:
+      matrix:
+        php-version:
+          - "8.2"
+
     steps:
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
