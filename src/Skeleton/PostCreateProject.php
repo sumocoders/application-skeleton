@@ -233,8 +233,6 @@ class PostCreateProject
         $insert = [
             '.addPlugin(',
             '  new WebpackShellPlugin({',
-            '    onBuildStart: [',
-            '      \'bin/console bazinga:js-translation:dump public/build --format=json --merge-domains\',',
             '      \'bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json\'',
             '    ],',
             '  })',
