@@ -24,7 +24,6 @@ Install dependencies and build assets:
     - volta install node
     - npm install --no-progress
     - node_modules/.bin/encore production
-    - php bin/console bazinga:js-translation:dump public/build --format=json --merge-domains
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
   cache:
     <<: *global_cache
