@@ -440,6 +440,7 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
         $insert = [
             '        options:',
+            '           trace_propagation_targets: [ \'%env(resolve:DEFAULT_URI)%\' ]',
             '           integrations:',
             '               - \'Sentry\Integration\IgnoreErrorsIntegration\'',
             '',
