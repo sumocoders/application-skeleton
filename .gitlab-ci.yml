@@ -181,7 +181,7 @@ NPM packages - check for vulnerabilities:
     - docker
   allow_failure: true
 
-PHP packages - check for vulnerabilities:
+PHP packages - local-security-checker:
   image: sumocoders/cli-tools-php82:latest
   before_script:
     - PHP_SC_VERSION=$(curl -s "https://api.github.com/repos/fabpot/local-php-security-checker/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/;s/^v//')
@@ -196,6 +196,16 @@ PHP packages - check for vulnerabilities:
     expire_in: 1 week
     reports:
       junit: security-checker-report.xml
+  stage: dependency scanning
+  needs: ["Install dependencies and build assets"]
+  tags:
+    - docker
+  allow_failure: true
+
+PHP packages - composer audit:
+  image: sumocoders/cli-tools-php82:latest
+  script:
+    - composer audit --no-interaction
   stage: dependency scanning
   needs: ["Install dependencies and build assets"]
   tags:
