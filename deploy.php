@@ -22,19 +22,22 @@ host('dev02.sumocoders.eu')
     ->set('branch', 'staging')
     ->set('bin/php', '{{php_binary}}')
     ->set('cachetool', '/var/run/php_{{php_version_numeric}}_fpm_sites.sock')
-    ->set('document_root', '~/php{{php_version_numeric}}/{{client}}/{{project}}');
+    ->set('document_root', '~/php{{php_version_numeric}}/{{client}}/{{project}}')
+    ->set('keep_releases', 2);
 
 // Define production
 //host('$host')
 //    ->setRemoteUser('{{production_user}}')
 //    ->set('labels', ['stage' => 'production'])
-//    ->port(2244)
+//    ->setPort(2244)
 //    ->set('deploy_path', '~/wwwroot')
 //    ->set('branch', 'master')
 //    ->set('bin/php', '{{php_binary}}')
+//    ->set('cachetool', '/data/vhosts/{{production_user}}/.sock/{{production_user}}-{{php_binary}}.sock --tmp-dir=/data/vhosts/{{production_user}}/.temp')
 //    ->set('document_root', '~/wwwroot/www')
 //    ->set('http_user', '{{production_user}}')
-//    ->set('writable_mode', 'chmod'); Cloudstar only
+//    ->set('writable_mode', 'chmod') // Cloudstar only
+//    ->set('keep_releases', 3);
 
 /*************************
  * No need to edit below *
