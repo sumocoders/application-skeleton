@@ -3,25 +3,9 @@ services:
   mysql:
     environment:
       MYSQL_ROOT_PASSWORD: root
-    image: mysql:5.5
+    image: mysql:5.7
     ports:
       - 3306:3306
     restart: always
     volumes:
-      - ~/Sites/sumocoders/docker/mysql55:/var/lib/mysql
-
-  web:
-    image: sumocoders/symfony-php72:latest
-    depends_on:
-      - mysql
-    environment:
-      - APP_ENV=prod
-      - APP_DEBUG=0
-    links:
-      - mysql
-    ports:
-      - "80:80"
-    restart: always
-    volumes:
-      - ./:/var/www/html:cached
-      - ~/.ssh/:/var/www/.ssh:ro
+      - ~/Sites/sumocoders/docker/mysql57:/var/lib/mysql
