@@ -1,6 +1,1 @@
 version: "3"
-services:
-  web:
-    environment:
-      - APP_ENV=dev
-      - APP_DEBUG=1
