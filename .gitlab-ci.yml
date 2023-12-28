@@ -37,11 +37,11 @@ Install dependencies and build assets:
 PHP_CodeSniffer - check code styling:
   image: sumocoders/framework-php82:latest
   script:
-    - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
+    - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.xml
   artifacts:
     expire_in: 1 week
     reports:
-      junit: phpcs-report.xml
+      codequality: phpcs-report.xml
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:

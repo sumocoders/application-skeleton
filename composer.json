@@ -35,6 +35,7 @@
     "flex-require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "friendsoftwig/twigcs": "^6.0",
+        "micheh/phpcs-gitlab": "^1.1",
         "phpstan/phpstan-symfony": "^1.0",
         "phpstan/phpstan-doctrine": "^1.0",
         "squizlabs/php_codesniffer": "^3.4",
