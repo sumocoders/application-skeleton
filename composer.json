@@ -42,7 +42,7 @@
         "symfony/debug-pack": "*",
         "symfony/phpunit-bridge": "^7.0",
         "symfony/stopwatch": "^7.0",
-        "tijsverkoyen/deployer-sumo": "^2.0"
+        "tijsverkoyen/deployer-sumo": "^3.0"
     },
     "config": {
         "optimize-autoloader": true,
