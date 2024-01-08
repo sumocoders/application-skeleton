@@ -39,6 +39,7 @@ class PostCreateProject
 
         $packages = [
             'standard',
+            'standard-gitlab',
             'stylelint',
             'stylelint-config-standard',
             'stylelint-config-standard-scss',
