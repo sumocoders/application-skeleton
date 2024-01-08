@@ -42,6 +42,7 @@ class PostCreateProject
             'stylelint',
             'stylelint-config-standard',
             'stylelint-config-standard-scss',
+            'stylelint-formatter-gitlab-code-quality-report',
         ];
 
         if ($io->isVerbose()) {

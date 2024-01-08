@@ -93,14 +93,14 @@ Twigcs - check code styling:
 Stylelint - check code styling:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:stylelint "$(node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
+    - node_modules/.bin/stylelint --output-file=stylelint-report.json --custom-formatter=node_modules/stylelint-formatter-gitlab-code-quality-report/index.js .
   after_script:
     # Run it again so the output is visible in the job
-    - node_modules/.bin/stylelint .
+    - node_modules/.bin/stylelint --color .
   artifacts:
     expire_in: 1 week
     reports:
-      junit: stylelint-report.xml
+      codequality: stylelint-report.json
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
