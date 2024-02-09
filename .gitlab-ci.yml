@@ -167,14 +167,12 @@ TODOs - check for unfinished code:
 NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(npm audit --production --json)" > npm-audit-report.xml
-  after_script:
-    # Run it again so the output is visible in the job output
-    - npm audit --production
+    - npm audit --omit=dev --json | ./node_modules/.bin/gitlab-npm-audit-parser -o npm-audit-report.json
+    - npm audit --omit=dev
   artifacts:
     expire_in: 1 week
     reports:
-      junit: npm-audit-report.xml
+      dependency_scanning: npm-audit-report.json
   stage: dependency scanning
   needs: ["Install dependencies and build assets"]
   tags:
