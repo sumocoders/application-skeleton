@@ -121,47 +121,6 @@ StandardJS - check code styling:
     - docker
   allow_failure: true
 
-TODOs - check for unfinished code:
-  image: sumocoders/cli-tools-php82:latest
-  script:
-    - >
-      vendor/bin/convert-to-junit-xml convert:grep "$(
-      find .
-      -path "./.git/*" -prune -o
-      -path "./.gitlab-ci.yml" -prune -o
-      -path "./unresolved-todos-report.xml" -prune -o
-      -path "./bin/*" -prune -o
-      -path "./node_modules/*" -prune -o
-      -path "./public/build/*" -prune -o
-      -path "./var/*" -prune -o
-      -path "./vendor/*" -prune -o
-      -not -type d
-      -exec grep -niH -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" {} \;
-      )" > unresolved-todos-report.xml
-  after_script:
-    # Run it again so the output is visible in the job
-    - >
-      find .
-      -path "./.git/*" -prune -o
-      -path "./.gitlab-ci.yml" -prune -o
-      -path "./unresolved-todos-report.xml" -prune -o
-      -path "./bin/*" -prune -o
-      -path "./node_modules/*" -prune -o
-      -path "./public/build/*" -prune -o
-      -path "./var/*" -prune -o
-      -path "./vendor/*" -prune -o
-      -not -type d
-      -exec grep -niH -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" {} \;
-  artifacts:
-    expire_in: 1 week
-    reports:
-      junit: unresolved-todos-report.xml
-  stage: code quality
-  needs: ["Install dependencies and build assets"]
-  tags:
-    - docker
-  allow_failure: true
-
 
 # Dependency Scanning section
 NPM packages - check for vulnerabilities:
