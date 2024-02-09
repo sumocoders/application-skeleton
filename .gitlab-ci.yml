@@ -162,7 +162,7 @@ PHP packages - local-security-checker:
 PHP packages - composer audit:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - composer audit --no-interaction
+    - composer audit --ansi --no-interaction
   stage: dependency scanning
   needs: ["Install dependencies and build assets"]
   tags:
