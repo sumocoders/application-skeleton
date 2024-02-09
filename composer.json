@@ -28,7 +28,6 @@
         "symfony/web-profiler-bundle": "^7.0",
         "symfony/webpack-encore-bundle": "^2.1.1",
         "symfony/yaml": "^7.0",
-        "tijsverkoyen/convert-to-junit-xml": "^1.11",
         "willdurand/js-translation-bundle": "^6.0"
     },
     "require-dev": {
