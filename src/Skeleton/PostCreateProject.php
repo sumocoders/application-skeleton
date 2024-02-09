@@ -454,6 +454,7 @@ class PostCreateProject
             '                ignore_exceptions:',
             '                    - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
             '                    - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+            '                    - \'Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException\'',
         ];
         $content = self::insertStringAtPosition(
             $content,
