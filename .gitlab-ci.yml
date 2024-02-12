@@ -37,11 +37,11 @@ Install dependencies and build assets:
 PHP_CodeSniffer - check code styling:
   image: sumocoders/framework-php82:latest
   script:
-    - vendor/bin/phpcs --report-full --report-junit=phpcs-report.xml
+    - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.xml
   artifacts:
     expire_in: 1 week
     reports:
-      junit: phpcs-report.xml
+      codequality: phpcs-report.xml
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
@@ -57,14 +57,17 @@ PHPStan - check for bugs:
       mv /usr/local/etc/php/conf.d/blackfire.ini /usr/local/etc/php/conf.d/disabled/blackfire.ini
     - bin/console cache:warmup --env=dev
   script:
-    - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=junit --no-progress > phpstan-report.xml
+    - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
+    - >
+      if [ $CI_JOB_STATUS != 'success' ]; then
+        vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
+      fi
   artifacts:
     expire_in: 1 week
     reports:
-      junit: phpstan-report.xml
+      codequality: phpstan-report.xml
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
@@ -90,14 +93,14 @@ Twigcs - check code styling:
 Stylelint - check code styling:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:stylelint "$(node_modules/.bin/stylelint --formatter=json .)" > stylelint-report.xml
+    - node_modules/.bin/stylelint --output-file=stylelint-report.json --custom-formatter=node_modules/stylelint-formatter-gitlab-code-quality-report/index.js .
   after_script:
     # Run it again so the output is visible in the job
-    - node_modules/.bin/stylelint .
+    - node_modules/.bin/stylelint --color .
   artifacts:
     expire_in: 1 week
     reports:
-      junit: stylelint-report.xml
+      codequality: stylelint-report.json
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
@@ -107,55 +110,11 @@ Stylelint - check code styling:
 StandardJS - check code styling:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:standardjs "$(node_modules/.bin/standard)" > standardjs-report.xml
-  after_script:
-    # Run it again so the output is visible in the job
-    - node_modules/.bin/standard
+    - node_modules/.bin/standard | node_modules/.bin/standard-gitlab --output-file standardjs-report.json --human-readable
   artifacts:
     expire_in: 1 week
     reports:
-      junit: standardjs-report.xml
-  stage: code quality
-  needs: ["Install dependencies and build assets"]
-  tags:
-    - docker
-  allow_failure: true
-
-TODOs - check for unfinished code:
-  image: sumocoders/cli-tools-php82:latest
-  script:
-    - >
-      vendor/bin/convert-to-junit-xml convert:grep "$(
-      find .
-      -path "./.git/*" -prune -o
-      -path "./.gitlab-ci.yml" -prune -o
-      -path "./unresolved-todos-report.xml" -prune -o
-      -path "./bin/*" -prune -o
-      -path "./node_modules/*" -prune -o
-      -path "./public/build/*" -prune -o
-      -path "./var/*" -prune -o
-      -path "./vendor/*" -prune -o
-      -not -type d
-      -exec grep -niH -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" {} \;
-      )" > unresolved-todos-report.xml
-  after_script:
-    # Run it again so the output is visible in the job
-    - >
-      find .
-      -path "./.git/*" -prune -o
-      -path "./.gitlab-ci.yml" -prune -o
-      -path "./unresolved-todos-report.xml" -prune -o
-      -path "./bin/*" -prune -o
-      -path "./node_modules/*" -prune -o
-      -path "./public/build/*" -prune -o
-      -path "./var/*" -prune -o
-      -path "./vendor/*" -prune -o
-      -not -type d
-      -exec grep -niH -E "\b(FIXME|TODO|HACK|REVIEW|QUESTION|TEMP)\b" {} \;
-  artifacts:
-    expire_in: 1 week
-    reports:
-      junit: unresolved-todos-report.xml
+      codequality: standardjs-report.json
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
@@ -167,35 +126,26 @@ TODOs - check for unfinished code:
 NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - vendor/bin/convert-to-junit-xml convert:npm-audit "$(npm audit --production --json)" > npm-audit-report.xml
-  after_script:
-    # Run it again so the output is visible in the job output
-    - npm audit --production
+    - npm audit --omit=dev --json | ./node_modules/.bin/gitlab-npm-audit-parser -o npm-audit-report.json
+    - npm audit --omit=dev
   artifacts:
     expire_in: 1 week
     reports:
-      junit: npm-audit-report.xml
+      dependency_scanning: npm-audit-report.json
   stage: dependency scanning
   needs: ["Install dependencies and build assets"]
   tags:
     - docker
   allow_failure: true
 
-PHP packages - local-security-checker:
+PHP packages - local-php-security-checker:
   image: sumocoders/cli-tools-php82:latest
   before_script:
     - PHP_SC_VERSION=$(curl -s "https://api.github.com/repos/fabpot/local-php-security-checker/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/;s/^v//')
-    - curl -LSs https://github.com/fabpot/local-php-security-checker/releases/download/v${PHP_SC_VERSION}/local-php-security-checker_${PHP_SC_VERSION}_linux_amd64 > ./php-security-checker
-    - chmod +x ./php-security-checker
+    - curl -LSs https://github.com/fabpot/local-php-security-checker/releases/download/v${PHP_SC_VERSION}/local-php-security-checker_${PHP_SC_VERSION}_linux_amd64 > ./local-php-security-checker
+    - chmod +x ./local-php-security-checker
   script:
-    - vendor/bin/convert-to-junit-xml convert:sensiolabs-security-check "$(./php-security-checker --format=json)" > security-checker-report.xml
-  after_script:
-    # Run it again so the output is visible in the job output
-    - ./php-security-checker
-  artifacts:
-    expire_in: 1 week
-    reports:
-      junit: security-checker-report.xml
+    - ./local-php-security-checker --format=ansi
   stage: dependency scanning
   needs: ["Install dependencies and build assets"]
   tags:
@@ -205,7 +155,7 @@ PHP packages - local-security-checker:
 PHP packages - composer audit:
   image: sumocoders/cli-tools-php82:latest
   script:
-    - composer audit --no-interaction
+    - composer audit --ansi --no-interaction
   stage: dependency scanning
   needs: ["Install dependencies and build assets"]
   tags:

@@ -39,9 +39,12 @@ class PostCreateProject
 
         $packages = [
             'standard',
+            'standard-gitlab',
             'stylelint',
             'stylelint-config-standard',
             'stylelint-config-standard-scss',
+            'stylelint-formatter-gitlab-code-quality-report',
+            '@dshbuilds/gitlab-npm-audit-parser',
         ];
 
         if ($io->isVerbose()) {

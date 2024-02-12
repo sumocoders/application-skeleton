@@ -28,7 +28,6 @@
         "symfony/web-profiler-bundle": "^7.0",
         "symfony/webpack-encore-bundle": "^2.1.1",
         "symfony/yaml": "^7.0",
-        "tijsverkoyen/convert-to-junit-xml": "^1.11",
         "willdurand/js-translation-bundle": "^6.0"
     },
     "require-dev": {
@@ -36,8 +35,9 @@
     "flex-require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "friendsoftwig/twigcs": "^6.0",
-        "phpstan/phpstan-doctrine": "^1.0",
+        "micheh/phpcs-gitlab": "^1.1",
         "phpstan/phpstan-symfony": "^1.0",
+        "phpstan/phpstan-doctrine": "^1.0",
         "squizlabs/php_codesniffer": "^3.4",
         "symfony/debug-pack": "*",
         "symfony/phpunit-bridge": "^7.0",
