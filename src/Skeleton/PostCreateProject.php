@@ -236,6 +236,7 @@ class PostCreateProject
         $insert = [
             '.addPlugin(',
             '  new WebpackShellPlugin({',
+            '    onBuildStart: [',
             '      \'bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json\'',
             '    ],',
             '  })',
