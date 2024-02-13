@@ -519,6 +519,7 @@ class PostCreateProject
             '###> sumocoders/framework-core-bundle ###',
             'SITE_TITLE="Your application"',
             'ENCRYPTION_KEY="' . $encryptionKey . '"',
+            'DEFAULT_URI="/"',
             '###< sumocoders/framework-core-bundle ###',
         ];
         $content = self::insertStringAtPosition(
