@@ -236,6 +236,7 @@ class PostCreateProject
         $insert = [
             '.addPlugin(',
             '  new WebpackShellPlugin({',
+            '    onBuildStart: [',
             '      \'bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json\'',
             '    ],',
             '  })',
@@ -518,6 +519,7 @@ class PostCreateProject
             '###> sumocoders/framework-core-bundle ###',
             'SITE_TITLE="Your application"',
             'ENCRYPTION_KEY="' . $encryptionKey . '"',
+            'DEFAULT_URI="/"',
             '###< sumocoders/framework-core-bundle ###',
         ];
         $content = self::insertStringAtPosition(
