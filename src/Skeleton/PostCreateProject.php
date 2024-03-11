@@ -376,6 +376,44 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
 
+        $io->notice('→ Reconfigure monolog');
+        $content = file_get_contents($projectDir . '/config/packages/monolog.yaml');
+
+        // Add the audit trail handler
+        $matches = [];
+        preg_match('|monolog:|', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = mb_strpos($content, PHP_EOL, $matches[0][1]) + 1;
+        $insert = [
+            '   handlers:',
+            '       audit_trail:',
+            '           type: rotating_file',
+            '           path: "%kernel.logs_dir%/audit.log"',
+            '           level: info',
+            '           channels: [\'audit_trail\']',
+            '           max_files: 10',
+        ];
+
+        $content = self::insertStringAtPosition(
+            $content,
+            $offset,
+            implode(PHP_EOL, $insert) . PHP_EOL
+        );
+
+        // Add the audit trail channel after "channels: \n"
+        $matches = [];
+        preg_match('|channels:.*\n|', $content, $matches, PREG_OFFSET_CAPTURE);
+        $offset = mb_strpos($content, PHP_EOL, $matches[0][1]) + 1;
+        $insert = [
+            '       - audit_trail # Audit trail logs are stored in the dedicated "audit_trail" channel',
+        ];
+
+        $content = self::insertStringAtPosition(
+            $content,
+            $offset,
+            implode(PHP_EOL, $insert) . PHP_EOL
+        );
+
+        file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
 
         $io->notice('→ Reconfigure services');
         $content = file_get_contents($projectDir . '/config/services.yaml');
