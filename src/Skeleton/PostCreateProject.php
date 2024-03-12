@@ -390,7 +390,7 @@ class PostCreateProject
             '           path: "%kernel.logs_dir%/audit.log"',
             '           level: info',
             '           channels: [\'audit_trail\']',
-            '           max_files: 10',
+            '           max_files: 30',
         ];
 
         $content = self::insertStringAtPosition(
