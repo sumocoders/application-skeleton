@@ -22,7 +22,7 @@ Install dependencies and build assets:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
     - volta install node
-    - npm install --no-progress
+    - npm ci --no-progress
     - node_modules/.bin/encore production
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
   cache:
