@@ -71,10 +71,10 @@ PHPStan - check for bugs:
 Twig-CS-Fixer - check code styling:
   image: sumocoders/cli-tools-php83:latest
   script:
-    - vendor/bin/twigcs --no-interaction --exclude=vendor --reporter=junit > twigcs-report.xml
+    - vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - vendor/bin/twigcs --no-interaction --exclude=vendor
+    - vendor/bin/twig-cs-fixer lint templates/
   artifacts:
     expire_in: 1 week
     reports:
