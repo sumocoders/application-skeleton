@@ -17,7 +17,7 @@ cache: &global_cache
 
 # Build section
 Install dependencies and build assets:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
@@ -35,7 +35,7 @@ Install dependencies and build assets:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/framework-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   script:
     - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.xml
   artifacts:
@@ -48,13 +48,8 @@ PHP_CodeSniffer - check code styling:
     - docker
 
 PHPStan - check for bugs:
-  image: sumocoders/framework-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   before_script:
-    # disable Xdebug and Blackfire extensions
-    - |
-      mkdir /usr/local/etc/php/conf.d/disabled
-      mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini
-      mv /usr/local/etc/php/conf.d/blackfire.ini /usr/local/etc/php/conf.d/disabled/blackfire.ini
     - bin/console cache:warmup --env=dev
   script:
     - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.xml
@@ -73,13 +68,13 @@ PHPStan - check for bugs:
   tags:
     - docker
 
-Twigcs - check code styling:
-  image: sumocoders/framework-php82:latest
+Twig-CS-Fixer - check code styling:
+  image: sumocoders/cli-tools-php83:latest
   script:
-    - vendor/bin/twigcs --no-interaction --exclude=vendor --reporter=junit > twigcs-report.xml
+    - vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - vendor/bin/twigcs --no-interaction --exclude=vendor
+    - vendor/bin/twig-cs-fixer lint templates/
   artifacts:
     expire_in: 1 week
     reports:
@@ -91,7 +86,7 @@ Twigcs - check code styling:
   allow_failure: true
 
 Stylelint - check code styling:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   script:
     - node_modules/.bin/stylelint --output-file=stylelint-report.json --custom-formatter=node_modules/stylelint-formatter-gitlab-code-quality-report/index.js .
   after_script:
@@ -124,7 +119,7 @@ StandardJS - check code styling:
 
 # Dependency Scanning section
 NPM packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   script:
     - npm audit --omit=dev --json | ./node_modules/.bin/gitlab-npm-audit-parser -o npm-audit-report.json
     - npm audit --omit=dev
@@ -139,7 +134,7 @@ NPM packages - check for vulnerabilities:
   allow_failure: true
 
 PHP packages - local-php-security-checker:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   before_script:
     - PHP_SC_VERSION=$(curl -s "https://api.github.com/repos/fabpot/local-php-security-checker/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/;s/^v//')
     - curl -LSs https://github.com/fabpot/local-php-security-checker/releases/download/v${PHP_SC_VERSION}/local-php-security-checker_linux_amd64 > ./local-php-security-checker
@@ -153,7 +148,7 @@ PHP packages - local-php-security-checker:
   allow_failure: true
 
 PHP packages - composer audit:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   script:
     - composer audit --ansi --no-interaction
   stage: dependency scanning
@@ -165,7 +160,7 @@ PHP packages - composer audit:
 
 # Test section
 PHPUnit - Run tests:
-  image: sumocoders/framework-php82:latest
+  image: sumocoders/framework-php83:latest
   services:
     - mysql:5.7
   before_script:
@@ -177,11 +172,6 @@ PHPUnit - Run tests:
 #    - |
 #      curl -s -f -L -o /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_97`/chromedriver_linux64.zip
 #      unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
-    # disable Xdebug and Blackfire extensions
-    - |
-      mkdir /usr/local/etc/php/conf.d/disabled
-      mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/disabled/docker-php-ext-xdebug.ini
-      mv /usr/local/etc/php/conf.d/blackfire.ini /usr/local/etc/php/conf.d/disabled/blackfire.ini
   script:
     - php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
     # Uncomment this if you have fixtures that need to be loaded
