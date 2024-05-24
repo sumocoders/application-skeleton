@@ -511,7 +511,8 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/monolog.yaml');
         $content = preg_replace(
             '/nested:(\r\n|\r|\n) +type: stream(\r\n|\r|\n) +path: php:\/\/stderr/',
-            'nested:' . PHP_EOL . '                type: rotating_file' . PHP_EOL . '                path: "%kernel.logs_dir%/%kernel.environment%.log"',
+            'nested:' . PHP_EOL . '                type: rotating_file' . PHP_EOL .
+            '                path: "%kernel.logs_dir%/%kernel.environment%.log"',
             $content
         );
         file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
