@@ -443,25 +443,12 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure sentry');
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
-        $insert = [
-            '        options:',
-            '           trace_propagation_targets: [ \'%env(resolve:DEFAULT_URI)%\' ]',
-            '           integrations:',
-            '               - \'Sentry\Integration\IgnoreErrorsIntegration\'',
-            '',
-            'services:',
-            '    Sentry\Integration\IgnoreErrorsIntegration:',
-            '        arguments:',
-            '            $options:',
-            '                ignore_exceptions:',
-            '                    - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'',
-            '                    - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
-            '                    - \'Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException\'',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            mb_strlen($content) + 1,
-            implode(PHP_EOL, $insert) . PHP_EOL
+        $content = preg_replace(
+            '/ +- \'Symfony\\\Component\\\ErrorHandler\\\Error\\\FatalError\'(\r\n|\r|\n)' .
+            ' +- \'Symfony\\\Component\\\Debug\\\Exception\\\FatalErrorException\'/',
+            '                - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'' . PHP_EOL .
+            '                - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+            $content
         );
         file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
 
