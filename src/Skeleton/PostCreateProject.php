@@ -364,6 +364,7 @@ class PostCreateProject
             '        fallbacks: "@framework.fallbacks"',
             '        locales: "%locales%"',
             '        breadcrumbs: \'@SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail\'',
+            '        page_title: \'@SumoCoders\FrameworkCoreBundle\Service\PageTitle\'',
             '    form_themes:',
             '        - "bootstrap_5_layout.html.twig"',
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
