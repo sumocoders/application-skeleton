@@ -103,7 +103,7 @@ Stylelint - check code styling:
   allow_failure: true
 
 StandardJS - check code styling:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   script:
     - node_modules/.bin/standard | node_modules/.bin/standard-gitlab --output-file standardjs-report.json --human-readable
   artifacts:
@@ -195,7 +195,7 @@ PHPUnit - Run tests:
 
 # Deploy section
 Deploy - to staging:
-  image: sumocoders/cli-tools-php82:latest
+  image: sumocoders/cli-tools-php83:latest
   before_script:
     # Add the private SSH key to the CI environment
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -209,7 +209,7 @@ Deploy - to staging:
     - vendor/bin/dep deploy stage=staging
   environment:
     name: staging
-    url: https://$project.$client.php82.sumocoders.eu
+    url: https://$project.$client.php83.sumocoders.eu
   only:
     - staging
   stage: deploy
