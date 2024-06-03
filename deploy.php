@@ -12,7 +12,7 @@ set('project', '$project');
 set('repository', '$repository');
 set('production_url', '$productionUrl');
 set('production_user', '$productionUser');
-set('php_version', '8.2');
+set('php_version', '8.3');
 
 // Define staging
 host('dev02.sumocoders.eu')
