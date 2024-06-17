@@ -38,6 +38,7 @@ class PostCreateProject
         $io->notice('Install required NPM packages');
 
         $packages = [
+            'sass-embedded',
             'standard',
             'standard-gitlab',
             'stylelint',
@@ -201,7 +202,7 @@ class PostCreateProject
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace(
             '|//.enableSassLoader\(\)|',
-            '.enableSassLoader(options => { options.implementation = require(\'sass\') })',
+            '.enableSassLoader(options => { options.implementation = require(\'sass-embedded\') })',
             $content
         );
 
