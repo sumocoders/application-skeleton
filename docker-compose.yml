@@ -1,5 +1,5 @@
 services:
-  mysql:
+  database:
     environment:
       MARIADB_ROOT_PASSWORD: root
     image: mariadb
