@@ -202,7 +202,12 @@ class PostCreateProject
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace(
             '|//.enableSassLoader\(\)|',
-            '.enableSassLoader(options => { options.implementation = require(\'sass-embedded\') })',
+            '.enableSassLoader(options => { ' . "\n" .
+            '  options.implementation = require(\'sass-embedded\')' . "\n" .
+            '  options.sassOptions = {' . "\n" .
+            '    quietDeps: true' . "\n" .
+            '  }' . "\n" .
+            '})',
             $content
         );
 
