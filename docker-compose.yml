@@ -1,10 +1,10 @@
 services:
   mysql:
     environment:
-      MYSQL_ROOT_PASSWORD: root
-    image: mysql:5.7
+      MARIADB_ROOT_PASSWORD: root
+    image: mariadb
     ports:
       - 3306:3306
     restart: always
     volumes:
-      - ~/Sites/sumocoders/docker/mysql57:/var/lib/mysql
+      - ~/Sites/sumocoders/docker/mariadb:/var/lib/mysql
