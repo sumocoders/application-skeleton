@@ -302,7 +302,7 @@ class PostCreateProject
         $content = preg_replace('|\.configureBabelPresetEnv.*\}\)|smU', '', $content);
 
         $io->notice('→ disable enableBuildNotifications');
-        $content = preg_replace('|\.enableBuildNotifications\(\)|smU', '', $content);
+        $content = preg_replace('|\.enableBuildNotifications\(\)|smU', '//.enableBuildNotifications()', $content);
 
         file_put_contents($projectDir . '/webpack.config.js', $content);
 
