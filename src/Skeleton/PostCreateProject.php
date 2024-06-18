@@ -38,7 +38,6 @@ class PostCreateProject
         $io->notice('Install required NPM packages');
 
         $packages = [
-            'sass-embedded',
             'standard',
             'standard-gitlab',
             'stylelint',
@@ -73,6 +72,7 @@ class PostCreateProject
 
         $io->notice('→ Install required NPM packages for FrameworkStylePackage');
         $packages = [
+            'sass-embedded',
             'frameworkstylepackage@^3',
         ];
         if ($io->isVerbose()) {
