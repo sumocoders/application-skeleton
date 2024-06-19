@@ -72,6 +72,7 @@ class PostCreateProject
 
         $io->notice('→ Install required NPM packages for FrameworkStylePackage');
         $packages = [
+            'sass-embedded',
             'frameworkstylepackage@^3',
         ];
         if ($io->isVerbose()) {
@@ -201,7 +202,12 @@ class PostCreateProject
         $io->notice('→ enable Sass/SCSS support');
         $content = preg_replace(
             '|//.enableSassLoader\(\)|',
-            '.enableSassLoader(options => { options.implementation = require(\'sass\') })',
+            '.enableSassLoader(options => { ' . "\n" .
+            '  options.implementation = require(\'sass-embedded\')' . "\n" .
+            '  options.sassOptions = {' . "\n" .
+            '    quietDeps: true' . "\n" .
+            '  }' . "\n" .
+            '})',
             $content
         );
 
@@ -295,6 +301,8 @@ class PostCreateProject
         $io->notice('→ do not use configureBabelPresetEnv');
         $content = preg_replace('|\.configureBabelPresetEnv.*\}\)|smU', '', $content);
 
+        $io->notice('→ disable enableBuildNotifications');
+        $content = preg_replace('|\.enableBuildNotifications\(\)|smU', '//.enableBuildNotifications()', $content);
 
         file_put_contents($projectDir . '/webpack.config.js', $content);
 
