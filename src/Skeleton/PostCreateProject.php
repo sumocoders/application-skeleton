@@ -433,6 +433,15 @@ class PostCreateProject
         );
         file_put_contents($projectDir . '/config/routes.yaml', $content);
 
+        $io->notice('→ Reconfigure routing');
+        $content = file_get_contents($projectDir . '/config/packages/routing.yaml');
+        $content = preg_replace(
+            '/#default_uri: http:\/\/localhost/smU',
+            'default_uri: \'%env(DEFAULT_URI)\'',
+            $content
+        );
+        file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
+
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
         $matches = [];
