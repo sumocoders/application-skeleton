@@ -15,8 +15,8 @@
 
 # Capture command line args, or set defaults.
 BRANCH_NAME=${1:-master}
-DEST_DIR=${2:-~/Desktop/newapp}
-PACKAGE_NAME=sumocoders/framework
+DEST_DIR=${2:-~/Sites/newapp}
+PACKAGE_NAME=sumocoders/application-skeleton
 
 # Warn the dev if they have uncommitted changes since they won't
 # be included in the spawned project.
@@ -67,7 +67,7 @@ cat <<EOD > packages.json
 EOD
 
 # Execute the proper command.
-composer create-project --verbose --repository-url=./packages.json ${PACKAGE_NAME} "${DEST_DIR}" dev-${BRANCH_NAME}
+composer create-project --verbose --repository=./packages.json ${PACKAGE_NAME} "${DEST_DIR}" dev-${BRANCH_NAME}
 
 # Clean up after ourselves.
 rm -f packages.json
