@@ -1,0 +1,15 @@
+# This file describes the cronjobs that are needed for the project
+#
+# When deployed on production a symlink will be created from
+# ~/.crontab/xxx.crontab to this file. Which means cronjobs will be
+# activated automatically by deploying
+# REMARK: this will only work on Cloudstar shared hosting!
+#
+# The file follows the default crontab structure
+# * * * * *
+# | | | | |_ day of the week (0-6, where 0 is sunday)
+# | | | |___ month (1-12)
+# | | |_____ day of the month (1-31)
+# | |_______ hour (0-23)
+# |_________ minute (0-59)
+MAILTO=bugs@sumocoders.be
