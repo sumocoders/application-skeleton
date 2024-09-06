@@ -272,7 +272,7 @@ class PostCreateProject
 
         $io->notice('→ add Vue loader');
         $insert = [
-            '.enableVueLoader()',
+            '.enableVueLoader(() => {}, { runtimeCompilerBuild: false })',
         ];
         $content = self::insertStringAtPosition(
             $content,
