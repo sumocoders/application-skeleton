@@ -513,10 +513,27 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure monolog');
         $content = file_get_contents($projectDir . '/config/packages/monolog.yaml');
+        // Default log file
         $content = preg_replace(
-            '/nested:(\r\n|\r|\n) +type: stream(\r\n|\r|\n) +path: php:\/\/stderr/',
-            'nested:' . PHP_EOL . '                type: rotating_file' . PHP_EOL .
-            '                path: "%kernel.logs_dir%/%kernel.environment%.log"',
+            '/(nested:(\r\n|\r|\n) +type: stream(\r\n|\r|\n) +path: )php:\/\/stderr/',
+            '$1"%kernel.logs_dir%/%kernel.environment%.log"',
+            $content
+        );
+        // Audit trail channel
+        $content = preg_replace(
+            '/(monolog:(\r\n|\r|\n) +channels:(\r\n|\r|\n) +(- .*(\r\n|\r|\n))+)/',
+            '$1        - audit_trail' . PHP_EOL,
+            $content
+        );
+        // Audit trail log file
+        $content = preg_replace(
+            '/(when@prod:(\r\n|\r|\n) +monolog:(\r\n|\r|\n) +handlers:(\r\n|\r|\n)(.*(\r\n|\r|\n))+ +nested:(\r\n|\r|\n)( {16}.*(\r\n|\r|\n))+)/',
+            '$1' .
+            '            audit_trail:' . PHP_EOL .
+            '                type: stream' . PHP_EOL .
+            '                path: "%kernel.logs_dir%/audit.log"' . PHP_EOL .
+            '                level: info' . PHP_EOL .
+            '                channels: [\'audit_trail\']' . PHP_EOL,
             $content
         );
         file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
