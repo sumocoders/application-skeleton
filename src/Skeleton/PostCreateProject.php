@@ -73,7 +73,7 @@ class PostCreateProject
         $io->notice('→ Install required NPM packages for FrameworkStylePackage');
         $packages = [
             'sass-embedded',
-            'frameworkstylepackage@^3',
+            'frameworkstylepackage@^4',
         ];
         if ($io->isVerbose()) {
             $io->write(
