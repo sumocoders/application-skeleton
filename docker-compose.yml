@@ -6,5 +6,7 @@ services:
     ports:
       - 3306:3306
     restart: always
+    labels:
+      com.symfony.server.service-ignore: true
     volumes:
       - ~/Sites/sumocoders/docker/mariadb:/var/lib/mysql
