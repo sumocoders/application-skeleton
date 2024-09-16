@@ -586,6 +586,18 @@ class PostCreateProject
             '',
             $content
         );
+        // remove symfony/mailer configuration
+        $content = preg_replace(
+            '|###> symfony/mailer ###.*###< symfony/mailer ###|mUs',
+            '',
+            $content
+        );
+        // remove empty volumes element
+        $content = preg_replace(
+            '|services:\n|mUs',
+            '',
+            $content
+        );
         $content = trim($content) . PHP_EOL;
         file_put_contents($projectDir . '/docker-compose.override.yml', $content);
     }
