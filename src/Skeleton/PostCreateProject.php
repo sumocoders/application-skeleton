@@ -560,6 +560,46 @@ class PostCreateProject
             PHP_EOL . implode(PHP_EOL, $insert)
         );
         file_put_contents($projectDir . '/.env', $content);
+
+        $io->notice('→ Reconfigure docker-compose.yml');
+        $content = file_get_contents($projectDir . '/docker-compose.yml');
+        // remove doctrine/doctrine-bundle configuration
+        $content = preg_replace(
+            '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
+            '',
+            $content
+        );
+        // remove empty volumes element
+        $content = preg_replace(
+            '|volumes:\n\n|mUs',
+            '',
+            $content
+        );
+        $content = trim($content) . PHP_EOL;
+        file_put_contents($projectDir . '/docker-compose.yml', $content);
+
+        $io->notice('→ Reconfigure docker-compose.override.yml');
+        $content = file_get_contents($projectDir . '/docker-compose.override.yml');
+        // remove doctrine/doctrine-bundle configuration
+        $content = preg_replace(
+            '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
+            '',
+            $content
+        );
+        // remove symfony/mailer configuration
+        $content = preg_replace(
+            '|###> symfony/mailer ###.*###< symfony/mailer ###|mUs',
+            '',
+            $content
+        );
+        // remove empty volumes element
+        $content = preg_replace(
+            '|services:\n|mUs',
+            '',
+            $content
+        );
+        $content = trim($content) . PHP_EOL;
+        file_put_contents($projectDir . '/docker-compose.override.yml', $content);
     }
 
     private static function cleanup(Event $event): void
