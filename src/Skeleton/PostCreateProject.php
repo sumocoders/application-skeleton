@@ -481,8 +481,8 @@ class PostCreateProject
         $io->notice('→ Reconfigure doctrine test environment');
         $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
         $content = preg_replace(
-            '/dbname_suffix: \'.*?\'/smU',
-            'dbname_suffix: \'%env(string:default::TEST_TOKEN)%\'',
+            '/(when@test:(\r\n|\r|\n) +doctrine:(\r\n|\r|\n) +dbal:(\r\n|\r|\n)( +#.*(\r\n|\r|\n)) +dbname_suffix: ).*(\r\n|\r|\n)/',
+            '$1\'%env(string:default::TEST_TOKEN)%\'$7',
             $content
         );
         file_put_contents($projectDir . '/config/packages/doctrine.yaml', $content);
