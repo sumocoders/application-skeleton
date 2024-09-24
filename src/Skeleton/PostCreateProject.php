@@ -437,7 +437,7 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/routing.yaml');
         $content = preg_replace(
             '/#default_uri: http:\/\/localhost/smU',
-            'default_uri: \'%env(DEFAULT_URI)\'',
+            'default_uri: \'%env(DEFAULT_URI)%\'',
             $content
         );
         file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
