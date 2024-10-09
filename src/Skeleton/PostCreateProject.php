@@ -13,6 +13,7 @@ class PostCreateProject
         self::cleanupFiles($event);
         self::cleanup($event);
         self::dumpInitialTranslations($event);
+        self::runSass($event);
     }
 
     private static function createAssets(Event $event): void
@@ -365,7 +366,19 @@ EOF;
         }
     }
 
+    private static function runSass(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Run `bin/console sass:build`');
+
+        $output = shell_exec('symfony console sass:build');
+
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+    }
     // some helper methods
+
     private static function insertStringAtPosition(string $content, int $position, string $insert): string
     {
         if ($position < 0) {
