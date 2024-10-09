@@ -40,6 +40,12 @@ class PostCreateProject
             $projectDir . '/scripts/templates',
             $projectDir . '/templates'
         );
+
+        $io->notice('→ Copy fonts');
+        self::copyDirectoryContent(
+            $projectDir . '/vendor/sumocoders/framework-core-bundle/assets/fonts',
+            $projectDir . '/public/fonts'
+        );
     }
 
     private static function reconfigureApplication(Event $event): void
