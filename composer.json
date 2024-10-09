@@ -15,6 +15,7 @@
         "sentry/sentry-symfony": "^5.0",
         "sumocoders/framework-core-bundle": "dev-278-asset-mapper",
         "symfony/apache-pack": "^1.0.1",
+        "symfony/asset-mapper": "^7.1",
         "symfony/debug-bundle": "^7.1",
         "symfony/dotenv": "^7.1",
         "symfony/expression-language": "^7.1",
@@ -28,7 +29,9 @@
         "symfony/security-bundle": "^7.1",
         "symfony/validator": "^7.1",
         "symfony/web-profiler-bundle": "^7.1",
-        "symfony/yaml": "^7.1"
+        "symfony/yaml": "^7.1",
+        "symfonycasts/sass-bundle": "^0.7.0",
+        "twbs/bootstrap": "^5.3"
     },
     "require-dev": {
     },
