@@ -47,6 +47,14 @@ class PostCreateProject
         $io->notice('Reconfigure application');
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
+        $io->notice('→ Configure symfonycasts/sass');
+        $content = <<<EOF
+symfonycasts_sass:
+  root_sass:
+    - '%kernel.project_dir%/assets/styles/style.scss'
+EOF;
+        file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
+
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
         $matches = [];
@@ -69,7 +77,6 @@ class PostCreateProject
             PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
-
 
         $io->notice('→ Reconfigure services');
         $content = file_get_contents($projectDir . '/config/services.yaml');
@@ -100,7 +107,6 @@ class PostCreateProject
             implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/services.yaml', $content);
-
 
         $io->notice('→ Reconfigure annotations');
         $content = file_get_contents($projectDir . '/config/routes.yaml');
