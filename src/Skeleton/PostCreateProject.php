@@ -10,6 +10,7 @@ class PostCreateProject
     {
         self::createAssets($event);
         self::reconfigureApplication($event);
+        self::cleanupFiles($event);
         self::cleanup($event);
         self::dumpInitialTranslations($event);
     }
@@ -284,6 +285,26 @@ class PostCreateProject
         );
         $content = trim($content) . PHP_EOL;
         file_put_contents($projectDir . '/docker-compose.override.yml', $content);
+    }
+
+    private static function cleanupFiles(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Cleanup files');
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Remove app.css');
+        $path = $projectDir . '/assets/styles/app.css';
+        if (file_exists($path)) {
+            unlink($projectDir . '/assets/styles/app.css');
+        }
+
+        $io->notice('→ Remove reference to app.css');
+        $content = file_get_contents($projectDir . '/assets/app.js');
+        $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
+        $content = preg_replace('|import \'./styles/app.css\'\n|', '', $content);
+
+        file_put_contents($projectDir . '/assets/app.js', $content);
     }
 
     private static function cleanup(Event $event): void
