@@ -71,7 +71,7 @@ EOF;
 
         $io->notice('→ Set up asset mapper with framework-core-bundle');
         file_put_contents(
-            $projectDir . '/importmap.php',
+            $projectDir . '/config/packages/asset_mapper.yaml',
             '            - vendor/sumocoders/framework-core-bundle/assets/',
             FILE_APPEND
         );
