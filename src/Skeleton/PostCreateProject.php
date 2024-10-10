@@ -13,6 +13,7 @@ class PostCreateProject
         self::cleanupFiles($event);
         self::cleanup($event);
         self::dumpInitialTranslations($event);
+        self::importAssets($event);
         self::runSass($event);
     }
 
@@ -379,6 +380,56 @@ EOF;
         }
 
         $output = shell_exec('symfony console translation:extract nl --force --format yaml');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+    }
+
+    private static function importAssets(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Run `bin/console importmap:require`');
+
+        $assets = [
+            'bootstrap@^5.3',
+            '@fortawesome/fontawesome-free/css/all.css@^6.6',
+            'tom-select/dist/css/tom-select.default.css@^2.3',
+            'tom-select/dist/css/tom-select.bootstrap5.css@^2.3',
+            'flatpickr@^4.6',
+            'flatpickr/dist/flatpickr.css@^4.6',
+            'flatpickr/dist/themes/airbnb.css@^4.6',
+            'flatpickr/dist/l10n/at.js@^4.6',
+            'flatpickr/dist/l10n/cs.js@^4.6',
+            'flatpickr/dist/l10n/da.js@^4.6',
+            'flatpickr/dist/l10n/nl.js@^4.6',
+            'flatpickr/dist/l10n/et.js@^4.6',
+            'flatpickr/dist/l10n/fi.js@^4.6',
+            'flatpickr/dist/l10n/fr.js@^4.6',
+            'flatpickr/dist/l10n/de.js@^4.6',
+            'flatpickr/dist/l10n/gr.js@^4.6',
+            'flatpickr/dist/l10n/lv.js@^4.6',
+            'flatpickr/dist/l10n/lt.js@^4.6',
+            'flatpickr/dist/l10n/it.js@^4.6',
+            'flatpickr/dist/l10n/no.js@^4.6',
+            'flatpickr/dist/l10n/pl.js@^4.6',
+            'flatpickr/dist/l10n/pt.js@^4.6',
+            'flatpickr/dist/l10n/sk.js@^4.6',
+            'flatpickr/dist/l10n/sv.js@^4.6',
+            'flatpickr/dist/l10n/es.js@^4.6',
+            'flatpickr/dist/l10n/sl.js@^4.6',
+            'sortablejs@^1.15',
+            'axios@^1.7',
+        ];
+
+        // Add all packages
+        $output = shell_exec('symfony console import:require ' . implode(' ', $assets));
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+
+        // Add Framework JS, needs to be separate because of --path parameter
+        $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets/js/index.js"';
+        $output = shell_exec('symfony console import:require ' . $frameworkJs);
         if ($io->isVerbose()) {
             $io->write($output);
         }
