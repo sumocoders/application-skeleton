@@ -27,6 +27,7 @@
         "symfony/rate-limiter": "^7.1",
         "symfony/runtime": "^7.1",
         "symfony/security-bundle": "^7.1",
+        "symfony/stimulus-bundle": "^2.20",
         "symfony/validator": "^7.1",
         "symfony/web-profiler-bundle": "^7.1",
         "symfony/yaml": "^7.1",
