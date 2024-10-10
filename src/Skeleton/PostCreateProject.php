@@ -62,6 +62,13 @@ symfonycasts_sass:
 EOF;
         file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
 
+        $io->notice('→ Set up asset mapper with framework-core-bundle');
+        file_put_contents(
+            $projectDir . '/importmap.php',
+            '            - vendor/sumocoders/framework-core-bundle/assets/',
+            FILE_APPEND
+        );
+
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
         $matches = [];
