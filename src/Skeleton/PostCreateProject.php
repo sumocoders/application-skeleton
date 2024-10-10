@@ -46,6 +46,12 @@ class PostCreateProject
             $projectDir . '/vendor/sumocoders/framework-core-bundle/assets/fonts',
             $projectDir . '/public/fonts'
         );
+
+        $io->notice('→ Copy app.js');
+        self::copyDirectoryContent(
+            $projectDir . '/vendor/sumocoders/framework-core-bundle/assets/js',
+            $projectDir . '/assets'
+        );
     }
 
     private static function reconfigureApplication(Event $event): void
