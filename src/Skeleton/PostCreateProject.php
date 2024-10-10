@@ -50,7 +50,7 @@ class PostCreateProject
 
         $io->notice('→ Copy app.js');
         self::copyDirectoryContent(
-            $projectDir . '/vendor/sumocoders/framework-core-bundle/assets/js',
+            $projectDir . '/scripts/assets/js',
             $projectDir . '/assets'
         );
     }
