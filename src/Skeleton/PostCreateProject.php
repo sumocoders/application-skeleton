@@ -72,7 +72,7 @@ EOF;
         $io->notice('→ Set up asset mapper with framework-core-bundle');
         file_put_contents(
             $projectDir . '/config/packages/asset_mapper.yaml',
-            '            - vendor/sumocoders/framework-core-bundle/assets/',
+            '            - vendor/sumocoders/framework-core-bundle/assets-public/',
             FILE_APPEND
         );
 
@@ -428,7 +428,7 @@ EOF;
         }
 
         // Add Framework JS, needs to be separate because of --path parameter
-        $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets/js/index.js"';
+        $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
         $output = shell_exec('symfony console import:require ' . $frameworkJs);
         if ($io->isVerbose()) {
             $io->write($output);
