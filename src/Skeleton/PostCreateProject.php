@@ -422,14 +422,14 @@ EOF;
         ];
 
         // Add all packages
-        $output = shell_exec('symfony console import:require ' . implode(' ', $assets));
+        $output = shell_exec(sprintf('symfony console importmap:require %1$s', implode(' ', $assets)));
         if ($io->isVerbose()) {
             $io->write($output);
         }
 
         // Add Framework JS, needs to be separate because of --path parameter
         $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
-        $output = shell_exec('symfony console import:require ' . $frameworkJs);
+        $output = shell_exec(sprintf('symfony console importmap:require %1$s', $frameworkJs));
         if ($io->isVerbose()) {
             $io->write($output);
         }
@@ -446,8 +446,8 @@ EOF;
             $io->write($output);
         }
     }
-    // some helper methods
 
+    // some helper methods
     private static function insertStringAtPosition(string $content, int $position, string $insert): string
     {
         if ($position < 0) {
