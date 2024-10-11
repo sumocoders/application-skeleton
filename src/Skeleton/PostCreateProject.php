@@ -42,12 +42,6 @@ class PostCreateProject
             $projectDir . '/templates'
         );
 
-        $io->notice('→ Copy fonts');
-        self::copyDirectoryContent(
-            $projectDir . '/vendor/sumocoders/framework-core-bundle/assets/fonts',
-            $projectDir . '/public/fonts'
-        );
-
         $io->notice('→ Copy app.js');
         self::copyDirectoryContent(
             $projectDir . '/scripts/assets/js',
