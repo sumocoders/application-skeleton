@@ -416,6 +416,7 @@ EOF;
             'flatpickr/dist/l10n/sl.js@^4.6',
             'sortablejs@^1.15',
             'axios@^1.7',
+            '@stimulus-components/clipboard@^5.0',
         ];
 
         // Add all packages
