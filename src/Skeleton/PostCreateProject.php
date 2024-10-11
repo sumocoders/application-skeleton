@@ -66,6 +66,9 @@ class PostCreateProject
 symfonycasts_sass:
   root_sass:
     - '%kernel.project_dir%/assets/styles/style.scss'
+    - '%kernel.project_dir%/assets/styles/style-dark.scss'
+    - '%kernel.project_dir%/assets/styles/mail.scss'
+    - '%kernel.project_dir%/assets/styles/error.scss'
 EOF;
         file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
 
