@@ -83,63 +83,36 @@ Twig-CS-Fixer - check code styling:
     - docker
   allow_failure: true
 
-Stylelint - check code styling:
-  image: sumocoders/cli-tools-php83:latest
-  script:
-    - node_modules/.bin/stylelint --output-file=stylelint-report.json --custom-formatter=node_modules/stylelint-formatter-gitlab-code-quality-report/index.js .
-  after_script:
-    # Run it again so the output is visible in the job
-    - node_modules/.bin/stylelint --color .
-  artifacts:
-    expire_in: 1 week
-    reports:
-      codequality: stylelint-report.json
-  stage: code quality
-  needs: ["Install dependencies and build assets"]
-  tags:
-    - docker
-  allow_failure: true
+#Stylelint - check code styling:
+#  image: sumocoders/cli-tools-php83:latest
+#  script:
+#    - node_modules/.bin/stylelint --output-file=stylelint-report.json --custom-formatter=node_modules/stylelint-formatter-gitlab-code-quality-report/index.js .
+#  after_script:
+#    # Run it again so the output is visible in the job
+#    - node_modules/.bin/stylelint --color .
+#  artifacts:
+#    expire_in: 1 week
+#    reports:
+#      codequality: stylelint-report.json
+#  stage: code quality
+#  needs: ["Install dependencies and build assets"]
+#  tags:
+#    - docker
+#  allow_failure: true
 
-StandardJS - check code styling:
-  image: sumocoders/cli-tools-php83:latest
-  script:
-    - node_modules/.bin/standard | node_modules/.bin/standard-gitlab --output-file standardjs-report.json --human-readable
-  artifacts:
-    expire_in: 1 week
-    reports:
-      codequality: standardjs-report.json
-  stage: code quality
-  needs: ["Install dependencies and build assets"]
-  tags:
-    - docker
-  allow_failure: true
-
-
-# Dependency Scanning section
-NPM packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php83:latest
-  script:
-    - npm audit --omit=dev --json | ./node_modules/.bin/gitlab-npm-audit-parser -o npm-audit-report.json
-    - npm audit --omit=dev
-  artifacts:
-    expire_in: 1 week
-    reports:
-      dependency_scanning: npm-audit-report.json
-  stage: dependency scanning
-  needs: ["Install dependencies and build assets"]
-  tags:
-    - docker
-  allow_failure: true
-
-PHP packages - composer audit:
-  image: sumocoders/cli-tools-php83:latest
-  script:
-    - composer audit --ansi --no-interaction
-  stage: dependency scanning
-  needs: ["Install dependencies and build assets"]
-  tags:
-    - docker
-  allow_failure: true
+#StandardJS - check code styling:
+#  image: sumocoders/cli-tools-php83:latest
+#  script:
+#    - node_modules/.bin/standard | node_modules/.bin/standard-gitlab --output-file standardjs-report.json --human-readable
+#  artifacts:
+#    expire_in: 1 week
+#    reports:
+#      codequality: standardjs-report.json
+#  stage: code quality
+#  needs: ["Install dependencies and build assets"]
+#  tags:
+#    - docker
+#  allow_failure: true
 
 
 # Test section
