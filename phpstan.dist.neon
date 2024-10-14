@@ -5,18 +5,14 @@ services:
   errorFormatter.junit:
     class: PHPStan\Command\ErrorFormatter\JUnitErrorFormatter
 parameters:
-  checkGenericClassInNonGenericObjectType: false
   inferPrivatePropertyTypeFromConstructor: true
   symfony:
     container_xml_path: %rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml
   level: 7
   paths:
+    - config/
     - public/
     - src/
+    - tests/
   excludePaths:
     - %rootDir%/../../../src/Migrations
-  ignoreErrors:
-    - '#array of function array_map expects array, iterable<.*>#'
-    -
-      message: '#Property .*\$id is never written, only read.#'
-      path: src/Entity
