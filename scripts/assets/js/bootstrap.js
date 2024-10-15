@@ -1,5 +1,5 @@
 import { startStimulusApp } from '@symfony/stimulus-bundle';
-import Clipboard from '@stimulus-components/clipboard';
+import Clipboard from 'sumocoders/Clipboard';
 import SidebarCollapsable from 'sumocoders/SidebarCollapsable';
 import Toast from 'sumocoders/Toast';
 
