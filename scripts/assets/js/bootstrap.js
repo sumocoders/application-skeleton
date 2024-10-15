@@ -4,6 +4,7 @@ import SidebarCollapsable from 'sumocoders/SidebarCollapsable';
 import Toast from 'sumocoders/Toast';
 import Theme from 'sumocoders/Theme';
 import Tooltip from 'sumocoders/Tooltip';
+import Popover from 'sumocoders/Popover';
 
 const app = startStimulusApp();
 // register any custom, 3rd party controllers here
@@ -13,3 +14,4 @@ app.register('sidebar-collapsable', SidebarCollapsable);
 app.register('toast', Toast);
 app.register('theme', Theme);
 app.register('tooltip', Tooltip);
+app.register('popover', Popover);
