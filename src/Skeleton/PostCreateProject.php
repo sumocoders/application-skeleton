@@ -427,9 +427,9 @@ EOF;
 
         // Add Framework JS and stimulus controllers, needs to be separate because of --path parameter
         $packages = [
-            'sumocoders/Framework' => 'js/index.js',
-            'sumocoders/SidebarCollapsable' => 'controllers/sidebar_collapsable_controller.js',
-            'sumocoders/Toast' => 'controllers/toast_controller.js',
+            'Framework' => 'js/index.js',
+            'SidebarCollapsable' => 'controllers/sidebar_collapsable_controller.js',
+            'Toast' => 'controllers/toast_controller.js',
         ];
         foreach ($packages as $name => $path) {
             $frameworkJs = 'sumocoders/%s --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
