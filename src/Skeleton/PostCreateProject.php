@@ -434,6 +434,7 @@ EOF;
             'addToast' => 'js/toast.js',
             'cookie' => 'js/cookie.js',
             'Theme' => 'controllers/theme_controller.js',
+            'Tooltip' => 'controllers/tooltip_controller.js',
         ];
         foreach ($packages as $name => $path) {
             $output = shell_exec(
