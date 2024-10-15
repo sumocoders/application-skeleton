@@ -6,6 +6,7 @@ import Theme from 'sumocoders/Theme';
 import Tooltip from 'sumocoders/Tooltip';
 import Popover from 'sumocoders/Popover';
 import DateTimePicker from 'sumocoders/DateTimePicker';
+import Tabs from 'sumocoders/Tabs';
 
 const app = startStimulusApp();
 // register any custom, 3rd party controllers here
@@ -17,3 +18,4 @@ app.register('theme', Theme);
 app.register('tooltip', Tooltip);
 app.register('popover', Popover);
 app.register('date-time-picker', DateTimePicker);
+app.register('tabs', Tabs);
