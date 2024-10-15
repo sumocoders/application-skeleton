@@ -431,9 +431,10 @@ EOF;
             'SidebarCollapsable' => 'controllers/sidebar_collapsable_controller.js',
             'Toast' => 'controllers/toast_controller.js',
             'addToast' => 'js/toast.js',
+            'cookie' => 'js/cookie.js',
+            'Theme' => 'controllers/theme_controller.js',
         ];
         foreach ($packages as $name => $path) {
-            $frameworkJs = 'sumocoders/%s --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
             $output = shell_exec(
                 sprintf(
                     'symfony console importmap:require sumocoders/%1$s '.
