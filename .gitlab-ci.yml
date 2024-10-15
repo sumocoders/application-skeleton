@@ -21,7 +21,8 @@ Install dependencies and build assets:
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
-    - php bin/console sass:build
+    - php bin/console sass:build --quiet
+    - php bin/console importmap:install --quiet
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
   cache:
     <<: *global_cache
