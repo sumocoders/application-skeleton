@@ -425,11 +425,25 @@ EOF;
             $io->write($output);
         }
 
-        // Add Framework JS, needs to be separate because of --path parameter
-        $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
-        $output = shell_exec(sprintf('symfony console importmap:require %1$s', $frameworkJs));
-        if ($io->isVerbose()) {
-            $io->write($output);
+        // Add Framework JS and stimulus controllers, needs to be separate because of --path parameter
+        $packages = [
+            'sumocoders/Framework' => 'js/index.js',
+            'sumocoders/SidebarCollapsable' => 'controllers/sidebar_collapsable_controller.js',
+            'sumocoders/Toast' => 'controllers/toast_controller.js',
+        ];
+        foreach ($packages as $name => $path) {
+            $frameworkJs = 'sumocoders/%s --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
+            $output = shell_exec(
+                sprintf(
+                    'symfony console importmap:require sumocoders/%1$s '.
+                    '--path "./vendor/sumocoders/framework-core-bundle/assets-public/%2$s"',
+                    $name,
+                    $path
+                )
+            );
+            if ($io->isVerbose()) {
+                $io->write($output);
+            }
         }
     }
 
