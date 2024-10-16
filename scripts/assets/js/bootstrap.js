@@ -9,6 +9,7 @@ import DateTimePicker from 'sumocoders/DateTimePicker';
 import Tabs from 'sumocoders/Tabs';
 import PasswordStrengthChecker from 'sumocoders/PasswordStrengthChecker';
 import FormCollection from 'sumocoders/FormCollection';
+import ScrollToTop from 'sumocoders/ScrollToTop';
 
 const app = startStimulusApp();
 // register any custom, 3rd party controllers here
@@ -23,3 +24,4 @@ app.register('date-time-picker', DateTimePicker);
 app.register('tabs', Tabs);
 app.register('password-strength-checker', PasswordStrengthChecker);
 app.register('form-collection', FormCollection);
+app.register('scroll-to-top', ScrollToTop);
