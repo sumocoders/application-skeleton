@@ -437,6 +437,7 @@ EOF;
             'Tooltip' => 'controllers/tooltip_controller.js',
             'DateTimePicker' => 'controllers/date_time_picker_controller.js',
             'Tabs' => 'controllers/tabs_controller.js',
+            'PasswordStrengthChecker' => 'controllers/password_strength_checker_controller.js',
         ];
         foreach ($packages as $name => $path) {
             $output = shell_exec(
