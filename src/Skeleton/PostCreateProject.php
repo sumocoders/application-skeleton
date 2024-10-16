@@ -427,7 +427,6 @@ EOF;
 
         // Add Framework JS and stimulus controllers, needs to be separate because of --path parameter
         $packages = [
-            'Framework' => 'js/index.js',
             'Clipboard' => 'controllers/clipboard_controller.js',
             'SidebarCollapsable' => 'controllers/sidebar_collapsable_controller.js',
             'Toast' => 'controllers/toast_controller.js',
