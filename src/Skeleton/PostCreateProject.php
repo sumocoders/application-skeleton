@@ -439,6 +439,7 @@ EOF;
             'Tabs' => 'controllers/tabs_controller.js',
             'PasswordStrengthChecker' => 'controllers/password_strength_checker_controller.js',
             'FormCollection' => 'controllers/form_collection_controller.js',
+            'debounce' => 'js/debounce.js',
         ];
         foreach ($packages as $name => $path) {
             $output = shell_exec(
