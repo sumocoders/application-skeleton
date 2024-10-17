@@ -86,12 +86,12 @@ Twig-CS-Fixer - check code styling:
   allow_failure: true
 
 Stylelint - check code styling:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/stylelint:latest
   script:
-    - node_modules/.bin/stylelint --output-file=stylelint-report.json --custom-formatter=node_modules/stylelint-formatter-gitlab-code-quality-report/index.js .
+    - stylelint --output-file=stylelint-report.json --custom-formatter=stylelint-formatter-gitlab-code-quality-report .
   after_script:
     # Run it again so the output is visible in the job
-    - node_modules/.bin/stylelint --color .
+    - stylelint --color .
   artifacts:
     expire_in: 1 week
     reports:
