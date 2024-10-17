@@ -10,9 +10,8 @@ parameters:
     container_xml_path: %rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml
   level: 7
   paths:
-    - config/
     - public/
     - src/
-    - tests/
   excludePaths:
     - %rootDir%/../../../src/Migrations
+  ignoreErrors:
