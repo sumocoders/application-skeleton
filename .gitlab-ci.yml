@@ -2,6 +2,7 @@ stages:
   - build
   - code quality
   - dependency scanning
+  - outdated packages
   - test
   - deploy
 
@@ -21,7 +22,7 @@ Install dependencies and build assets:
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
-    - php bin/console sass:build
+    - php bin/console sass:build --no-interaction
     - php bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json
   cache:
     <<: *global_cache
@@ -124,12 +125,7 @@ StandardJS - check code styling:
 NPM packages - check for vulnerabilities:
   image: sumocoders/cli-tools-php83:latest
   script:
-    - npm audit --omit=dev --json | ./node_modules/.bin/gitlab-npm-audit-parser -o npm-audit-report.json
-    - npm audit --omit=dev
-  artifacts:
-    expire_in: 1 week
-    reports:
-      dependency_scanning: npm-audit-report.json
+    - php bin/console importmap:audit --no-interaction --ansi
   stage: dependency scanning
   needs: [ "Install dependencies and build assets" ]
   tags:
@@ -141,6 +137,28 @@ PHP packages - composer audit:
   script:
     - composer audit --ansi --no-interaction
   stage: dependency scanning
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+
+# Outdated packages Scanning section
+NPM packages - check for outdated packages:
+  image: sumocoders/cli-tools-php83:latest
+  script:
+    - php bin/console importmap:outdated --no-interaction --ansi
+  stage: outdated packages
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+PHP packages - composer outdated:
+  image: sumocoders/cli-tools-php83:latest
+  script:
+    - composer outdated --ansi --no-interaction
+  stage: outdated packages
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
