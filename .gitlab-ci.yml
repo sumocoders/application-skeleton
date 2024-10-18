@@ -106,9 +106,9 @@ Stylelint - check code styling:
   allow_failure: true
 
 StandardJS - check code styling:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/standardjs:latest
   script:
-    - node_modules/.bin/standard | node_modules/.bin/standard-gitlab --output-file standardjs-report.json --human-readable
+    - sh -c 'standard . | standard-gitlab --output-file standardjs-report.json --human-readable'
   artifacts:
     expire_in: 1 week
     reports:
