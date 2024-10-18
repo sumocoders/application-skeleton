@@ -72,7 +72,10 @@ Twig-CS-Fixer - check code styling:
     - vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
   after_script:
     # Run it again so the output is visible in the job
-    - vendor/bin/twig-cs-fixer lint templates/
+    - >
+      if [ $CI_JOB_STATUS != 'success' ]; then
+        vendor/bin/twig-cs-fixer --no-interaction lint templates/
+      fi
   artifacts:
     expire_in: 1 week
     reports:
@@ -88,8 +91,10 @@ Stylelint - check code styling:
   script:
     - stylelint --output-file=stylelint-report.json --custom-formatter=stylelint-formatter-gitlab-code-quality-report .
   after_script:
-    # Run it again so the output is visible in the job
-    - stylelint --color .
+    - >
+      if [ $CI_JOB_STATUS != 'success' ]; then
+        stylelint --color .
+      fi
   artifacts:
     expire_in: 1 week
     reports:
