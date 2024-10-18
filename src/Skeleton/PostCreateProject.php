@@ -8,326 +8,13 @@ class PostCreateProject
 {
     public static function run(Event $event): void
     {
-        self::pinVolta();
-        self::runNpmInstall($event);
-        self::installNpmPackages($event);
-        self::installFrameworkStylePackage($event);
-        self::reconfigureWebpack($event);
         self::createAssets($event);
         self::reconfigureApplication($event);
         self::cleanupFiles($event);
         self::cleanup($event);
-        self::runNpmBuild($event);
         self::dumpInitialTranslations($event);
-    }
-
-    private static function runNpmInstall(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->info('Run `npm install`');
-
-        $output = shell_exec('npm install');
-        if ($io->isVerbose()) {
-            $io->write($output);
-        }
-    }
-
-    private static function installNpmPackages(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->notice('Install required NPM packages');
-
-        $packages = [
-            'standard',
-            'standard-gitlab',
-            'stylelint',
-            'stylelint-config-standard',
-            'stylelint-config-standard-scss',
-            'stylelint-formatter-gitlab-code-quality-report',
-            '@dshbuilds/gitlab-npm-audit-parser',
-        ];
-
-        if ($io->isVerbose()) {
-            $io->write(
-                sprintf(
-                    '   Install packages (%1$s) that are required for our git hooks.',
-                    implode(', ', $packages)
-                )
-            );
-        }
-
-        $command = sprintf('npm install %1$s --save-dev', implode(' ', $packages));
-        $output = shell_exec($command);
-
-        if ($io->isVerbose()) {
-            $io->write($output);
-        }
-    }
-
-    private static function installFrameworkStylePackage(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->notice('Install sumocoders/FrameworkStylePackage');
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
-
-        $io->notice('→ Install required NPM packages for FrameworkStylePackage');
-        $packages = [
-            'sass-embedded',
-            'frameworkstylepackage@^4',
-        ];
-        if ($io->isVerbose()) {
-            $io->write(
-                sprintf(
-                    '   Install packages (%1$s) that are required for our FrameworkStylePackage.',
-                    implode(', ', $packages)
-                )
-            );
-        }
-
-        $command = sprintf('npm install %1$s --save-dev', implode(' ', $packages));
-        $output = shell_exec($command);
-
-        if ($io->isVerbose()) {
-            $io->write($output);
-        }
-
-        $io->notice('→ Copy the imports');
-        if ($io->isVerbose()) {
-            $io->write('   Copy the Index.js file so we can manipulate the import specifically for this project.');
-        }
-        $assetsJsPath = $projectDir . '/assets/js';
-        if (!is_dir($assetsJsPath)) {
-            mkdir($assetsJsPath);
-        }
-        $content = file_get_contents($projectDir . '/node_modules/frameworkstylepackage/src/js/Index.js');
-        $content = preg_replace('|from \'./Framework/|', 'from \'frameworkstylepackage/src/js/Framework/', $content);
-        file_put_contents($assetsJsPath . '/imports.js', $content);
-        shell_exec(' node_modules/.bin/standard assets/js/imports.js --quiet --fix');
-
-        $io->notice('→ Import our Framework JS');
-        if ($io->isVerbose()) {
-            $io->write('   Import the frameworkstylepackage index file');
-        }
-        $content = file_get_contents($projectDir . '/assets/app.js');
-        $insert = [
-            'import { Framework } from \'./js/imports\'',
-        ];
-        $matches = [];
-        preg_match('|import\s.*styles\/app\.(s)?css|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = mb_strpos($content, PHP_EOL, $matches[0][1]);
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            PHP_EOL . implode(PHP_EOL, $insert)
-        );
-
-        if ($io->isVerbose()) {
-            $io->write('   Fix the app.js file');
-        }
-        $content = str_replace("\nimport './styles/app.css';", '', $content);
-
-
-        $io->notice('→ Initialize Framework JS');
-        if ($io->isVerbose()) {
-            $io->write('   Create new instance of the Framework object');
-        }
-        $insert = [
-            'Framework()',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            mb_strlen($content),
-            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-        // store the file
-        file_put_contents($projectDir . '/assets/app.js', $content);
-
-        // fix code styling, as the default
-        if ($io->isVerbose()) {
-            $io->write(
-                '   Apply StandardJS as the default app.js is not following these standards.'
-            );
-        }
-        shell_exec(' node_modules/.bin/standard assets/app.js --quiet --fix');
-
-        if (file_exists($projectDir . '/assets/bootstrap.js')) {
-            shell_exec(' node_modules/.bin/standard assets/bootstrap.js --quiet --fix');
-        }
-
-        /*
-         * Remove the Symfony default Stimulus controller. We don't use it
-         * and it doesn't pass our StandardJS CI checks.
-         */
-        if (file_exists($projectDir . '/assets/controllers/hello_controller.js')) {
-            shell_exec(sprintf('rm -rf %1$s', $projectDir . '/assets/controllers/hello_controller.js'));
-        }
-    }
-
-    private static function reconfigureWebpack(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->notice('Reconfigure webpack');
-
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
-        $content = file_get_contents($projectDir . '/webpack.config.js');
-
-        $io->notice('→ add require statements');
-        $insert = [
-            'var webpack = require(\'webpack\')',
-            'var WebpackShellPlugin = require(\'webpack-shell-plugin-alt\')',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            0,
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-        $io->notice('→ remove useless entries');
-        $content = preg_replace('|//.addEntry\(.*|', '', $content);
-
-        $io->notice('→ add extra entrypoints');
-        $insert = [
-            '  .addEntry(\'mail\', \'./assets/styles/mail.scss\')',
-            '  .addEntry(\'style\', \'./assets/styles/style.scss\')',
-            '  .addEntry(\'style-dark\', \'./assets/styles/style-dark.scss\')',
-            '  .addEntry(\'error\', \'./assets/styles/error.scss\')',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            self::findEndOfEncoreEntries($content),
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-        $io->notice('→ enable Sass/SCSS support');
-        $content = preg_replace(
-            '|//.enableSassLoader\(\)|',
-            '.enableSassLoader(options => { ' . "\n" .
-            '  options.implementation = require(\'sass-embedded\')' . "\n" .
-            '  options.sassOptions = {' . "\n" .
-            '    quietDeps: true' . "\n" .
-            '  }' . "\n" .
-            '})',
-            $content
-        );
-
-        $io->notice('→ enable autoProvideVariables');
-        $insert = [
-            '.autoProvideVariables({',
-            '  moment: \'moment\'',
-            '})',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            self::findEndOfEncoreConfiguration($content),
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-
-        $io->notice('→ add IgnorePlugin configuration');
-        $insert = [
-            '.addPlugin(new webpack.IgnorePlugin({',
-            '   resourceRegExp: /^\.\/locale$/,',
-            '   contextRegExp: /moment$/,',
-            '}))',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            self::findEndOfEncoreConfiguration($content),
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-
-        $io->notice('→ add WebpackShellPlugin configuration');
-        $insert = [
-            '.addPlugin(',
-            '  new WebpackShellPlugin({',
-            '    onBuildStart: [',
-            '      \'bin/console fos:js-routing:dump --format=json --locale=nl --target=public/build/routes/fos_js_routes.json\'',
-            '    ],',
-            '  })',
-            ')',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            self::findEndOfEncoreConfiguration($content),
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-
-        $io->notice('→ add CopyFiles configuration');
-        $insert = [
-            '.copyFiles(',
-            '  {',
-            '    from: \'./assets/images\',',
-            '    to: \'images/[path][name].[hash:8].[ext]\',',
-            '  }',
-            ')',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            self::findEndOfEncoreConfiguration($content),
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-        $io->notice('→ add Vue loader');
-        $insert = [
-            '.enableVueLoader(() => {}, { runtimeCompilerBuild: false })',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            self::findEndOfEncoreConfiguration($content),
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-
-        $io->notice('→ insert configureBabel');
-        $insert = [
-            '.configureBabel(() => {}, {',
-            '  useBuiltIns: \'usage\',',
-            '  corejs: 3,',
-            '  includeNodeModules: [\'frameworkstylepackage\']',
-            '})',
-        ];
-        $matches = [];
-        preg_match('|\.configureBabelPresetEnv|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $content = self::insertStringAtPosition(
-            $content,
-            $matches[0][1],
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
-
-
-        $io->notice('→ do not use configureBabelPresetEnv');
-        $content = preg_replace('|\.configureBabelPresetEnv.*\}\)|smU', '', $content);
-
-        $io->notice('→ disable enableBuildNotifications');
-        $content = preg_replace('|\.enableBuildNotifications\(\)|smU', '//.enableBuildNotifications()', $content);
-
-        file_put_contents($projectDir . '/webpack.config.js', $content);
-
-        // fix code styling
-        shell_exec(' node_modules/.bin/standard webpack.config.js --quiet --fix');
-    }
-
-    private static function cleanupFiles(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->notice('Cleanup files');
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
-
-        $io->notice('→ Remove app.css');
-        $path = $projectDir . '/assets/styles/app.css';
-        if (file_exists($path)) {
-            unlink($projectDir . '/assets/styles/app.css');
-        }
-
-        $io->notice('→ Remove reference to app.css');
-        $content = file_get_contents($projectDir . '/assets/app.js');
-        $content = preg_replace('|// any CSS you import will output into a single css file.*\n|', '', $content);
-        $content = preg_replace('|import \'./styles/app.css\'\n|', '', $content);
-
-        file_put_contents($projectDir . '/assets/app.js', $content);
+        self::importAssets($event);
+        self::runSass($event);
     }
 
     private static function createAssets(Event $event): void
@@ -354,6 +41,12 @@ class PostCreateProject
             $projectDir . '/scripts/templates',
             $projectDir . '/templates'
         );
+
+        $io->notice('→ Copy app.js');
+        self::copyDirectoryContent(
+            $projectDir . '/scripts/assets/js',
+            $projectDir . '/assets'
+        );
     }
 
     private static function reconfigureApplication(Event $event): void
@@ -361,6 +54,24 @@ class PostCreateProject
         $io = $event->getIO();
         $io->notice('Reconfigure application');
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Configure symfonycasts/sass');
+        $content = <<<EOF
+symfonycasts_sass:
+  root_sass:
+    - '%kernel.project_dir%/assets/styles/style.scss'
+    - '%kernel.project_dir%/assets/styles/style-dark.scss'
+    - '%kernel.project_dir%/assets/styles/mail.scss'
+    - '%kernel.project_dir%/assets/styles/error.scss'
+EOF;
+        file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
+
+        $io->notice('→ Set up asset mapper with framework-core-bundle');
+        file_put_contents(
+            $projectDir . '/config/packages/asset_mapper.yaml',
+            '            - vendor/sumocoders/framework-core-bundle/assets-public/',
+            FILE_APPEND
+        );
 
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
@@ -384,7 +95,6 @@ class PostCreateProject
             PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
-
 
         $io->notice('→ Reconfigure services');
         $content = file_get_contents($projectDir . '/config/services.yaml');
@@ -415,7 +125,6 @@ class PostCreateProject
             implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/services.yaml', $content);
-
 
         $io->notice('→ Reconfigure annotations');
         $content = file_get_contents($projectDir . '/config/routes.yaml');
@@ -602,6 +311,25 @@ class PostCreateProject
         file_put_contents($projectDir . '/docker-compose.override.yml', $content);
     }
 
+    private static function cleanupFiles(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Cleanup files');
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Remove app.css');
+        $path = $projectDir . '/assets/styles/app.css';
+        if (file_exists($path)) {
+            unlink($projectDir . '/assets/styles/app.css');
+        }
+
+        $io->notice('→ Remove reference to app.css');
+        $content = file_get_contents($projectDir . '/assets/app.js');
+        $content = preg_replace('|import \'\./styles/app.css\';\n|', '', $content);
+
+        file_put_contents($projectDir . '/assets/app.js', $content);
+    }
+
     private static function cleanup(Event $event): void
     {
         $io = $event->getIO();
@@ -637,18 +365,6 @@ class PostCreateProject
         shell_exec(sprintf('rm -rf %1$s', $projectDir . '/.github'));
     }
 
-    private static function runNpmBuild(Event $event): void
-    {
-        $io = $event->getIO();
-        $io->info('Run `npm run build`');
-
-        $output = shell_exec('npm run build');
-
-        if ($io->isVerbose()) {
-            $io->write($output);
-        }
-    }
-
     private static function dumpInitialTranslations(Event $event): void
     {
         $io = $event->getIO();
@@ -661,6 +377,68 @@ class PostCreateProject
         }
 
         $output = shell_exec('symfony console translation:extract nl --force --format yaml');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+    }
+
+    private static function importAssets(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Run `bin/console importmap:require`');
+
+        $assets = [
+            'bootstrap@^5.3',
+            '@fortawesome/fontawesome-free/css/all.css@^6.6',
+            'tom-select/dist/css/tom-select.default.css@^2.3',
+            'tom-select/dist/css/tom-select.bootstrap5.css@^2.3',
+            'flatpickr@^4.6',
+            'flatpickr/dist/flatpickr.css@^4.6',
+            'flatpickr/dist/themes/airbnb.css@^4.6',
+            'flatpickr/dist/l10n/at.js@^4.6',
+            'flatpickr/dist/l10n/cs.js@^4.6',
+            'flatpickr/dist/l10n/da.js@^4.6',
+            'flatpickr/dist/l10n/nl.js@^4.6',
+            'flatpickr/dist/l10n/et.js@^4.6',
+            'flatpickr/dist/l10n/fi.js@^4.6',
+            'flatpickr/dist/l10n/fr.js@^4.6',
+            'flatpickr/dist/l10n/de.js@^4.6',
+            'flatpickr/dist/l10n/gr.js@^4.6',
+            'flatpickr/dist/l10n/lv.js@^4.6',
+            'flatpickr/dist/l10n/lt.js@^4.6',
+            'flatpickr/dist/l10n/it.js@^4.6',
+            'flatpickr/dist/l10n/no.js@^4.6',
+            'flatpickr/dist/l10n/pl.js@^4.6',
+            'flatpickr/dist/l10n/pt.js@^4.6',
+            'flatpickr/dist/l10n/sk.js@^4.6',
+            'flatpickr/dist/l10n/sv.js@^4.6',
+            'flatpickr/dist/l10n/es.js@^4.6',
+            'flatpickr/dist/l10n/sl.js@^4.6',
+            'sortablejs@^1.15',
+            'axios@^1.7',
+        ];
+
+        // Add all packages
+        $output = shell_exec(sprintf('symfony console importmap:require %1$s', implode(' ', $assets)));
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+
+        // Add Framework JS, needs to be separate because of --path parameter
+        $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
+        $output = shell_exec(sprintf('symfony console importmap:require %1$s', $frameworkJs));
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+    }
+
+    private static function runSass(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->info('Run `bin/console sass:build`');
+
+        $output = shell_exec('symfony console sass:build');
+
         if ($io->isVerbose()) {
             $io->write($output);
         }
@@ -724,10 +502,5 @@ class PostCreateProject
     private static function testCommandLocally(string $command): bool
     {
         return shell_exec(sprintf("which %s", escapeshellcmd($command))) !== null;
-    }
-
-    private static function pinVolta(): void
-    {
-        shell_exec('volta pin node@lts');
     }
 }
