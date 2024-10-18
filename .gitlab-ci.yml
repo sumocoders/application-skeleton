@@ -41,7 +41,7 @@ PHP_CodeSniffer - check code styling:
     reports:
       codequality: phpcs-report.json
   stage: code quality
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
 
@@ -62,7 +62,7 @@ PHPStan - check for bugs:
     reports:
       codequality: phpstan-report.json
   stage: code quality
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
 
@@ -78,7 +78,7 @@ Twig-CS-Fixer - check code styling:
     reports:
       junit: twigcs-report.xml
   stage: code quality
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
   allow_failure: true
@@ -95,7 +95,7 @@ Stylelint - check code styling:
     reports:
       codequality: stylelint-report.json
   stage: code quality
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
   allow_failure: true
@@ -109,7 +109,7 @@ StandardJS - check code styling:
     reports:
       codequality: standardjs-report.json
   stage: code quality
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
   allow_failure: true
@@ -126,7 +126,7 @@ NPM packages - check for vulnerabilities:
     reports:
       dependency_scanning: npm-audit-report.json
   stage: dependency scanning
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
   allow_failure: true
@@ -136,7 +136,7 @@ PHP packages - composer audit:
   script:
     - composer audit --ansi --no-interaction
   stage: dependency scanning
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
   allow_failure: true
@@ -166,7 +166,7 @@ PHPUnit - Run tests:
     reports:
       junit: phpunit-report.xml
   stage: test
-  needs: ["Install dependencies and build assets"]
+  needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
   variables:
