@@ -35,11 +35,11 @@ Install dependencies and build assets:
 PHP_CodeSniffer - check code styling:
   image: sumocoders/cli-tools-php83:latest
   script:
-    - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.xml
+    - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
   artifacts:
     expire_in: 1 week
     reports:
-      codequality: phpcs-report.xml
+      codequality: phpcs-report.json
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
@@ -50,7 +50,7 @@ PHPStan - check for bugs:
   before_script:
     - bin/console cache:warmup --env=dev
   script:
-    - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.xml
+    - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.json
   after_script:
     # Run it again so the output is visible in the job
     - >
@@ -60,7 +60,7 @@ PHPStan - check for bugs:
   artifacts:
     expire_in: 1 week
     reports:
-      codequality: phpstan-report.xml
+      codequality: phpstan-report.json
   stage: code quality
   needs: ["Install dependencies and build assets"]
   tags:
