@@ -440,6 +440,7 @@ EOF;
             'FormCollection' => 'controllers/form_collection_controller.js',
             'debounce' => 'js/debounce.js',
             'ScrollToTop' => 'controllers/scroll_to_top_controller.js',
+            'Popover' => 'controllers/popover_controller.js',
         ];
         foreach ($packages as $name => $path) {
             $output = shell_exec(
