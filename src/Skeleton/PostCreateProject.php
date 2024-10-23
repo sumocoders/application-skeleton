@@ -393,6 +393,12 @@ EOF;
         $io = $event->getIO();
         $io->info('Run `bin/console importmap:require`');
 
+        // Turbo 8
+        $output = shell_exec('symfony console importmap:require @hotwired/turbo@8');
+        if ($io->isVerbose()) {
+            $io->write($output);
+        }
+
         $assets = [
             'bootstrap@^5.3',
             '@fortawesome/fontawesome-free/css/all.css@^6.6',
