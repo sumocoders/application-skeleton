@@ -320,7 +320,7 @@ EOF;
         $io->notice('→ Remove app.css');
         $path = $projectDir . '/assets/styles/app.css';
         if (file_exists($path)) {
-            unlink($projectDir . '/assets/styles/app.css');
+            unlink($path);
         }
 
         $io->notice('→ Remove reference to app.css');
@@ -328,6 +328,12 @@ EOF;
         $content = preg_replace('|import \'\./styles/app.css\';\n|', '', $content);
 
         file_put_contents($projectDir . '/assets/app.js', $content);
+
+        $io->notice('→ Remove hello_controller.js');
+        $path = $projectDir . '/assets/controllers/hello_controller.js';
+        if (file_exists($path)) {
+            unlink($path);
+        }
     }
 
     private static function cleanup(Event $event): void
