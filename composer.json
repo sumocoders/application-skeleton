@@ -13,7 +13,7 @@
         "beberlei/doctrineextensions": "^1.5",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "sentry/sentry-symfony": "^5.0",
-        "sumocoders/framework-core-bundle": "dev-319-stimulus",
+        "sumocoders/framework-core-bundle": "^11.0",
         "symfony/apache-pack": "^1.0.1",
         "symfony/asset-mapper": "^7.1",
         "symfony/debug-bundle": "^7.1",
@@ -47,7 +47,7 @@
         "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "^7.1",
-        "tijsverkoyen/deployer-sumo": "^3.2",
+        "tijsverkoyen/deployer-sumo": "^4.0",
         "vincentlanglet/twig-cs-fixer": "*"
     },
     "config": {
