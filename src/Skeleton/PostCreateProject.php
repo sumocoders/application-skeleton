@@ -320,7 +320,7 @@ EOF;
         $io->notice('→ Remove app.css');
         $path = $projectDir . '/assets/styles/app.css';
         if (file_exists($path)) {
-            unlink($projectDir . '/assets/styles/app.css');
+            unlink($path);
         }
 
         $io->notice('→ Remove reference to app.css');
@@ -328,6 +328,12 @@ EOF;
         $content = preg_replace('|import \'\./styles/app.css\';\n|', '', $content);
 
         file_put_contents($projectDir . '/assets/app.js', $content);
+
+        $io->notice('→ Remove hello_controller.js');
+        $path = $projectDir . '/assets/controllers/hello_controller.js';
+        if (file_exists($path)) {
+            unlink($path);
+        }
     }
 
     private static function cleanup(Event $event): void
@@ -416,6 +422,7 @@ EOF;
             'flatpickr/dist/l10n/sl.js@^4.6',
             'sortablejs@^1.15',
             'axios@^1.7',
+            '@stimulus-components/clipboard@^5.0',
         ];
 
         // Add all packages
@@ -424,11 +431,35 @@ EOF;
             $io->write($output);
         }
 
-        // Add Framework JS, needs to be separate because of --path parameter
-        $frameworkJs = 'sumocoders/Framework --path "./vendor/sumocoders/framework-core-bundle/assets-public/js/index.js"';
-        $output = shell_exec(sprintf('symfony console importmap:require %1$s', $frameworkJs));
-        if ($io->isVerbose()) {
-            $io->write($output);
+        // Add Framework JS and stimulus controllers, needs to be separate because of --path parameter
+        $packages = [
+            'Clipboard' => 'controllers/clipboard_controller.js',
+            'SidebarCollapsable' => 'controllers/sidebar_collapsable_controller.js',
+            'Toast' => 'controllers/toast_controller.js',
+            'addToast' => 'js/toast.js',
+            'cookie' => 'js/cookie.js',
+            'Theme' => 'controllers/theme_controller.js',
+            'Tooltip' => 'controllers/tooltip_controller.js',
+            'DateTimePicker' => 'controllers/date_time_picker_controller.js',
+            'Tabs' => 'controllers/tabs_controller.js',
+            'PasswordStrengthChecker' => 'controllers/password_strength_checker_controller.js',
+            'FormCollection' => 'controllers/form_collection_controller.js',
+            'debounce' => 'js/debounce.js',
+            'ScrollToTop' => 'controllers/scroll_to_top_controller.js',
+            'Popover' => 'controllers/popover_controller.js',
+        ];
+        foreach ($packages as $name => $path) {
+            $output = shell_exec(
+                sprintf(
+                    'symfony console importmap:require sumocoders/%1$s '.
+                    '--path "./vendor/sumocoders/framework-core-bundle/assets-public/%2$s"',
+                    $name,
+                    $path
+                )
+            );
+            if ($io->isVerbose()) {
+                $io->write($output);
+            }
         }
     }
 

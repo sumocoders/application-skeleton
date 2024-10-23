@@ -8,9 +8,3 @@ import 'flatpickr/dist/themes/airbnb.css'
 // JS
 import 'bootstrap'
 import './bootstrap.js'
-import { Framework } from 'sumocoders/Framework'
-
-// Load our Framework
-Framework()
-
-// App
