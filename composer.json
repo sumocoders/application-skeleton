@@ -47,7 +47,7 @@
         "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "^7.1",
-        "tijsverkoyen/deployer-sumo": "^4.0",
+        "tijsverkoyen/deployer-sumo": "^4.1",
         "vincentlanglet/twig-cs-fixer": "*"
     },
     "config": {
