@@ -67,11 +67,13 @@ EOF;
         file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
 
         $io->notice('→ Set up asset mapper with framework-core-bundle');
-        file_put_contents(
-            $projectDir . '/config/packages/asset_mapper.yaml',
-            '            - vendor/sumocoders/framework-core-bundle/assets-public/',
-            FILE_APPEND
+        $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
+        $content = preg_replace(
+            '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
+            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/' . PHP_EOL,
+            $content
         );
+        file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
 
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
