@@ -19,7 +19,7 @@ Open `deploy.php` and check the configuration, replace the example values
 
 Try to deploy to staging by running:
 
-    symfony php vendor/bin/deployer.phar deploy staging
+    symfony php vendor/bin/dep deploy stage=staging
     
 Log in through `ssh` on the dev-server and alter the `.env.local`-file to use the
 correct credentials.
