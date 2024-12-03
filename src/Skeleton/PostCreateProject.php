@@ -272,6 +272,14 @@ EOF;
         );
         file_put_contents($projectDir . '/.env', $content);
 
+        $io->notice('→ Setup .env.local');
+        $secret = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
+        $content = <<<EOF
+APP_ENV=dev
+APP_SECRET="$secret"
+EOF;
+        file_put_contents($projectDir . '/.env.local', $content);
+
         $io->notice('→ Reconfigure docker-compose.yml');
         $content = file_get_contents($projectDir . '/docker-compose.yml');
         // remove doctrine/doctrine-bundle configuration
