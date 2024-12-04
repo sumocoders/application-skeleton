@@ -13,7 +13,7 @@
         "beberlei/doctrineextensions": "^1.5",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "sentry/sentry-symfony": "^5.1",
-        "sumocoders/framework-core-bundle": "dev-351-symfony-72",
+        "sumocoders/framework-core-bundle": "^11.2",
         "symfony/apache-pack": "^1.0.1",
         "symfony/asset-mapper": "^7.2",
         "symfony/debug-bundle": "^7.2",
