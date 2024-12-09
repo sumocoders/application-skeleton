@@ -18,7 +18,7 @@ cache: &global_cache
 
 # Build section
 Install dependencies and build assets:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - COMPOSER_MEMORY_LIMIT=-1 composer install --no-scripts --no-progress
     - COMPOSER_MEMORY_LIMIT=-1 composer run-script post-autoload-dump
@@ -35,7 +35,7 @@ Install dependencies and build assets:
 
 # Code Quality section
 PHP_CodeSniffer - check code styling:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
   artifacts:
@@ -48,7 +48,7 @@ PHP_CodeSniffer - check code styling:
     - docker
 
 PHPStan - check for bugs:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   before_script:
     - bin/console cache:warmup --env=dev
   script:
@@ -69,7 +69,7 @@ PHPStan - check for bugs:
     - docker
 
 Twig-CS-Fixer - check code styling:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
   after_script:
@@ -124,7 +124,7 @@ StandardJS - check code styling:
 
 # Dependency Scanning section
 NPM packages - check for vulnerabilities:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - php bin/console importmap:audit --no-interaction --ansi
   stage: dependency scanning
@@ -134,7 +134,7 @@ NPM packages - check for vulnerabilities:
   allow_failure: true
 
 PHP packages - composer audit:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - composer audit --ansi --no-interaction
   stage: dependency scanning
@@ -146,7 +146,7 @@ PHP packages - composer audit:
 
 # Outdated packages Scanning section
 NPM packages - check for outdated packages:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - php bin/console importmap:outdated --no-interaction --ansi
   stage: outdated packages
@@ -156,7 +156,7 @@ NPM packages - check for outdated packages:
   allow_failure: true
 
 PHP packages - composer outdated:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   script:
     - composer outdated --ansi --no-interaction
   stage: outdated packages
@@ -168,7 +168,7 @@ PHP packages - composer outdated:
 
 # Test section
 PHPUnit - Run tests:
-  image: sumocoders/framework-php83:latest
+  image: sumocoders/framework-php84:latest
   services:
     - mysql:5.7
   before_script:
@@ -203,7 +203,7 @@ PHPUnit - Run tests:
 
 # Deploy section
 Deploy - to staging:
-  image: sumocoders/cli-tools-php83:latest
+  image: sumocoders/cli-tools-php84:latest
   before_script:
     # Add the private SSH key to the CI environment
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -217,7 +217,7 @@ Deploy - to staging:
     - vendor/bin/dep deploy stage=staging
   environment:
     name: staging
-    url: https://$project.$client.php83.sumocoders.eu
+    url: https://$project.$client.php84.sumocoders.eu
   only:
     - staging
   stage: deploy
