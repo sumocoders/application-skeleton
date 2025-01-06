@@ -7,11 +7,11 @@ services:
 parameters:
   inferPrivatePropertyTypeFromConstructor: true
   symfony:
-    container_xml_path: %rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml
+    containerXmlPath: %rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml
   level: 7
   paths:
     - public/
     - src/
   excludePaths:
-    - %rootDir%/../../../src/Migrations
+    - %rootDir%/../../../migrations
   ignoreErrors:
