@@ -463,6 +463,7 @@ EOF;
             'debounce' => 'js/debounce.js',
             'ScrollToTop' => 'controllers/scroll_to_top_controller.js',
             'Popover' => 'controllers/popover_controller.js',
+            'ajax_client' => 'js/ajax_client.js',
         ];
         foreach ($packages as $name => $path) {
             $output = shell_exec(
