@@ -2,22 +2,21 @@
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-        bootstrap="tests/bootstrap.php"
-        colors="true"
-        cacheDirectory=".phpunit.cache"
-        executionOrder="depends,defects"
         beStrictAboutOutputDuringTests="true"
+        bootstrap="tests/bootstrap.php"
+        cacheDirectory=".phpunit.cache"
+        colors="true"
+        executionOrder="depends,defects"
 >
     <extensions>
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
 
     <php>
+        <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="8.5" />
     </php>
 
     <testsuites>
@@ -28,11 +27,17 @@
 
     <source
             ignoreIndirectDeprecations="true"
+            ignoreSuppressionOfDeprecations="true"
             restrictNotices="true"
             restrictWarnings="true"
     >
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <deprecationTrigger>
+            <function>trigger_deprecation</function>
+            <method>Doctrine\Deprecations\Deprecation::trigger</method>
+            <method>Doctrine\Deprecations\Deprecation::delegateTriggerToBackend</method>
+        </deprecationTrigger>
     </source>
 </phpunit>

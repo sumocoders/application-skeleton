@@ -185,7 +185,7 @@ PHPUnit - Run tests:
     # Uncomment this if you have fixtures that need to be loaded
     # Make sure that you have installed doctrine/doctrine-fixtures-bundle
     #- php bin/console doctrine:fixtures:load --env=test
-    - php vendor/bin/simple-phpunit --log-junit phpunit-report.xml
+    - php vendor/bin/phpunit --color --testdox --log-junit phpunit-report.xml
   artifacts:
     reports:
       junit: phpunit-report.xml

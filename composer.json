@@ -43,10 +43,10 @@
         "micheh/phpcs-gitlab": "^1.1",
         "phpstan/phpstan-symfony": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0",
+        "phpunit/phpunit": "^12.2",
         "squizlabs/php_codesniffer": "^3.11",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "*",
-        "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "^7.2",
         "tijsverkoyen/deployer-sumo": "^4.1",
         "vincentlanglet/twig-cs-fixer": "*"
