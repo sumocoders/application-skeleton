@@ -298,6 +298,11 @@ EOF;
         $content = <<<EOF
 APP_ENV=dev
 APP_SECRET="$secret"
+
+###> symfony/mailer ###
+MAILER_DSN=smtp://127.0.0.1:1025
+###< symfony/mailer ###
+
 EOF;
         file_put_contents($projectDir . '/.env.local', $content);
 
