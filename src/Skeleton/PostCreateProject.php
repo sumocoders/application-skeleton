@@ -270,6 +270,27 @@ EOF;
             mb_strlen($content),
             PHP_EOL . implode(PHP_EOL, $insert)
         );
+
+        $offset = mb_strlen($content);
+        $insert = [
+            '###> symfony/mailer ###',
+            'MAILER_DEFAULT_SENDER_NAME="Your application"',
+            'MAILER_DEFAULT_TO_NAME="Your application"',
+            'MAILER_DEFAULT_TO_EMAIL="mailer_default_to_email_is_misconfigured@tesuta.be"',
+            '###< symfony/mailer ###',
+        ];
+        $matches = [];
+        preg_match('|###< symfony/mailer ###|mU', $content, $matches, PREG_OFFSET_CAPTURE);
+        if(!empty($matches)) {
+            $offset = $matches[0][1];
+            unset($insert[0]);
+            unset($insert[4]);
+        }
+        $content = self::insertStringAtPosition(
+            $content,
+            $offset,
+            implode(PHP_EOL, $insert) . PHP_EOL
+        );
         file_put_contents($projectDir . '/.env', $content);
 
         $io->notice('→ Setup .env.local');
@@ -468,7 +489,7 @@ EOF;
         foreach ($packages as $name => $path) {
             $output = shell_exec(
                 sprintf(
-                    'symfony console importmap:require sumocoders/%1$s '.
+                    'symfony console importmap:require sumocoders/%1$s ' .
                     '--path "./vendor/sumocoders/framework-core-bundle/assets-public/%2$s"',
                     $name,
                     $path
