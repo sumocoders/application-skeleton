@@ -274,6 +274,7 @@ EOF;
         $insert = [
             '###> symfony/mailer ###',
             'MAILER_DEFAULT_SENDER_NAME="Your application"',
+            'MAILER_DEFAULT_SENDER_EMAIL="mailer_default_sender_email_is_misconfigured@tesuta.be"',
             'MAILER_DEFAULT_TO_NAME="Your application"',
             'MAILER_DEFAULT_TO_EMAIL="mailer_default_to_email_is_misconfigured@tesuta.be"',
             '###< symfony/mailer ###',
