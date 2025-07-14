@@ -271,7 +271,6 @@ EOF;
             PHP_EOL . implode(PHP_EOL, $insert)
         );
 
-        $offset = mb_strlen($content);
         $insert = [
             '###> symfony/mailer ###',
             'MAILER_DEFAULT_SENDER_NAME="Your application"',
@@ -279,12 +278,13 @@ EOF;
             'MAILER_DEFAULT_TO_EMAIL="mailer_default_to_email_is_misconfigured@tesuta.be"',
             '###< symfony/mailer ###',
         ];
-        $matches = [];
-        preg_match('|###< symfony/mailer ###|mU', $content, $matches, PREG_OFFSET_CAPTURE);
-        if(!empty($matches)) {
-            $offset = $matches[0][1];
-            unset($insert[0]);
-            unset($insert[4]);
+        $offset = strpos($content, '###< symfony/mailer ###');
+        if ($offset !== false) {
+            // remove symfony/mailer wrapper as it is already present
+            array_shift($insert);
+            array_pop($insert);
+        } else {
+            $offset = mb_strlen($content);
         }
         $content = self::insertStringAtPosition(
             $content,
