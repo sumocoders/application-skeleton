@@ -270,6 +270,28 @@ EOF;
             mb_strlen($content),
             PHP_EOL . implode(PHP_EOL, $insert)
         );
+
+        $insert = [
+            '###> symfony/mailer ###',
+            'MAILER_DEFAULT_SENDER_NAME="Your application"',
+            'MAILER_DEFAULT_SENDER_EMAIL="mailer_default_sender_email_is_misconfigured@tesuta.be"',
+            'MAILER_DEFAULT_TO_NAME="Your application"',
+            'MAILER_DEFAULT_TO_EMAIL="mailer_default_to_email_is_misconfigured@tesuta.be"',
+            '###< symfony/mailer ###',
+        ];
+        $offset = strpos($content, '###< symfony/mailer ###');
+        if ($offset !== false) {
+            // remove symfony/mailer wrapper as it is already present
+            array_shift($insert);
+            array_pop($insert);
+        } else {
+            $offset = mb_strlen($content);
+        }
+        $content = self::insertStringAtPosition(
+            $content,
+            $offset,
+            implode(PHP_EOL, $insert) . PHP_EOL
+        );
         file_put_contents($projectDir . '/.env', $content);
 
         $io->notice('→ Setup .env.local');
@@ -277,6 +299,11 @@ EOF;
         $content = <<<EOF
 APP_ENV=dev
 APP_SECRET="$secret"
+
+###> symfony/mailer ###
+MAILER_DSN=smtp://127.0.0.1:1025
+###< symfony/mailer ###
+
 EOF;
         file_put_contents($projectDir . '/.env.local', $content);
 
@@ -468,7 +495,7 @@ EOF;
         foreach ($packages as $name => $path) {
             $output = shell_exec(
                 sprintf(
-                    'symfony console importmap:require sumocoders/%1$s '.
+                    'symfony console importmap:require sumocoders/%1$s ' .
                     '--path "./vendor/sumocoders/framework-core-bundle/assets-public/%2$s"',
                     $name,
                     $path

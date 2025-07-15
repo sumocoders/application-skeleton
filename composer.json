@@ -13,7 +13,7 @@
         "beberlei/doctrineextensions": "^1.5",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "sentry/sentry-symfony": "^5.1",
-        "sumocoders/framework-core-bundle": "^12.0",
+        "sumocoders/framework-core-bundle": "^13.0",
         "symfony/apache-pack": "^1.0.1",
         "symfony/asset-mapper": "^7.2",
         "symfony/debug-bundle": "^7.2",
@@ -38,14 +38,15 @@
     "require-dev": {
     },
     "flex-require-dev": {
+        "dama/doctrine-test-bundle": "^8.3",
         "doctrine/doctrine-fixtures-bundle": "^3.7",
         "micheh/phpcs-gitlab": "^1.1",
         "phpstan/phpstan-symfony": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0",
+        "phpunit/phpunit": "^12.2",
         "squizlabs/php_codesniffer": "^3.11",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "*",
-        "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "^7.2",
         "tijsverkoyen/deployer-sumo": "^4.1",
         "vincentlanglet/twig-cs-fixer": "*"

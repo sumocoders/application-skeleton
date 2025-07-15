@@ -37,7 +37,7 @@ Install dependencies and build assets:
 PHP_CodeSniffer - check code styling:
   image: sumocoders/cli-tools-php84:latest
   script:
-    - vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
+    - php vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
   artifacts:
     expire_in: 1 week
     reports:
@@ -50,14 +50,14 @@ PHP_CodeSniffer - check code styling:
 PHPStan - check for bugs:
   image: sumocoders/cli-tools-php84:latest
   before_script:
-    - bin/console cache:warmup --env=dev
+    - php bin/console cache:warmup --env=dev
   script:
-    - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.json
+    - php vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab --no-progress --no-interaction  > phpstan-report.json
   after_script:
     # Run it again so the output is visible in the job
     - >
       if [ $CI_JOB_STATUS != 'success' ]; then
-        vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
+        php vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
       fi
   artifacts:
     expire_in: 1 week
@@ -71,12 +71,12 @@ PHPStan - check for bugs:
 Twig-CS-Fixer - check code styling:
   image: sumocoders/cli-tools-php84:latest
   script:
-    - vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
+    - php vendor/bin/twig-cs-fixer lint templates/ --report=junit > twigcs-report.xml
   after_script:
     # Run it again so the output is visible in the job
     - >
       if [ $CI_JOB_STATUS != 'success' ]; then
-        vendor/bin/twig-cs-fixer --no-interaction lint templates/
+        php vendor/bin/twig-cs-fixer --no-interaction lint templates/
       fi
   artifacts:
     expire_in: 1 week
@@ -185,7 +185,7 @@ PHPUnit - Run tests:
     # Uncomment this if you have fixtures that need to be loaded
     # Make sure that you have installed doctrine/doctrine-fixtures-bundle
     #- php bin/console doctrine:fixtures:load --env=test
-    - php vendor/bin/simple-phpunit --log-junit phpunit-report.xml
+    - php vendor/bin/phpunit --color --testdox --log-junit phpunit-report.xml
   artifacts:
     reports:
       junit: phpunit-report.xml
@@ -214,7 +214,7 @@ Deploy - to staging:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - vendor/bin/dep deploy stage=staging
+    - php vendor/bin/dep deploy stage=staging
   environment:
     name: staging
     url: https://$project.$client.php84.sumocoders.eu
