@@ -255,18 +255,28 @@ EOF;
         $content = str_replace(
             [
                 '# failure_transport: failed',
-                '# async: \'%env(MESSENGER_TRANSPORT_DSN)%\'',
+                '            # async: \'%env(MESSENGER_TRANSPORT_DSN)%\'',
                 '# failed: \'doctrine://default?queue_name=failed\'',
-                '# \'App\Message\YourMessage\': async',
+                '# when@test:',
             ],
             [
                 'failure_transport: failed',
-                'async:' . PHP_EOL .
-                '                dsn: \'%env(MESSENGER_TRANSPORT_DSN)%\'' . PHP_EOL .
-                '                retry_strategy:' . PHP_EOL .
-                '                    max_retries: 0',
+                <<<'EOA'
+                            async:
+                                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                                retry_strategy:
+                                    max_retries: 0
+                EOA,
                 'failed: \'doctrine://default?queue_name=failed\'',
-                '\'Symfony\Component\Mailer\Messenger\SendEmailMessage\': async',
+                <<<'EOR'
+                when@prod:
+                    framework:
+                        messenger:
+                            routing:
+                                'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
+
+                # when@test:
+                EOR,
             ],
             $content
         );
