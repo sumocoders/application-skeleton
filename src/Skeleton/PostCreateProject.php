@@ -282,6 +282,21 @@ EOF;
         );
         file_put_contents($projectDir . '/config/packages/messenger.yaml', $content);
 
+        $io->notice('→ Reconfigure mailer');
+        file_put_contents($projectDir . '/config/packages/mailer.yaml',
+        <<<'EODEV'
+
+        when@dev:
+            framework:
+                mailer:
+                    envelope:
+                        # needs at least one recipient, otherwise allowed_recipients is ignored
+                        recipients: ['mail@localhost']
+                        allowed_recipients:
+                            - '.*@sumocoders.be'
+                            - '.*@tesuta.be'
+        EODEV, FILE_APPEND);
+
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         // Set the default env to prod
