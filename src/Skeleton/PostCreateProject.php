@@ -249,12 +249,50 @@ EOF;
         );
         file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
 
+        $io->notice('→ Reconfigure messenger');
+        $content = file_get_contents($projectDir . '/config/packages/messenger.yaml');
+        # https://symfony.com/doc/current/mailer.html#sending-messages-async
+        $content = str_replace(
+            [
+                '# failure_transport: failed',
+                '            # async: \'%env(MESSENGER_TRANSPORT_DSN)%\'',
+                '# failed: \'doctrine://default?queue_name=failed\'',
+                '# when@test:',
+            ],
+            [
+                'failure_transport: failed',
+                <<<'EOA'
+                            async:
+                                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                                retry_strategy:
+                                    max_retries: 0
+                EOA,
+                'failed: \'doctrine://default?queue_name=failed\'',
+                <<<'EOR'
+                when@prod:
+                    framework:
+                        messenger:
+                            routing:
+                                'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
+
+                # when@test:
+                EOR,
+            ],
+            $content
+        );
+        file_put_contents($projectDir . '/config/packages/messenger.yaml', $content);
+
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         // Set the default env to prod
         $content = str_replace(
             'APP_ENV=dev',
             'APP_ENV=prod',
+            $content
+        );
+        $content = str_replace(
+            'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0',
+            'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=1',
             $content
         );
         $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));

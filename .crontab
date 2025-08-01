@@ -13,3 +13,4 @@
 # | |_______ hour (0-23)
 # |_________ minute (0-59)
 MAILTO=bugs@sumocoders.be
+*/2 * * * * php ~/wwwroot/current/bin/console messenger:consume async --time-limit=110 --env=prod
