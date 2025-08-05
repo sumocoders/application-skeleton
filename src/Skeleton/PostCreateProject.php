@@ -108,6 +108,7 @@ EOF;
             '  locale: \'nl\'',
             '  locales:',
             '    - \'%locale%\'',
+            '  locales_regex: \'%locale%\' # separate with |, for example: nl|fr|en',
             '',
             '  # configuration of some fallback variables',
             '  fallbacks:',
@@ -134,8 +135,10 @@ EOF;
         preg_match('|controllers:.*attribute|smU', $content, $matches, PREG_OFFSET_CAPTURE);
         $offset = $matches[0][1] + mb_strlen($matches[0][0]);
         $insert = [
-            '    prefix:',
-            '        nl: \'\'',
+            '    prefix: /{_locale}',
+            '    requirements:',
+            '       _locale: \'%locales_regex%\'',
+            '    trailing_slash_on_root: false',
         ];
         $content = self::insertStringAtPosition(
             $content,
