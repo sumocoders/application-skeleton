@@ -135,12 +135,10 @@ EOF;
         preg_match('|controllers:.*attribute|smU', $content, $matches, PREG_OFFSET_CAPTURE);
         $offset = $matches[0][1] + mb_strlen($matches[0][0]);
         $insert = [
-            '    prefix:',
-            '        nl: \'\'',
-            '    ## Multilanguage',
-            '    # prefix: /{_locale}',
-            '    # requirements:',
-            '    #    _locale: \'%locales_regex%\'',
+            '    prefix: /{_locale}',
+            '    requirements:',
+            '       _locale: \'%locales_regex%\'',
+            '    trailing_slash_on_root: false',
         ];
         $content = self::insertStringAtPosition(
             $content,
