@@ -108,6 +108,7 @@ EOF;
             '  locale: \'nl\'',
             '  locales:',
             '    - \'%locale%\'',
+            '  locales_regex: \'%locale%\' # separate with |, for example: nl|fr|en',
             '',
             '  # configuration of some fallback variables',
             '  fallbacks:',
@@ -136,6 +137,10 @@ EOF;
         $insert = [
             '    prefix:',
             '        nl: \'\'',
+            '    ## Multilanguage',
+            '    # prefix: /{_locale}',
+            '    # requirements:',
+            '    #    _locale: \'%locales_regex%\'',
         ];
         $content = self::insertStringAtPosition(
             $content,
