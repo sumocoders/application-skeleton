@@ -360,6 +360,8 @@ APP_SECRET="$secret"
 MAILER_DSN=smtp://127.0.0.1:1025
 ###< symfony/mailer ###
 
+DATABASE_URL="mysql://root:root@127.0.0.1:3306/db_name_replace_me"
+
 EOF;
         file_put_contents($projectDir . '/.env.local', $content);
 
