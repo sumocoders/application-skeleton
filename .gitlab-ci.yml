@@ -170,7 +170,7 @@ PHP packages - composer outdated:
 PHPUnit - Run tests:
   image: sumocoders/framework-php84:latest
   services:
-    - mysql:5.7
+    - mysql:8.0
   before_script:
 # Uncomment this if you need Chrome for PDF's
 # or if you have integration tests that use Symfony Panther (https://github.com/symfony/panther)
