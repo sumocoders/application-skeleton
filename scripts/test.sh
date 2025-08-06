@@ -18,6 +18,8 @@ BRANCH_NAME=${1:-master}
 DEST_DIR=${2:-~/Sites/newapp}
 PACKAGE_NAME=sumocoders/application-skeleton
 
+cd "$(dirname "$(dirname "$(realpath "$0")")")" || exit
+
 # Warn the dev if they have uncommitted changes since they won't
 # be included in the spawned project.
 if ! git diff-index --quiet --cached HEAD; then
@@ -67,7 +69,7 @@ cat <<EOD > packages.json
 EOD
 
 # Execute the proper command.
-composer create-project --verbose --repository=./packages.json ${PACKAGE_NAME} "${DEST_DIR}" dev-${BRANCH_NAME}
+composer create-project --verbose --repository=./packages.json ${PACKAGE_NAME} "${DEST_DIR}" dev-${BRANCH_NAME} --ansi
 
 # Clean up after ourselves.
 rm -f packages.json
