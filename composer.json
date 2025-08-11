@@ -33,7 +33,8 @@
         "symfony/web-profiler-bundle": "^7.2",
         "symfony/yaml": "^7.2",
         "symfonycasts/sass-bundle": "^0.8",
-        "twbs/bootstrap": "^5.3"
+        "twbs/bootstrap": "^5.3",
+        "nelmio/security-bundle": "^3.5"
     },
     "require-dev": {
     },
