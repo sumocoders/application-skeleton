@@ -7,7 +7,7 @@ Use the following commands to create a new project:
     git add .
     git commit -n -m "Initial commit"
     
-Start you project by running:
+Start your project by running:
 
     symfony serve
     symfony console sass:build --watch
