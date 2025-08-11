@@ -404,6 +404,96 @@ EOF;
         );
         $content = trim($content) . PHP_EOL;
         file_put_contents($projectDir . '/docker-compose.override.yml', $content);
+
+        // reconfigure nelmio/security-bundle
+        $io->notice('→ Reconfigure nelmio/security-bundle');
+        $content = <<<EOF
+nelmio_security:
+  # prevents framing of the entire site
+  clickjacking:
+    paths:
+      '^/.*': DENY
+
+  # disables content type sniffing for script resources
+  content_type:
+    nosniff: true
+
+  # Content Security Policy (CSP) configuration
+  # (the specific configuration needs to be done below per environment)
+  csp:
+    enabled: true
+    report_logger_service: monolog.logger.security
+    request_matcher: null
+    hosts: [ ]
+    content_types: [ ]
+
+  # forces HTTPS handling, don't combine with flexible mode
+  # and make sure you have SSL working on your site before enabling this
+  forced_ssl: ~
+
+  # Send a full URL in the `Referer` header when performing a same-origin request,
+  # only send the origin of the document to secure destination (HTTPS->HTTPS),
+  # and send no header to a less secure destination (HTTPS->HTTP).
+  # If `strict-origin-when-cross-origin` is not supported, use `no-referrer` policy,
+  # no referrer information is sent along with requests.
+  referrer_policy:
+    enabled: true
+    policies:
+      - 'no-referrer'
+      - 'strict-origin-when-cross-origin'
+
+when@prod:
+  nelmio_security:
+    csp:
+      enforce:
+        level1_fallback: false
+        browser_adaptive:
+          enabled: false
+        default-src:
+          - 'self'
+        child-src:
+          - 'none'
+        font-src:
+          - 'self'
+        frame-src: [ ]
+        img-src:
+          - 'self'
+          - 'data:'
+        script-src:
+          - 'self'
+          - 'strict-dynamic'
+        style-src:
+          - 'self'
+        block-all-mixed-content: true
+        upgrade-insecure-requests: true
+
+when@dev:
+  nelmio_security:
+    csp:
+      report:
+        level1_fallback: false
+        browser_adaptive:
+          enabled: false
+        default-src:
+          - 'self'
+        child-src:
+          - 'none'
+        font-src:
+          - 'self'
+        frame-src: [ ]
+        img-src:
+          - 'self'
+          - 'data:'
+        script-src:
+          - 'self'
+          - 'strict-dynamic'
+        style-src:
+          - 'self'
+        block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
+        upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
+
+EOF;
+        file_put_contents($projectDir . '/config/packages/nelmio_security.yaml', $content);
     }
 
     private static function cleanupFiles(Event $event): void
