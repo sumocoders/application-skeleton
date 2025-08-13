@@ -7,10 +7,10 @@ Use the following commands to create a new project:
     git add .
     git commit -n -m "Initial commit"
     
-Start you project by running:
+Start your project by running:
 
     symfony serve
-    npm run watch
+    symfony console sass:build --watch
 
 ## Configuration
 ### Deployment
@@ -41,26 +41,6 @@ automatically. To do so, follow the steps below:
 6. Open `.gitlab-ci.yaml`, scroll to `Deploy - to staging`.
 7. Alter the url under `environment → url`.
     
-## Usage
-### Using Encore
-
-Building assets:
-
-    # compile assets once
-    npm run dev
-    
-    # or, recomile assets automatically when files change
-    npm run watch
-    
-    # on deploy, create a production build
-    npm run build
-
-For more information about Encore, see the [official documentation](https://symfony.com/doc/current/frontend.html#webpack-encore).
-
-## Tests
-We use [panther](https://github.com/symfony/panther) to add functional tests to our project.
-By default, a page response 200 should be tested on al pages. To do this you can add your urls to the `providePublicUrls` and/or `provideLoggedInUrls`.
-
 ## Working on the Skeleton
 ### Testing `create-project` locally
 

@@ -53,6 +53,29 @@ class PostCreateProject
     {
         $io = $event->getIO();
         $io->notice('Reconfigure application');
+
+        self::reconfigureSymfonycastsSass($event);
+        self::reconfigureAssetMapper($event);
+        self::reconfigureTwig($event);
+        self::reconfigureServices($event);
+        self::reconfigureAnnotations($event);
+        self::reconfigureRouting($event);
+        self::reconfigureFramework($event);
+        self::reconfigureSentry($event);
+        self::reconfigureDefaultLocale($event);
+        self::reconfigureDoctrine($event);
+        self::reconfigureValidator($event);
+        self::reconfigureMonolog($event);
+        self::reconfigureMessenger($event);
+        self::reconfigureMailer($event);
+        self::reconfigureEnv($event);
+        self::reconfigureDockerCompose($event);
+        self::reconfigureNelmioSecurityBundle($event);
+    }
+
+    private static function reconfigureSymfonycastsSass(Event $event): void
+    {
+        $io = $event->getIO();
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Configure symfonycasts/sass');
@@ -65,6 +88,12 @@ symfonycasts_sass:
     - '%kernel.project_dir%/assets/styles/error.scss'
 EOF;
         file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
+    }
+
+    private static function reconfigureAssetMapper(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Set up asset mapper with framework-core-bundle');
         $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
@@ -74,6 +103,12 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
+    }
+
+    private static function reconfigureTwig(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
@@ -97,6 +132,12 @@ EOF;
             PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
+    }
+
+    private static function reconfigureServices(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure services');
         $content = file_get_contents($projectDir . '/config/services.yaml');
@@ -128,6 +169,12 @@ EOF;
             implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/services.yaml', $content);
+    }
+
+    private static function reconfigureAnnotations(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure annotations');
         $content = file_get_contents($projectDir . '/config/routes.yaml');
@@ -146,6 +193,12 @@ EOF;
             PHP_EOL . implode(PHP_EOL, $insert)
         );
         file_put_contents($projectDir . '/config/routes.yaml', $content);
+    }
+
+    private static function reconfigureRouting(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure routing');
         $content = file_get_contents($projectDir . '/config/packages/routing.yaml');
@@ -155,6 +208,12 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
+    }
+
+    private static function reconfigureFramework(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
@@ -171,6 +230,12 @@ EOF;
             PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
+    }
+
+    private static function reconfigureSentry(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure sentry');
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
@@ -182,6 +247,12 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
+    }
+
+    private static function reconfigureDefaultLocale(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure default locale');
         $content = file_get_contents($projectDir . '/config/packages/translation.yaml');
@@ -191,6 +262,12 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
+    }
+
+    private static function reconfigureDoctrine(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure doctrine test environment');
         $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
@@ -215,6 +292,12 @@ EOF;
             PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
         );
         file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
+    }
+
+    private static function reconfigureValidator(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure validator');
         $content = file_get_contents($projectDir . '/config/packages/validator.yaml');
@@ -224,6 +307,12 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/validator.yaml', $content);
+    }
+
+    private static function reconfigureMonolog(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure monolog');
         $content = file_get_contents($projectDir . '/config/packages/monolog.yaml');
@@ -233,12 +322,14 @@ EOF;
             '$1"%kernel.logs_dir%/%kernel.environment%.log"',
             $content
         );
+
         // Audit trail channel
         $content = preg_replace(
             '/(monolog:(\r\n|\r|\n) +channels:(\r\n|\r|\n) +(- .*(\r\n|\r|\n))+)/',
             '$1        - audit_trail' . PHP_EOL,
             $content
         );
+
         // Audit trail log file
         $content = preg_replace(
             '/(when@prod:(\r\n|\r|\n) +monolog:(\r\n|\r|\n) +handlers:(\r\n|\r|\n)(.*(\r\n|\r|\n))+ +nested:(\r\n|\r|\n)( {16}.*(\r\n|\r|\n))+)/',
@@ -251,6 +342,12 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
+    }
+
+    private static function reconfigureMessenger(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure messenger');
         $content = file_get_contents($projectDir . '/config/packages/messenger.yaml');
@@ -284,10 +381,16 @@ EOF;
             $content
         );
         file_put_contents($projectDir . '/config/packages/messenger.yaml', $content);
+    }
+
+    private static function reconfigureMailer(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure mailer');
         file_put_contents($projectDir . '/config/packages/mailer.yaml',
-        <<<'EODEV'
+            <<<'EODEV'
 
         when@dev:
             framework:
@@ -299,6 +402,12 @@ EOF;
                             - '.*@sumocoders.be'
                             - '.*@tesuta.be'
         EODEV, FILE_APPEND);
+    }
+
+    private static function reconfigureEnv(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
@@ -364,6 +473,12 @@ DATABASE_URL="mysql://root:root@127.0.0.1:3306/db_name_replace_me"
 
 EOF;
         file_put_contents($projectDir . '/.env.local', $content);
+    }
+
+    private static function reconfigureDockerCompose(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure docker-compose.yml');
         $content = file_get_contents($projectDir . '/docker-compose.yml');
@@ -404,6 +519,102 @@ EOF;
         );
         $content = trim($content) . PHP_EOL;
         file_put_contents($projectDir . '/docker-compose.override.yml', $content);
+    }
+
+    private static function reconfigureNelmioSecurityBundle(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        // reconfigure nelmio/security-bundle
+        $io->notice('→ Reconfigure nelmio/security-bundle');
+        $content = <<<EOF
+nelmio_security:
+  # prevents framing of the entire site
+  clickjacking:
+    paths:
+      '^/.*': DENY
+
+  # disables content type sniffing for script resources
+  content_type:
+    nosniff: true
+
+  # Content Security Policy (CSP) configuration
+  # (the specific configuration needs to be done below per environment)
+  csp:
+    enabled: true
+    report_logger_service: monolog.logger.security
+    request_matcher: null
+    hosts: [ ]
+    content_types: [ ]
+
+  # forces HTTPS handling, don't combine with flexible mode
+  # and make sure you have SSL working on your site before enabling this
+  forced_ssl: ~
+
+  # Send a full URL in the `Referer` header when performing a same-origin request,
+  # only send the origin of the document to secure destination (HTTPS->HTTPS),
+  # and send no header to a less secure destination (HTTPS->HTTP).
+  # If `strict-origin-when-cross-origin` is not supported, use `no-referrer` policy,
+  # no referrer information is sent along with requests.
+  referrer_policy:
+    enabled: true
+    policies:
+      - 'no-referrer'
+      - 'strict-origin-when-cross-origin'
+
+when@prod:
+  nelmio_security:
+    csp:
+      enforce:
+        level1_fallback: false
+        browser_adaptive:
+          enabled: false
+        default-src:
+          - 'self'
+        child-src:
+          - 'none'
+        font-src:
+          - 'self'
+        frame-src: [ ]
+        img-src:
+          - 'self'
+          - 'data:'
+        script-src:
+          - 'self'
+          - 'strict-dynamic'
+        style-src:
+          - 'self'
+        block-all-mixed-content: true
+        upgrade-insecure-requests: true
+
+when@dev:
+  nelmio_security:
+    csp:
+      report:
+        level1_fallback: false
+        browser_adaptive:
+          enabled: false
+        default-src:
+          - 'self'
+        child-src:
+          - 'none'
+        font-src:
+          - 'self'
+        frame-src: [ ]
+        img-src:
+          - 'self'
+          - 'data:'
+        script-src:
+          - 'self'
+          - 'strict-dynamic'
+        style-src:
+          - 'self'
+        block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
+        upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
+
+EOF;
+        file_put_contents($projectDir . '/config/packages/nelmio_security.yaml', $content);
     }
 
     private static function cleanupFiles(Event $event): void

@@ -13,7 +13,7 @@
         "beberlei/doctrineextensions": "^1.5",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "sentry/sentry-symfony": "^5.1",
-        "sumocoders/framework-core-bundle": "^13.0",
+        "sumocoders/framework-core-bundle": "^14.0",
         "symfony/apache-pack": "^1.0.1",
         "symfony/asset-mapper": "^7.2",
         "symfony/debug-bundle": "^7.2",
@@ -33,7 +33,8 @@
         "symfony/web-profiler-bundle": "^7.2",
         "symfony/yaml": "^7.2",
         "symfonycasts/sass-bundle": "^0.8",
-        "twbs/bootstrap": "^5.3"
+        "twbs/bootstrap": "^5.3",
+        "nelmio/security-bundle": "^3.5"
     },
     "require-dev": {
     },
