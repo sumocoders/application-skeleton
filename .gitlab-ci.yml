@@ -1,5 +1,6 @@
 stages:
   - build
+  - scheduled tasks
   - code quality
   - dependency scanning
   - outdated packages
@@ -198,6 +199,23 @@ PHPUnit - Run tests:
     DATABASE_URL: mysql://root:root@mysql:3306/ci_test?serverVersion=5.7
     PANTHER_NO_SANDBOX: 1
     PANTHER_WEB_SERVER_PORT: 9080
+
+
+# Scheduled tasks section
+Task - Update dependencies:
+  image: sumocoders/cli-tools-php84:latest
+  script:
+    - git config --global user.email "bot@sumocoders.be"
+    - git config --global user.name "Sumo Bot"
+    - git config --global push.autoSetupRemote true
+    - git remote set-url origin "https://bot:${GITLAB_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - php bin/console sumo:maintenance:create-pr-for-outdated-dependencies --no-interaction --ansi
+  stage: scheduled tasks
+  needs: [ "Install dependencies and build assets" ]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE =~ /schedule|web/'
+  tags:
+    - docker
 
 
 # Deploy section
