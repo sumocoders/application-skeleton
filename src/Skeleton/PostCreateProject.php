@@ -10,6 +10,7 @@ class PostCreateProject
     {
         self::createAssets($event);
         self::reconfigureApplication($event);
+        self::fixFiles($event);
         self::cleanupFiles($event);
         self::cleanup($event);
         self::dumpInitialTranslations($event);
@@ -615,6 +616,42 @@ when@dev:
 
 EOF;
         file_put_contents($projectDir . '/config/packages/nelmio_security.yaml', $content);
+    }
+
+    private static function fixFiles(Event $event): void
+    {
+        $io = $event->getIO();
+        $io->notice('Fix files');
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+
+        $io->notice('→ Fix standardjs for csrf_protection_controller.js');
+        $file = 'assets/controllers/csrf_protection_controller.js';
+        $path = $projectDir . '/' . $file;
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
+            $content = str_replace(
+                'Object.keys(h).map(function (k) {',
+                implode(
+                    "\n",
+                    [
+                        '// eslint-disable-next-line array-callback-return',
+                        'Object.keys(h).map(function (k) {'
+                    ]
+                ),
+                $content
+            );
+            file_put_contents($path, $content);
+
+            $output = shell_exec(
+                sprintf(
+                    'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
+                    $file
+                )
+            );
+            if ($io->isVerbose()) {
+                $io->write($output);
+            }
+        }
     }
 
     private static function cleanupFiles(Event $event): void
