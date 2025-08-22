@@ -242,3 +242,27 @@ Deploy - to staging:
     - docker
   variables:
     USER: "CI/CD gitlab-runner"
+
+Deploy - to production:
+  image: sumocoders/cli-tools-php84:latest
+  before_script:
+    # Add the private SSH key to the CI environment
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - php vendor/bin/dep deploy stage=production
+  environment:
+    name: production
+    url: https://$productionUrl
+  only:
+    - master
+  stage: deploy
+  tags:
+    - docker
+  variables:
+    USER: "CI/CD gitlab-runner"
