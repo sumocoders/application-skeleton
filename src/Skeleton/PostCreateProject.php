@@ -677,6 +677,12 @@ EOF;
         if (file_exists($path)) {
             unlink($path);
         }
+
+        $io->notice('→ Remove phpstan.dist.neon');
+        $path = $projectDir . '/phpstan.dist.neon';
+        if (file_exists($path)) {
+            unlink($path);
+        }
     }
 
     private static function cleanup(Event $event): void
