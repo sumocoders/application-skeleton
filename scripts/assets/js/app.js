@@ -12,5 +12,5 @@ document.addEventListener('turbo:before-fetch-request', (event) => {
 })
 
 // JS
-import 'bootstrap'
-import './bootstrap.js'
+import 'bootstrap' // eslint-disable-line import/first
+import './bootstrap.js' // eslint-disable-line import/first
