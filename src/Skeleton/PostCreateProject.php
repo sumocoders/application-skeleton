@@ -648,6 +648,9 @@ EOF;
                     $file
                 )
             );
+
+            $io->write($output);
+            
             if ($io->isVerbose()) {
                 $io->write($output);
             }
