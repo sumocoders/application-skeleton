@@ -158,7 +158,7 @@ NPM packages - check for outdated packages:
 PHP packages - composer outdated:
   image: sumocoders/cli-tools-php84:latest
   script:
-    - composer outdated --ansi --no-interaction
+    - composer outdated --ansi --no-interaction --strict
   stage: outdated packages
   needs: [ "Install dependencies and build assets" ]
   tags:
