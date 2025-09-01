@@ -792,6 +792,7 @@ EOF;
             'DateTimePicker' => 'controllers/date_time_picker_controller.js',
             'Tabs' => 'controllers/tabs_controller.js',
             'PasswordStrengthChecker' => 'controllers/password_strength_checker_controller.js',
+            'TogglePassword' => 'controllers/toggle_password_controller.js',
             'FormCollection' => 'controllers/form_collection_controller.js',
             'debounce' => 'js/debounce.js',
             'ScrollToTop' => 'controllers/scroll_to_top_controller.js',
