@@ -37,7 +37,7 @@ Install dependencies and build assets:
 PHP_CodeSniffer - check code styling:
   image: sumocoders/cli-tools-php84:latest
   script:
-    - php vendor/bin/phpcs --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
+    - php vendor/bin/phpcs --colors --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
   artifacts:
     expire_in: 1 week
     reports:
