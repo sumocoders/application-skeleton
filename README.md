@@ -24,22 +24,15 @@ Try to deploy to staging by running:
 Log in through `ssh` on the dev-server and alter the `.env.local`-file to use the
 correct credentials.
 
-### Continuous deployment to staging
-Each time something is merged into the staging branch it can be deployed 
-automatically. To do so, follow the steps below:
+### Continuous deployment to staging and production
+Each time something is merged into the staging/master branch it will be deployed 
+automatically. 
 
-1. Open the project in Gitlab.
-2. Open Settings → Repository → Deploy Keys.
-3. Click the tab "Privately accessible deploy keys" and enable the key called 
-   "Sumo deploy user".
-4. Open Settings → CI / CD → Variables.
-5. Add a variable called `SSH_PRIVATE_KEY`, the value can be found in 1Password
-   under "Sumo Deploy User private key". You can check the "Protect variable" 
-   flag.
-5. Add a variable called `SSH_KNOWN_HOSTS`, the value should be the output of 
-    `ssh-keyscan -H dev03.sumocoders.eu`.
-6. Open `.gitlab-ci.yaml`, scroll to `Deploy - to staging`.
-7. Alter the url under `environment → url`.
+1. Open `.gitlab-ci.yaml`
+2. Scroll to `Deploy - to staging`.
+3. Alter the url under `environment → url`.
+4. Scroll to `Deploy - to production`.
+5. Alter the url under `environment → url`.
     
 ## Working on the Skeleton
 ### Testing `create-project` locally
