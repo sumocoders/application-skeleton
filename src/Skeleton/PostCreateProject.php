@@ -99,7 +99,8 @@ EOF;
         $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
         $content = preg_replace(
             '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
-            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/' . PHP_EOL,
+            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/' . PHP_EOL
+            . '            - vendor/twbs/bootstrap-icons/font/' . PHP_EOL,
             $content
         );
         file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
@@ -743,7 +744,6 @@ EOF;
 
         $assets = [
             'bootstrap@^5.3',
-            '@fortawesome/fontawesome-free/css/all.css@^6.6',
             'tom-select/dist/css/tom-select.default.css@^2.3',
             'tom-select/dist/css/tom-select.bootstrap5.css@^2.3',
             'flatpickr@^4.6',
