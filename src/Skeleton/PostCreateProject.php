@@ -99,7 +99,8 @@ EOF;
         $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
         $content = preg_replace(
             '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
-            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/' . PHP_EOL,
+            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/' . PHP_EOL
+            . '            - vendor/twbs/bootstrap-icons/font/' . PHP_EOL,
             $content
         );
         file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
