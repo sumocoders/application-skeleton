@@ -196,7 +196,7 @@ PHPUnit - Run tests:
   variables:
     MYSQL_DATABASE: ci_test
     MYSQL_ROOT_PASSWORD: root
-    DATABASE_URL: mysql://root:root@mysql:3306/ci_test?serverVersion=5.7
+    DATABASE_URL: mysql://root:root@mysql:3306/ci_test?serverVersion=8.0
     PANTHER_NO_SANDBOX: 1
     PANTHER_WEB_SERVER_PORT: 9080
 
