@@ -35,7 +35,7 @@
         "symfonycasts/sass-bundle": "^0.8",
         "twbs/bootstrap": "^5.3",
         "twbs/bootstrap-icons": "^1.13",
-        "nelmio/security-bundle": "^3.5"
+        "nelmio/security-bundle": "^3.7"
     },
     "require-dev": {
     },
