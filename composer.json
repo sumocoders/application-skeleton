@@ -41,7 +41,7 @@
     },
     "flex-require-dev": {
         "dama/doctrine-test-bundle": "^8.3",
-        "doctrine/doctrine-fixtures-bundle": "^3.7",
+        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "micheh/phpcs-gitlab": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0",
