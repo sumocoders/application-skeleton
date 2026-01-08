@@ -300,13 +300,18 @@ EOF;
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure validator');
-        $content = file_get_contents($projectDir . '/config/packages/validator.yaml');
-        $content = preg_replace(
-            '/email_validation_mode: .+/',
-            'email_validation_mode: strict',
-            $content
-        );
-        file_put_contents($projectDir . '/config/packages/validator.yaml', $content);
+        $file = $projectDir . '/config/packages/validator.yaml';
+        $lines = file($file, FILE_IGNORE_NEW_LINES);
+
+        $newLines = [];
+        foreach ($lines as $line) {
+            $newLines[] = $line;
+            if (preg_match('/^\s*validation:/', $line)) {
+                $newLines[] = '         email_validation_mode: strict';
+            }
+        }
+
+        file_put_contents($file, implode(PHP_EOL, $newLines));
     }
 
     private static function reconfigureMonolog(Event $event): void
