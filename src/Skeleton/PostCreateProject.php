@@ -191,17 +191,19 @@ EOF;
 
         $offset = strpos($content, 'type: attribute') + strlen('type: attribute');
 
-        $insert = [
+        $insert = implode(PHP_EOL, [
             '    prefix: /{_locale}',
             '    requirements:',
             '        _locale: \'%locales_regex%\'',
             '    trailing_slash_on_root: false',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            PHP_EOL . implode(PHP_EOL, $insert)
-        );
+        ]);
+        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . $insert);
+
+        $lines = explode(PHP_EOL, $content);
+        if (count($lines) > 9) {
+            $lines = array_slice($lines, 9);
+        }
+        $content = implode(PHP_EOL, $lines);
 
         file_put_contents($routesFile, $content);
     }
