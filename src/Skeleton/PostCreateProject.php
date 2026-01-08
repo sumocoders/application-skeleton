@@ -304,10 +304,14 @@ EOF;
         $lines = file($file, FILE_IGNORE_NEW_LINES);
 
         $newLines = [];
+        $added = false;
+
         foreach ($lines as $line) {
             $newLines[] = $line;
-            if (preg_match('/^\s*validation:/', $line)) {
-                $newLines[] = '         email_validation_mode: strict';
+
+            if (!$added && preg_match('/^\s*validation:/', $line)) {
+                $newLines[] = '        email_validation_mode: strict';
+                $added = true;
             }
         }
 
