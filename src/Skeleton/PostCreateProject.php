@@ -178,10 +178,19 @@ EOF;
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure annotations');
-        $content = file_get_contents($projectDir . '/config/routes.yaml');
-        $matches = [];
-        preg_match('|controllers:\s*\n\s*resource:.*|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = $matches[0][1] + strlen($matches[0][0]);
+        $routesFile = $projectDir . '/config/routes.yaml';
+        $content = file_get_contents($routesFile);
+
+        $replacement = implode(PHP_EOL, [
+            '    resource:',
+            '        path: ../src/Controller/',
+            '        namespace: App\Controller',
+            '    type: attribute',
+        ]);
+        $content = str_replace('resource: routing.controllers', $replacement, $content);
+
+        $offset = strpos($content, 'type: attribute') + strlen('type: attribute');
+
         $insert = [
             '    prefix: /{_locale}',
             '    requirements:',
@@ -193,7 +202,8 @@ EOF;
             $offset,
             PHP_EOL . implode(PHP_EOL, $insert)
         );
-        file_put_contents($projectDir . '/config/routes.yaml', $content);
+
+        file_put_contents($routesFile, $content);
     }
 
     private static function reconfigureRouting(Event $event): void
