@@ -179,23 +179,20 @@ EOF;
 
         $io->notice('→ Reconfigure annotations');
         $routesFile = $projectDir . '/config/routes.yaml';
-        $lines = file($routesFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-        if (count($lines) > 9) {
-            $lines = array_slice($lines, 9);
-        }
+        $content = implode(PHP_EOL, [
+            'controllers:',
+            '  resource:',
+            '    path: ../src/Controller/',
+            '    namespace: App\Controller',
+            '  type: attribute',
+            '  prefix: /{_locale}',
+            '  requirements:',
+            '    _locale: \'%locales_regex%\'',
+            '  trailing_slash_on_root: false',
+        ]);
 
-        $lines[] = 'controllers:';
-        $lines[] = '  resource:';
-        $lines[] = '    path: ../src/Controller/';
-        $lines[] = '    namespace: App\Controller';
-        $lines[] = '  type: attribute';
-        $lines[] = '  prefix: /{_locale}';
-        $lines[] = '  requirements:';
-        $lines[] = '    _locale: \'%locales_regex%\'';
-        $lines[] = '  trailing_slash_on_root: false';
-
-        file_put_contents($routesFile, implode(PHP_EOL, $lines));
+        file_put_contents($routesFile, $content);
     }
 
     private static function reconfigureRouting(Event $event): void
