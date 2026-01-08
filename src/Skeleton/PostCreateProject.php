@@ -186,18 +186,12 @@ EOF;
             '    path: ../src/Controller/',
             '    namespace: App\Controller',
             '  type: attribute',
-        ]);
-        $content = str_replace('resource: routing.controllers', $replacement, $content);
-
-        $offset = strpos($content, 'type: attribute') + strlen('type: attribute');
-
-        $insert = implode(PHP_EOL, [
-            '  prefix: /{_locale}',       // 2 spaces → aligns with resource/type
+            '  prefix: /{_locale}',
             '  requirements:',
             '    _locale: \'%locales_regex%\'',
             '  trailing_slash_on_root: false',
         ]);
-        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . $insert);
+        $content = str_replace('resource: routing.controllers', $replacement, $content);
 
         $lines = explode(PHP_EOL, $content);
         if (count($lines) > 9) {
