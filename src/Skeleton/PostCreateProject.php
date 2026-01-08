@@ -182,20 +182,20 @@ EOF;
         $content = file_get_contents($routesFile);
 
         $replacement = implode(PHP_EOL, [
-            '    resource:',
-            '        path: ../src/Controller/',
-            '        namespace: App\Controller',
-            '    type: attribute',
+            '  resource:',
+            '    path: ../src/Controller/',
+            '    namespace: App\Controller',
+            '  type: attribute',
         ]);
         $content = str_replace('resource: routing.controllers', $replacement, $content);
 
         $offset = strpos($content, 'type: attribute') + strlen('type: attribute');
 
         $insert = implode(PHP_EOL, [
-            '    prefix: /{_locale}',
-            '    requirements:',
-            '        _locale: \'%locales_regex%\'',
-            '    trailing_slash_on_root: false',
+            '  prefix: /{_locale}',       // 2 spaces → aligns with resource/type
+            '  requirements:',
+            '    _locale: \'%locales_regex%\'',
+            '  trailing_slash_on_root: false',
         ]);
         $content = self::insertStringAtPosition($content, $offset, PHP_EOL . $insert);
 
