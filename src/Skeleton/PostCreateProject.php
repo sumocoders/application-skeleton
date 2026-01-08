@@ -178,22 +178,21 @@ EOF;
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure annotations');
-        $content = file_get_contents($projectDir . '/config/routes.yaml');
-        $matches = [];
-        preg_match('|controllers:.*attribute|smU', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
-        $insert = [
-            '    prefix: /{_locale}',
-            '    requirements:',
-            '       _locale: \'%locales_regex%\'',
-            '    trailing_slash_on_root: false',
-        ];
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            PHP_EOL . implode(PHP_EOL, $insert)
-        );
-        file_put_contents($projectDir . '/config/routes.yaml', $content);
+        $routesFile = $projectDir . '/config/routes.yaml';
+
+        $content = implode(PHP_EOL, [
+            'controllers:',
+            '  resource:',
+            '    path: ../src/Controller/',
+            '    namespace: App\Controller',
+            '  type: attribute',
+            '  prefix: /{_locale}',
+            '  requirements:',
+            '    _locale: \'%locales_regex%\'',
+            '  trailing_slash_on_root: false',
+        ]);
+
+        file_put_contents($routesFile, $content);
     }
 
     private static function reconfigureRouting(Event $event): void
@@ -301,13 +300,22 @@ EOF;
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure validator');
-        $content = file_get_contents($projectDir . '/config/packages/validator.yaml');
-        $content = preg_replace(
-            '/email_validation_mode: .+/',
-            'email_validation_mode: strict',
-            $content
-        );
-        file_put_contents($projectDir . '/config/packages/validator.yaml', $content);
+        $file = $projectDir . '/config/packages/validator.yaml';
+        $lines = file($file, FILE_IGNORE_NEW_LINES);
+
+        $newLines = [];
+        $added = false;
+
+        foreach ($lines as $line) {
+            $newLines[] = $line;
+
+            if (!$added && preg_match('/^\s*validation:/', $line)) {
+                $newLines[] = '        email_validation_mode: strict';
+                $added = true;
+            }
+        }
+
+        file_put_contents($file, implode(PHP_EOL, $newLines));
     }
 
     private static function reconfigureMonolog(Event $event): void
