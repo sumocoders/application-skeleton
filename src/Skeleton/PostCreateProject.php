@@ -180,7 +180,7 @@ EOF;
         $io->notice('→ Reconfigure annotations');
         $content = file_get_contents($projectDir . '/config/routes.yaml');
         $matches = [];
-        preg_match('|controllers:\s*.*type:\s*attribute|smU', $content, $matches, PREG_OFFSET_CAPTURE);        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
+        preg_match('|controllers:\s*\n\s*resource:.*|', $content, $matches, PREG_OFFSET_CAPTURE);
         $offset = $matches[0][1] + strlen($matches[0][0]);
         $insert = [
             '    prefix: /{_locale}',
