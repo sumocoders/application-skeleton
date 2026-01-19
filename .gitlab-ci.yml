@@ -235,9 +235,11 @@ Deploy - to staging:
   environment:
     name: staging
     url: https://$project.$client.php84.sumocoders.eu
-  only:
-    - staging
   stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "staging"'
   tags:
     - docker
   variables:
@@ -259,9 +261,11 @@ Deploy - to production:
   environment:
     name: production
     url: https://$productionUrl
-  only:
-    - master
   stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
   tags:
     - docker
   variables:
