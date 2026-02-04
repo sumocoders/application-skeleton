@@ -184,7 +184,7 @@ PHPUnit - Run tests:
     - php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
     # Uncomment this if you have fixtures that need to be loaded
     # Make sure that you have installed doctrine/doctrine-fixtures-bundle
-    #- php bin/console doctrine:fixtures:load --env=test
+    #- php bin/console doctrine:fixtures:load --env=test --no-interaction
     - php vendor/bin/phpunit --color --testdox --log-junit phpunit-report.xml
   artifacts:
     reports:
