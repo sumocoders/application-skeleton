@@ -14,6 +14,7 @@ cache: &global_cache
     - node_modules
     - public/build
     - vendor
+    - var/sass
   policy: pull
 
 
