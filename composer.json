@@ -40,6 +40,7 @@
     "require-dev": {
     },
     "flex-require-dev": {
+        "carthage-software/mago": "^1.27",
         "dama/doctrine-test-bundle": "^8.3",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "micheh/phpcs-gitlab": "^2.0",

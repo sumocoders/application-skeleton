@@ -35,6 +35,57 @@ Install dependencies and build assets:
 
 
 # Code Quality section
+Mago - check code styling:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always fmt --check
+  after_script:
+    - >
+      if [ $CI_JOB_STATUS != 'success' ]; then
+        mago --config=./mago.dist.toml --colors=always fmt --dry-run
+      fi
+  stage: code quality
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Mago - lint:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always lint --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+Mago - analyse:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always analyse --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Mago - guard:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always guard --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
 PHP_CodeSniffer - check code styling:
   image: sumocoders/cli-tools-php85:latest
   script:
