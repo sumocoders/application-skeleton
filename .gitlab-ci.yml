@@ -43,7 +43,7 @@ Mago - check code styling:
     - mago --config=./mago.dist.toml --colors=always fmt --check
   after_script:
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         mago --config=./mago.dist.toml --colors=always fmt --dry-run
       fi
   stage: code quality
@@ -108,7 +108,7 @@ PHPStan - check for bugs:
   after_script:
     # Run it again so the output is visible in the job
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         php vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
       fi
   artifacts:
@@ -127,7 +127,7 @@ Twig-CS-Fixer - check code styling:
   after_script:
     # Run it again so the output is visible in the job
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         php vendor/bin/twig-cs-fixer --no-interaction lint templates/
       fi
   artifacts:
@@ -146,7 +146,7 @@ Stylelint - check code styling:
     - stylelint --output-file=stylelint-report.json --custom-formatter=stylelint-formatter-gitlab-code-quality-report .
   after_script:
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         stylelint --color .
       fi
   artifacts:
