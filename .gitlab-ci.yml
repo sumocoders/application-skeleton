@@ -7,14 +7,18 @@ stages:
   - test
   - deploy
 
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
 # Cache default configuration
 cache: &global_cache
   key: "$CI_PIPELINE_ID"
   paths:
     - node_modules
     - public/build
-    - vendor
     - var/sass
+    - vendor
   policy: pull
 
 
@@ -30,6 +34,7 @@ Install dependencies and build assets:
     <<: *global_cache
     policy: pull-push
   stage: build
+  interruptible: true
   tags:
     - docker
 
@@ -44,6 +49,7 @@ PHP_CodeSniffer - check code styling:
     reports:
       codequality: phpcs-report.json
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -65,6 +71,7 @@ PHPStan - check for bugs:
     reports:
       codequality: phpstan-report.json
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -84,6 +91,7 @@ Twig-CS-Fixer - check code styling:
     reports:
       junit: twigcs-report.xml
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -103,6 +111,7 @@ Stylelint - check code styling:
     reports:
       codequality: stylelint-report.json
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -117,6 +126,7 @@ StandardJS - check code styling:
     reports:
       codequality: standardjs-report.json
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -129,6 +139,7 @@ NPM packages - check for vulnerabilities:
   script:
     - php bin/console importmap:audit --no-interaction --ansi
   stage: dependency scanning
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -139,6 +150,7 @@ PHP packages - composer audit:
   script:
     - composer audit --ansi --no-interaction
   stage: dependency scanning
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -151,6 +163,7 @@ NPM packages - check for outdated packages:
   script:
     - php bin/console importmap:outdated --no-interaction --ansi
   stage: outdated packages
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -161,6 +174,7 @@ PHP packages - composer outdated:
   script:
     - composer outdated --ansi --no-interaction --strict
   stage: outdated packages
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -191,6 +205,7 @@ PHPUnit - Run tests:
     reports:
       junit: phpunit-report.xml
   stage: test
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -237,6 +252,7 @@ Deploy - to staging:
     name: staging
     url: https://$project.$client.php85.sumocoders.eu
   stage: deploy
+  interruptible: false
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
@@ -263,6 +279,7 @@ Deploy - to production:
     name: production
     url: https://$productionUrl
   stage: deploy
+  interruptible: false
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
