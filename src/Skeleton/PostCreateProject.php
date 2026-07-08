@@ -656,7 +656,8 @@ EOF;
                     $file
                 )
             );
-            if ($io->isVerbose()) {
+
+            if (!is_null($output) && $io->isVerbose()) {
                 $io->write($output);
             }
         }
