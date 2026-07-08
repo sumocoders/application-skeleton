@@ -4,6 +4,7 @@ namespace App\Skeleton;
 
 use Composer\Script\Event;
 
+// @mago-expect lint:too-many-methods,kan-defect,cyclomatic-complexity
 class PostCreateProject
 {
     public static function run(Event $event): void
@@ -25,29 +26,16 @@ class PostCreateProject
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Copy scss-files');
-        self::copyDirectoryContent(
-            $projectDir . '/scripts/assets/css',
-            $projectDir . '/assets/styles'
-        );
-
+        self::copyDirectoryContent($projectDir . '/scripts/assets/css', $projectDir . '/assets/styles');
 
         $io->notice('→ Copy image-files');
-        self::copyDirectoryContent(
-            $projectDir . '/scripts/assets/images',
-            $projectDir . '/assets/images'
-        );
+        self::copyDirectoryContent($projectDir . '/scripts/assets/images', $projectDir . '/assets/images');
 
         $io->notice('→ Copy templates');
-        self::copyDirectoryContent(
-            $projectDir . '/scripts/templates',
-            $projectDir . '/templates'
-        );
+        self::copyDirectoryContent($projectDir . '/scripts/templates', $projectDir . '/templates');
 
         $io->notice('→ Copy app.js');
-        self::copyDirectoryContent(
-            $projectDir . '/scripts/assets/js',
-            $projectDir . '/assets'
-        );
+        self::copyDirectoryContent($projectDir . '/scripts/assets/js', $projectDir . '/assets');
     }
 
     private static function reconfigureApplication(Event $event): void
@@ -81,12 +69,12 @@ class PostCreateProject
 
         $io->notice('→ Configure symfonycasts/sass');
         $content = <<<EOF
-symfonycasts_sass:
-  root_sass:
-    - '%kernel.project_dir%/assets/styles/style.scss'
-    - '%kernel.project_dir%/assets/styles/mail.scss'
-    - '%kernel.project_dir%/assets/styles/error.scss'
-EOF;
+            symfonycasts_sass:
+              root_sass:
+                - '%kernel.project_dir%/assets/styles/style.scss'
+                - '%kernel.project_dir%/assets/styles/mail.scss'
+                - '%kernel.project_dir%/assets/styles/error.scss'
+            EOF;
         file_put_contents($projectDir . '/config/packages/symfonycasts_sass.yaml', $content);
     }
 
@@ -99,9 +87,11 @@ EOF;
         $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
         $content = preg_replace(
             '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
-            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/' . PHP_EOL
-            . '            - vendor/twbs/bootstrap-icons/font/' . PHP_EOL,
-            $content
+            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/'
+            . PHP_EOL
+            . '            - vendor/twbs/bootstrap-icons/font/'
+            . PHP_EOL,
+            $content,
         );
         file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
     }
@@ -127,11 +117,7 @@ EOF;
             '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
             '        - "blocks.html.twig"',
         ];
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
-        );
+        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL);
         file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
     }
 
@@ -164,11 +150,7 @@ EOF;
             '  mailer.default_reply_to_name: \'%mailer.default_sender_name%\'',
             '  mailer.default_reply_to_email: \'%mailer.default_sender_email%\'',
         ];
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
+        $content = self::insertStringAtPosition($content, $offset, implode(PHP_EOL, $insert) . PHP_EOL);
         file_put_contents($projectDir . '/config/services.yaml', $content);
     }
 
@@ -205,7 +187,7 @@ EOF;
         $content = preg_replace(
             '/#default_uri: http:\/\/localhost/smU',
             'default_uri: \'%env(DEFAULT_URI)%\'',
-            $content
+            $content,
         );
         file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
     }
@@ -224,11 +206,7 @@ EOF;
             '    trusted_proxies: \'127.0.0.1,REMOTE_ADDR\'',
             '    trusted_headers: [ \'x-forwarded-for\', \'x-forwarded-host\', \'x-forwarded-proto\', \'x-forwarded-port\' ]',
         ];
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
-        );
+        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL);
         file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
     }
 
@@ -240,11 +218,12 @@ EOF;
         $io->notice('→ Reconfigure sentry');
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
         $content = preg_replace(
-            '/ +- \'Symfony\\\Component\\\ErrorHandler\\\Error\\\FatalError\'(\r\n|\r|\n)' .
-            ' +- \'Symfony\\\Component\\\Debug\\\Exception\\\FatalErrorException\'/',
-            '                - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\'' . PHP_EOL .
-            '                - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
-            $content
+            '/ +- \'Symfony\\\Component\\\ErrorHandler\\\Error\\\FatalError\'(\r\n|\r|\n)'
+            . ' +- \'Symfony\\\Component\\\Debug\\\Exception\\\FatalErrorException\'/',
+            '                - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\''
+            . PHP_EOL
+            . '                - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+            $content,
         );
         file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
     }
@@ -256,11 +235,7 @@ EOF;
 
         $io->notice('→ Reconfigure default locale');
         $content = file_get_contents($projectDir . '/config/packages/translation.yaml');
-        $content = str_replace(
-            ' en',
-            ' \'%locale%\'',
-            $content
-        );
+        $content = str_replace(' en', ' \'%locale%\'', $content);
         file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
     }
 
@@ -274,7 +249,7 @@ EOF;
         $content = preg_replace(
             '/(when@test:(\r\n|\r|\n) +doctrine:(\r\n|\r|\n) +dbal:(\r\n|\r|\n)( +#.*(\r\n|\r|\n)) +dbname_suffix: ).*(\r\n|\r|\n)/',
             '$1\'%env(string:default::TEST_TOKEN)%\'$7',
-            $content
+            $content,
         );
         file_put_contents($projectDir . '/config/packages/doctrine.yaml', $content);
 
@@ -286,11 +261,7 @@ EOF;
         $insert = [
             '    transactional: false',
         ];
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL
-        );
+        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL);
         file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
     }
 
@@ -329,26 +300,31 @@ EOF;
         $content = preg_replace(
             '/(nested:(\r\n|\r|\n) +type: stream(\r\n|\r|\n) +path: )php:\/\/stderr/',
             '$1"%kernel.logs_dir%/%kernel.environment%.log"',
-            $content
+            $content,
         );
 
         // Audit trail channel
         $content = preg_replace(
             '/(monolog:(\r\n|\r|\n) +channels:(\r\n|\r|\n) +(- .*(\r\n|\r|\n))+)/',
             '$1        - audit_trail' . PHP_EOL,
-            $content
+            $content,
         );
 
         // Audit trail log file
         $content = preg_replace(
             '/(when@prod:(\r\n|\r|\n) +monolog:(\r\n|\r|\n) +handlers:(\r\n|\r|\n)(.*(\r\n|\r|\n))+ +nested:(\r\n|\r|\n)( {16}.*(\r\n|\r|\n))+)/',
-            '$1' .
-            '            audit_trail:' . PHP_EOL .
-            '                type: stream' . PHP_EOL .
-            '                path: "%kernel.logs_dir%/audit.log"' . PHP_EOL .
-            '                level: info' . PHP_EOL .
-            '                channels: [\'audit_trail\']' . PHP_EOL,
-            $content
+            '$1'
+            . '            audit_trail:'
+            . PHP_EOL
+            . '                type: stream'
+            . PHP_EOL
+            . '                path: "%kernel.logs_dir%/audit.log"'
+            . PHP_EOL
+            . '                level: info'
+            . PHP_EOL
+            . '                channels: [\'audit_trail\']'
+            . PHP_EOL,
+            $content,
         );
         file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
     }
@@ -360,7 +336,7 @@ EOF;
 
         $io->notice('→ Reconfigure messenger');
         $content = file_get_contents($projectDir . '/config/packages/messenger.yaml');
-        # https://symfony.com/doc/current/mailer.html#sending-messages-async
+        // https://symfony.com/doc/current/mailer.html#sending-messages-async
         $content = str_replace(
             [
                 '# failure_transport: failed',
@@ -371,23 +347,23 @@ EOF;
             [
                 'failure_transport: failed',
                 <<<'EOA'
-                            async:
-                                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-                                retry_strategy:
-                                    max_retries: 0
-                EOA,
+                                async:
+                                    dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                                    retry_strategy:
+                                        max_retries: 0
+                    EOA,
                 'failed: \'doctrine://default?queue_name=failed\'',
                 <<<'EOR'
-                when@prod:
-                    framework:
-                        messenger:
-                            routing:
-                                'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
+                    when@prod:
+                        framework:
+                            messenger:
+                                routing:
+                                    'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
 
-                # when@test:
-                EOR,
+                    # when@test:
+                    EOR,
             ],
-            $content
+            $content,
         );
         file_put_contents($projectDir . '/config/packages/messenger.yaml', $content);
     }
@@ -398,19 +374,18 @@ EOF;
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
 
         $io->notice('→ Reconfigure mailer');
-        file_put_contents($projectDir . '/config/packages/mailer.yaml',
-            <<<'EODEV'
+        file_put_contents($projectDir . '/config/packages/mailer.yaml', <<<'EODEV'
 
-        when@dev:
-            framework:
-                mailer:
-                    envelope:
-                        # needs at least one recipient, otherwise allowed_recipients is ignored
-                        recipients: ['mail@localhost']
-                        allowed_recipients:
-                            - '.*@sumocoders.be'
-                            - '.*@tesuta.be'
-        EODEV, FILE_APPEND);
+            when@dev:
+                framework:
+                    mailer:
+                        envelope:
+                            # needs at least one recipient, otherwise allowed_recipients is ignored
+                            recipients: ['mail@localhost']
+                            allowed_recipients:
+                                - '.*@sumocoders.be'
+                                - '.*@tesuta.be'
+            EODEV, FILE_APPEND);
     }
 
     private static function reconfigureEnv(Event $event): void
@@ -421,15 +396,11 @@ EOF;
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
         // Set the default env to prod
-        $content = str_replace(
-            'APP_ENV=dev',
-            'APP_ENV=prod',
-            $content
-        );
+        $content = str_replace('APP_ENV=dev', 'APP_ENV=prod', $content);
         $content = str_replace(
             'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0',
             'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=1',
-            $content
+            $content,
         );
         $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $insert = [
@@ -439,11 +410,7 @@ EOF;
             'DEFAULT_URI="/"',
             '###< sumocoders/framework-core-bundle ###',
         ];
-        $content = self::insertStringAtPosition(
-            $content,
-            mb_strlen($content),
-            PHP_EOL . implode(PHP_EOL, $insert)
-        );
+        $content = self::insertStringAtPosition($content, mb_strlen($content), PHP_EOL . implode(PHP_EOL, $insert));
 
         $insert = [
             '###> symfony/mailer ###',
@@ -458,29 +425,25 @@ EOF;
             // remove symfony/mailer wrapper as it is already present
             array_shift($insert);
             array_pop($insert);
-        } else {
+        } else { // @mago-expect lint:no-else-clause
             $offset = mb_strlen($content);
         }
-        $content = self::insertStringAtPosition(
-            $content,
-            $offset,
-            implode(PHP_EOL, $insert) . PHP_EOL
-        );
+        $content = self::insertStringAtPosition($content, $offset, implode(PHP_EOL, $insert) . PHP_EOL);
         file_put_contents($projectDir . '/.env', $content);
 
         $io->notice('→ Setup .env.local');
         $secret = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
         $content = <<<EOF
-APP_ENV=dev
-APP_SECRET="$secret"
+            APP_ENV=dev
+            APP_SECRET="{$secret}"
 
-###> symfony/mailer ###
-MAILER_DSN=smtp://127.0.0.1:1025
-###< symfony/mailer ###
+            ###> symfony/mailer ###
+            MAILER_DSN=smtp://127.0.0.1:1025
+            ###< symfony/mailer ###
 
-DATABASE_URL="mysql://root:root@127.0.0.1:3306/db_name_replace_me"
+            DATABASE_URL="mysql://root:root@127.0.0.1:3306/db_name_replace_me"
 
-EOF;
+            EOF;
         file_put_contents($projectDir . '/.env.local', $content);
     }
 
@@ -495,14 +458,10 @@ EOF;
         $content = preg_replace(
             '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
             '',
-            $content
+            $content,
         );
         // remove empty volumes element
-        $content = preg_replace(
-            '|volumes:\n\n|mUs',
-            '',
-            $content
-        );
+        $content = preg_replace('|volumes:\n\n|mUs', '', $content);
         $content = trim($content) . PHP_EOL;
         file_put_contents($projectDir . '/docker-compose.yml', $content);
 
@@ -512,20 +471,12 @@ EOF;
         $content = preg_replace(
             '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
             '',
-            $content
+            $content,
         );
         // remove symfony/mailer configuration
-        $content = preg_replace(
-            '|###> symfony/mailer ###.*###< symfony/mailer ###|mUs',
-            '',
-            $content
-        );
+        $content = preg_replace('|###> symfony/mailer ###.*###< symfony/mailer ###|mUs', '', $content);
         // remove empty volumes element
-        $content = preg_replace(
-            '|services:\n|mUs',
-            '',
-            $content
-        );
+        $content = preg_replace('|services:\n|mUs', '', $content);
         $content = trim($content) . PHP_EOL;
         file_put_contents($projectDir . '/docker-compose.override.yml', $content);
     }
@@ -538,91 +489,91 @@ EOF;
         // reconfigure nelmio/security-bundle
         $io->notice('→ Reconfigure nelmio/security-bundle');
         $content = <<<EOF
-nelmio_security:
-  # prevents framing of the entire site
-  clickjacking:
-    paths:
-      '^/.*': DENY
+            nelmio_security:
+              # prevents framing of the entire site
+              clickjacking:
+                paths:
+                  '^/.*': DENY
 
-  # disables content type sniffing for script resources
-  content_type:
-    nosniff: true
+              # disables content type sniffing for script resources
+              content_type:
+                nosniff: true
 
-  # Content Security Policy (CSP) configuration
-  # (the specific configuration needs to be done below per environment)
-  csp:
-    enabled: true
-    report_logger_service: monolog.logger.security
-    request_matcher: null
-    hosts: [ ]
-    content_types: [ ]
+              # Content Security Policy (CSP) configuration
+              # (the specific configuration needs to be done below per environment)
+              csp:
+                enabled: true
+                report_logger_service: monolog.logger.security
+                request_matcher: null
+                hosts: [ ]
+                content_types: [ ]
 
-  # forces HTTPS handling, don't combine with flexible mode
-  # and make sure you have SSL working on your site before enabling this
-  forced_ssl: ~
+              # forces HTTPS handling, don't combine with flexible mode
+              # and make sure you have SSL working on your site before enabling this
+              forced_ssl: ~
 
-  # Send a full URL in the `Referer` header when performing a same-origin request,
-  # only send the origin of the document to secure destination (HTTPS->HTTPS),
-  # and send no header to a less secure destination (HTTPS->HTTP).
-  # If `strict-origin-when-cross-origin` is not supported, use `no-referrer` policy,
-  # no referrer information is sent along with requests.
-  referrer_policy:
-    enabled: true
-    policies:
-      - 'no-referrer'
-      - 'strict-origin-when-cross-origin'
+              # Send a full URL in the `Referer` header when performing a same-origin request,
+              # only send the origin of the document to secure destination (HTTPS->HTTPS),
+              # and send no header to a less secure destination (HTTPS->HTTP).
+              # If `strict-origin-when-cross-origin` is not supported, use `no-referrer` policy,
+              # no referrer information is sent along with requests.
+              referrer_policy:
+                enabled: true
+                policies:
+                  - 'no-referrer'
+                  - 'strict-origin-when-cross-origin'
 
-when@prod:
-  nelmio_security:
-    csp:
-      enforce:
-        level1_fallback: false
-        browser_adaptive:
-          enabled: false
-        default-src:
-          - 'self'
-        child-src:
-          - 'none'
-        font-src:
-          - 'self'
-        frame-src: [ ]
-        img-src:
-          - 'self'
-          - 'data:'
-        script-src:
-          - 'self'
-          - 'strict-dynamic'
-        style-src:
-          - 'self'
-        block-all-mixed-content: true
-        upgrade-insecure-requests: true
+            when@prod:
+              nelmio_security:
+                csp:
+                  enforce:
+                    level1_fallback: false
+                    browser_adaptive:
+                      enabled: false
+                    default-src:
+                      - 'self'
+                    child-src:
+                      - 'none'
+                    font-src:
+                      - 'self'
+                    frame-src: [ ]
+                    img-src:
+                      - 'self'
+                      - 'data:'
+                    script-src:
+                      - 'self'
+                      - 'strict-dynamic'
+                    style-src:
+                      - 'self'
+                    block-all-mixed-content: true
+                    upgrade-insecure-requests: true
 
-when@dev:
-  nelmio_security:
-    csp:
-      report:
-        level1_fallback: false
-        browser_adaptive:
-          enabled: false
-        default-src:
-          - 'self'
-        child-src:
-          - 'none'
-        font-src:
-          - 'self'
-        frame-src: [ ]
-        img-src:
-          - 'self'
-          - 'data:'
-        script-src:
-          - 'self'
-          - 'strict-dynamic'
-        style-src:
-          - 'self'
-        block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
-        upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
+            when@dev:
+              nelmio_security:
+                csp:
+                  report:
+                    level1_fallback: false
+                    browser_adaptive:
+                      enabled: false
+                    default-src:
+                      - 'self'
+                    child-src:
+                      - 'none'
+                    font-src:
+                      - 'self'
+                    frame-src: [ ]
+                    img-src:
+                      - 'self'
+                      - 'data:'
+                    script-src:
+                      - 'self'
+                      - 'strict-dynamic'
+                    style-src:
+                      - 'self'
+                    block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
+                    upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
 
-EOF;
+            EOF;
         file_put_contents($projectDir . '/config/packages/nelmio_security.yaml', $content);
     }
 
@@ -639,23 +590,18 @@ EOF;
             $content = file_get_contents($path);
             $content = str_replace(
                 'Object.keys(h).map(function (k) {',
-                implode(
-                    "\n",
-                    [
-                        '// eslint-disable-next-line array-callback-return',
-                        'Object.keys(h).map(function (k) {'
-                    ]
-                ),
-                $content
+                implode("\n", [
+                    '// eslint-disable-next-line array-callback-return',
+                    'Object.keys(h).map(function (k) {',
+                ]),
+                $content,
             );
             file_put_contents($path, $content);
 
-            $output = shell_exec(
-                sprintf(
-                    'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
-                    $file
-                )
-            );
+            $output = shell_exec(sprintf(
+                'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
+                $file,
+            ));
 
             if (!is_null($output) && $io->isVerbose()) {
                 $io->write($output);
@@ -705,10 +651,10 @@ EOF;
         $content = json_decode(file_get_contents($projectDir . '/composer.json'), true);
         unset($content['scripts']['post-create-project-cmd']);
 
-        file_put_contents(
-            $projectDir . '/composer.json',
-            json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-        );
+        file_put_contents($projectDir . '/composer.json', json_encode(
+            $content,
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES,
+        ));
 
         $io->notice('→ Remove the PostCreateProject file.');
         shell_exec(sprintf('rm %1$s', $projectDir . '/src/Skeleton/PostCreateProject.php'));
@@ -800,6 +746,7 @@ EOF;
             'DateTimePicker' => 'controllers/date_time_picker_controller.js',
             'Tabs' => 'controllers/tabs_controller.js',
             'PasswordStrengthChecker' => 'controllers/password_strength_checker_controller.js',
+            // @mago-expect lint:no-literal-password
             'TogglePassword' => 'controllers/toggle_password_controller.js',
             'FormCollection' => 'controllers/form_collection_controller.js',
             'debounce' => 'js/debounce.js',
@@ -809,14 +756,12 @@ EOF;
             'Confirm' => 'controllers/confirm_controller.js',
         ];
         foreach ($packages as $name => $path) {
-            $output = shell_exec(
-                sprintf(
-                    'symfony console importmap:require sumocoders/%1$s ' .
-                    '--path "./vendor/sumocoders/framework-core-bundle/assets-public/%2$s"',
-                    $name,
-                    $path
-                )
-            );
+            $output = shell_exec(sprintf(
+                'symfony console importmap:require sumocoders/%1$s '
+                . '--path "./vendor/sumocoders/framework-core-bundle/assets-public/%2$s"',
+                $name,
+                $path,
+            ));
             if ($io->isVerbose()) {
                 $io->write($output);
             }
@@ -877,21 +822,22 @@ EOF;
             $fullDestination = $destination . '/' . $file;
 
             // skip current and previous virtual folders
-            if (in_array($file, ['.', '..'])) {
+            if (in_array($file, ['.', '..'], true)) {
                 continue;
             }
 
             if (is_dir($fullSource)) {
                 mkdir($destination . '/' . $file);
                 self::copyDirectoryContent($fullSource, $fullDestination);
-            } else {
-                copy($fullSource, $fullDestination);
+                continue;
             }
+
+            copy($fullSource, $fullDestination);
         }
     }
 
     private static function testCommandLocally(string $command): bool
     {
-        return shell_exec(sprintf("which %s", escapeshellcmd($command))) !== null;
+        return shell_exec(sprintf('which %s', escapeshellcmd($command))) !== null;
     }
 }
