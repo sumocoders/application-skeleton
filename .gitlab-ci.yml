@@ -98,7 +98,7 @@ Mago - guard:
 PHP_CodeSniffer - check code styling:
   image: sumocoders/cli-tools-php85:latest
   script:
-    - php vendor/bin/phpcs --colors --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
+    - php vendor/bin/phpcs --colors --report-full -s --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
   artifacts:
     expire_in: 1 week
     reports:
