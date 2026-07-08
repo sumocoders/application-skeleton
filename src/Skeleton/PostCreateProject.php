@@ -223,6 +223,7 @@ class PostCreateProject
             $offset = (int) $matches[0][1] + mb_strlen($matches[0][0]);
             $insert = [
                 '    trusted_proxies: \'127.0.0.1,REMOTE_ADDR\'',
+                // phpcs:ignore Generic.Files.LineLength.TooLong
                 '    trusted_headers: [ \'x-forwarded-for\', \'x-forwarded-host\', \'x-forwarded-proto\', \'x-forwarded-port\' ]',
             ];
             $content = self::insertStringAtPosition(
@@ -276,6 +277,7 @@ class PostCreateProject
         $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
         if ($content !== false) {
             $content = (string) preg_replace(
+                // phpcs:ignore Generic.Files.LineLength.TooLong
                 '/(when@test:(\r\n|\r|\n) +doctrine:(\r\n|\r|\n) +dbal:(\r\n|\r|\n)( +#.*(\r\n|\r|\n)) +dbname_suffix: ).*(\r\n|\r|\n)/',
                 '$1\'%env(string:default::TEST_TOKEN)%\'$7',
                 $content,
@@ -350,6 +352,7 @@ class PostCreateProject
 
             // Audit trail log file
             $content = (string) preg_replace(
+                // phpcs:ignore Generic.Files.LineLength.TooLong
                 '/(when@prod:(\r\n|\r|\n) +monolog:(\r\n|\r|\n) +handlers:(\r\n|\r|\n)(.*(\r\n|\r|\n))+ +nested:(\r\n|\r|\n)( {16}.*(\r\n|\r|\n))+)/',
                 '$1'
                 . '            audit_trail:'
