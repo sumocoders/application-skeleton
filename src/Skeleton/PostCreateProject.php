@@ -2,9 +2,11 @@
 
 namespace App\Skeleton;
 
+// @mago-expect analysis:non-existent-use-import
 use Composer\Script\Event;
 
 // @mago-expect lint:too-many-methods,kan-defect,cyclomatic-complexity
+// @mago-expect analysis:mixed-method-access,invalid-method-access,non-existent-class-like,mixed-assignment
 class PostCreateProject
 {
     public static function run(Event $event): void
@@ -85,15 +87,17 @@ class PostCreateProject
 
         $io->notice('→ Set up asset mapper with framework-core-bundle');
         $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
-        $content = preg_replace(
-            '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
-            '$1            - vendor/sumocoders/framework-core-bundle/assets-public/'
-            . PHP_EOL
-            . '            - vendor/twbs/bootstrap-icons/font/'
-            . PHP_EOL,
-            $content,
-        );
-        file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
+        if ($content !== false) {
+            $content = preg_replace(
+                '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
+                '$1            - vendor/sumocoders/framework-core-bundle/assets-public/'
+                . PHP_EOL
+                . '            - vendor/twbs/bootstrap-icons/font/'
+                . PHP_EOL,
+                $content,
+            );
+            file_put_contents($projectDir . '/config/packages/asset_mapper.yaml', $content);
+        }
     }
 
     private static function reconfigureTwig(Event $event): void
@@ -103,22 +107,28 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
-        $matches = [];
-        preg_match('|twig:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
-        $insert = [
-            '    globals:',
-            '        fallbacks: "@framework.fallbacks"',
-            '        locales: "%locales%"',
-            '        breadcrumbs: \'@SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail\'',
-            '        page_title: \'@SumoCoders\FrameworkCoreBundle\Service\PageTitle\'',
-            '    form_themes:',
-            '        - "bootstrap_5_layout.html.twig"',
-            '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
-            '        - "blocks.html.twig"',
-        ];
-        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL);
-        file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
+        if ($content !== false) {
+            $matches = [];
+            preg_match('|twig:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+            $offset = (int) $matches[0][1] + mb_strlen($matches[0][0]);
+            $insert = [
+                '    globals:',
+                '        fallbacks: "@framework.fallbacks"',
+                '        locales: "%locales%"',
+                '        breadcrumbs: \'@SumoCoders\FrameworkCoreBundle\Service\BreadcrumbTrail\'',
+                '        page_title: \'@SumoCoders\FrameworkCoreBundle\Service\PageTitle\'',
+                '    form_themes:',
+                '        - "bootstrap_5_layout.html.twig"',
+                '        - "@SumoCodersFrameworkCore/Form/fields.html.twig"',
+                '        - "blocks.html.twig"',
+            ];
+            $content = self::insertStringAtPosition(
+                $content,
+                $offset,
+                PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL,
+            );
+            file_put_contents($projectDir . '/config/packages/twig.yaml', $content);
+        }
     }
 
     private static function reconfigureServices(Event $event): void
@@ -128,34 +138,36 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure services');
         $content = file_get_contents($projectDir . '/config/services.yaml');
-        $matches = [];
-        preg_match('|parameters:|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $newlinePosition = mb_strpos($content, PHP_EOL, $matches[0][1]);
-        if ($newlinePosition === false) {
-            throw new \RuntimeException('Could not find end of "parameters:" line in services.yaml');
+        if ($content !== false) {
+            $matches = [];
+            preg_match('|parameters:|', $content, $matches, PREG_OFFSET_CAPTURE);
+            $newlinePosition = mb_strpos($content, PHP_EOL, (int) $matches[0][1]);
+            if ($newlinePosition === false) {
+                throw new \RuntimeException('Could not find end of "parameters:" line in services.yaml');
+            }
+            $offset = $newlinePosition + 1;
+            $insert = [
+                '  # configuration of the locale, used for url and allowed locales',
+                '  locale: \'nl\'',
+                '  locales:',
+                '    - \'%locale%\'',
+                '  locales_regex: \'%locale%\' # separate with |, for example: nl|fr|en',
+                '',
+                '  # configuration of some fallback variables',
+                '  fallbacks:',
+                '    site_title: \'%env(resolve:SITE_TITLE)%\'',
+                '',
+                '  # Mailer configuration',
+                '  mailer.default_sender_name: \'%env(resolve:MAILER_DEFAULT_SENDER_NAME)%\'',
+                '  mailer.default_sender_email: \'%env(resolve:MAILER_DEFAULT_SENDER_EMAIL)%\'',
+                '  mailer.default_to_name: \'%env(resolve:MAILER_DEFAULT_TO_NAME)%\'',
+                '  mailer.default_to_email: \'%env(resolve:MAILER_DEFAULT_TO_EMAIL)%\'',
+                '  mailer.default_reply_to_name: \'%mailer.default_sender_name%\'',
+                '  mailer.default_reply_to_email: \'%mailer.default_sender_email%\'',
+            ];
+            $content = self::insertStringAtPosition($content, $offset, implode(PHP_EOL, $insert) . PHP_EOL);
+            file_put_contents($projectDir . '/config/services.yaml', $content);
         }
-        $offset = $newlinePosition + 1;
-        $insert = [
-            '  # configuration of the locale, used for url and allowed locales',
-            '  locale: \'nl\'',
-            '  locales:',
-            '    - \'%locale%\'',
-            '  locales_regex: \'%locale%\' # separate with |, for example: nl|fr|en',
-            '',
-            '  # configuration of some fallback variables',
-            '  fallbacks:',
-            '    site_title: \'%env(resolve:SITE_TITLE)%\'',
-            '',
-            '  # Mailer configuration',
-            '  mailer.default_sender_name: \'%env(resolve:MAILER_DEFAULT_SENDER_NAME)%\'',
-            '  mailer.default_sender_email: \'%env(resolve:MAILER_DEFAULT_SENDER_EMAIL)%\'',
-            '  mailer.default_to_name: \'%env(resolve:MAILER_DEFAULT_TO_NAME)%\'',
-            '  mailer.default_to_email: \'%env(resolve:MAILER_DEFAULT_TO_EMAIL)%\'',
-            '  mailer.default_reply_to_name: \'%mailer.default_sender_name%\'',
-            '  mailer.default_reply_to_email: \'%mailer.default_sender_email%\'',
-        ];
-        $content = self::insertStringAtPosition($content, $offset, implode(PHP_EOL, $insert) . PHP_EOL);
-        file_put_contents($projectDir . '/config/services.yaml', $content);
     }
 
     private static function reconfigureAnnotations(Event $event): void
@@ -188,12 +200,14 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure routing');
         $content = file_get_contents($projectDir . '/config/packages/routing.yaml');
-        $content = preg_replace(
-            '/#default_uri: http:\/\/localhost/smU',
-            'default_uri: \'%env(DEFAULT_URI)%\'',
-            $content,
-        );
-        file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
+        if ($content !== false) {
+            $content = preg_replace(
+                '/#default_uri: http:\/\/localhost/smU',
+                'default_uri: \'%env(DEFAULT_URI)%\'',
+                $content,
+            );
+            file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
+        }
     }
 
     private static function reconfigureFramework(Event $event): void
@@ -203,15 +217,21 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
-        $matches = [];
-        preg_match('|framework:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
-        $insert = [
-            '    trusted_proxies: \'127.0.0.1,REMOTE_ADDR\'',
-            '    trusted_headers: [ \'x-forwarded-for\', \'x-forwarded-host\', \'x-forwarded-proto\', \'x-forwarded-port\' ]',
-        ];
-        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL);
-        file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
+        if ($content !== false) {
+            $matches = [];
+            preg_match('|framework:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+            $offset = (int) $matches[0][1] + mb_strlen($matches[0][0]);
+            $insert = [
+                '    trusted_proxies: \'127.0.0.1,REMOTE_ADDR\'',
+                '    trusted_headers: [ \'x-forwarded-for\', \'x-forwarded-host\', \'x-forwarded-proto\', \'x-forwarded-port\' ]',
+            ];
+            $content = self::insertStringAtPosition(
+                $content,
+                $offset,
+                PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL,
+            );
+            file_put_contents($projectDir . '/config/packages/framework.yaml', $content);
+        }
     }
 
     private static function reconfigureSentry(Event $event): void
@@ -221,15 +241,17 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure sentry');
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
-        $content = preg_replace(
-            '/ +- \'Symfony\\\Component\\\ErrorHandler\\\Error\\\FatalError\'(\r\n|\r|\n)'
-            . ' +- \'Symfony\\\Component\\\Debug\\\Exception\\\FatalErrorException\'/',
-            '                - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\''
-            . PHP_EOL
-            . '                - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
-            $content,
-        );
-        file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
+        if ($content !== false) {
+            $content = (string) preg_replace(
+                '/ +- \'Symfony\\\Component\\\ErrorHandler\\\Error\\\FatalError\'(\r\n|\r|\n)'
+                . ' +- \'Symfony\\\Component\\\Debug\\\Exception\\\FatalErrorException\'/',
+                '                - \'Symfony\Component\HttpKernel\Exception\NotFoundHttpException\''
+                . PHP_EOL
+                . '                - \'Symfony\Component\Security\Core\Exception\AccessDeniedException\'',
+                $content,
+            );
+            file_put_contents($projectDir . '/config/packages/sentry.yaml', $content);
+        }
     }
 
     private static function reconfigureDefaultLocale(Event $event): void
@@ -239,8 +261,10 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure default locale');
         $content = file_get_contents($projectDir . '/config/packages/translation.yaml');
-        $content = str_replace(' en', ' \'%locale%\'', $content);
-        file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
+        if ($content !== false) {
+            $content = str_replace(' en', ' \'%locale%\'', $content);
+            file_put_contents($projectDir . '/config/packages/translation.yaml', $content);
+        }
     }
 
     private static function reconfigureDoctrine(Event $event): void
@@ -250,23 +274,29 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure doctrine test environment');
         $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
-        $content = preg_replace(
-            '/(when@test:(\r\n|\r|\n) +doctrine:(\r\n|\r|\n) +dbal:(\r\n|\r|\n)( +#.*(\r\n|\r|\n)) +dbname_suffix: ).*(\r\n|\r|\n)/',
-            '$1\'%env(string:default::TEST_TOKEN)%\'$7',
-            $content,
-        );
-        file_put_contents($projectDir . '/config/packages/doctrine.yaml', $content);
+        if ($content !== false) {
+            $content = (string) preg_replace(
+                '/(when@test:(\r\n|\r|\n) +doctrine:(\r\n|\r|\n) +dbal:(\r\n|\r|\n)( +#.*(\r\n|\r|\n)) +dbname_suffix: ).*(\r\n|\r|\n)/',
+                '$1\'%env(string:default::TEST_TOKEN)%\'$7',
+                $content,
+            );
+            file_put_contents($projectDir . '/config/packages/doctrine.yaml', $content);
 
-        $io->notice('→ Reconfigure doctrine migrations');
-        $content = file_get_contents($projectDir . '/config/packages/doctrine_migrations.yaml');
-        $matches = [];
-        preg_match('|doctrine_migrations:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = $matches[0][1] + mb_strlen($matches[0][0]);
-        $insert = [
-            '    transactional: false',
-        ];
-        $content = self::insertStringAtPosition($content, $offset, PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL);
-        file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
+            $io->notice('→ Reconfigure doctrine migrations');
+            $content = (string) file_get_contents($projectDir . '/config/packages/doctrine_migrations.yaml');
+            $matches = [];
+            preg_match('|doctrine_migrations:|smU', $content, $matches, PREG_OFFSET_CAPTURE);
+            $offset = (int) $matches[0][1] + mb_strlen($matches[0][0]);
+            $insert = [
+                '    transactional: false',
+            ];
+            $content = self::insertStringAtPosition(
+                $content,
+                $offset,
+                PHP_EOL . implode(PHP_EOL, $insert) . PHP_EOL,
+            );
+            file_put_contents($projectDir . '/config/packages/doctrine_migrations.yaml', $content);
+        }
     }
 
     private static function reconfigureValidator(Event $event): void
@@ -277,6 +307,9 @@ class PostCreateProject
         $io->notice('→ Reconfigure validator');
         $file = $projectDir . '/config/packages/validator.yaml';
         $lines = file($file, FILE_IGNORE_NEW_LINES);
+        if ($lines === false) {
+            return;
+        }
 
         $newLines = [];
         $added = false;
@@ -300,37 +333,39 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure monolog');
         $content = file_get_contents($projectDir . '/config/packages/monolog.yaml');
-        // Default log file
-        $content = preg_replace(
-            '/(nested:(\r\n|\r|\n) +type: stream(\r\n|\r|\n) +path: )php:\/\/stderr/',
-            '$1"%kernel.logs_dir%/%kernel.environment%.log"',
-            $content,
-        );
+        if ($content !== false) {
+            // Default log file
+            $content = (string) preg_replace(
+                '/(nested:(\r\n|\r|\n) +type: stream(\r\n|\r|\n) +path: )php:\/\/stderr/',
+                '$1"%kernel.logs_dir%/%kernel.environment%.log"',
+                $content,
+            );
 
-        // Audit trail channel
-        $content = preg_replace(
-            '/(monolog:(\r\n|\r|\n) +channels:(\r\n|\r|\n) +(- .*(\r\n|\r|\n))+)/',
-            '$1        - audit_trail' . PHP_EOL,
-            $content,
-        );
+            // Audit trail channel
+            $content = (string) preg_replace(
+                '/(monolog:(\r\n|\r|\n) +channels:(\r\n|\r|\n) +(- .*(\r\n|\r|\n))+)/',
+                '$1        - audit_trail' . PHP_EOL,
+                $content,
+            );
 
-        // Audit trail log file
-        $content = preg_replace(
-            '/(when@prod:(\r\n|\r|\n) +monolog:(\r\n|\r|\n) +handlers:(\r\n|\r|\n)(.*(\r\n|\r|\n))+ +nested:(\r\n|\r|\n)( {16}.*(\r\n|\r|\n))+)/',
-            '$1'
-            . '            audit_trail:'
-            . PHP_EOL
-            . '                type: stream'
-            . PHP_EOL
-            . '                path: "%kernel.logs_dir%/audit.log"'
-            . PHP_EOL
-            . '                level: info'
-            . PHP_EOL
-            . '                channels: [\'audit_trail\']'
-            . PHP_EOL,
-            $content,
-        );
-        file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
+            // Audit trail log file
+            $content = (string) preg_replace(
+                '/(when@prod:(\r\n|\r|\n) +monolog:(\r\n|\r|\n) +handlers:(\r\n|\r|\n)(.*(\r\n|\r|\n))+ +nested:(\r\n|\r|\n)( {16}.*(\r\n|\r|\n))+)/',
+                '$1'
+                . '            audit_trail:'
+                . PHP_EOL
+                . '                type: stream'
+                . PHP_EOL
+                . '                path: "%kernel.logs_dir%/audit.log"'
+                . PHP_EOL
+                . '                level: info'
+                . PHP_EOL
+                . '                channels: [\'audit_trail\']'
+                . PHP_EOL,
+                $content,
+            );
+            file_put_contents($projectDir . '/config/packages/monolog.yaml', $content);
+        }
     }
 
     private static function reconfigureMessenger(Event $event): void
@@ -340,36 +375,38 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure messenger');
         $content = file_get_contents($projectDir . '/config/packages/messenger.yaml');
-        // https://symfony.com/doc/current/mailer.html#sending-messages-async
-        $content = str_replace(
-            [
-                '# failure_transport: failed',
-                '            # async: \'%env(MESSENGER_TRANSPORT_DSN)%\'',
-                '# failed: \'doctrine://default?queue_name=failed\'',
-                '# when@test:',
-            ],
-            [
-                'failure_transport: failed',
-                <<<'EOA'
-                                async:
-                                    dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-                                    retry_strategy:
-                                        max_retries: 0
-                    EOA,
-                'failed: \'doctrine://default?queue_name=failed\'',
-                <<<'EOR'
-                    when@prod:
-                        framework:
-                            messenger:
-                                routing:
-                                    'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
+        if ($content !== false) {
+            // https://symfony.com/doc/current/mailer.html#sending-messages-async
+            $content = str_replace(
+                [
+                    '# failure_transport: failed',
+                    '            # async: \'%env(MESSENGER_TRANSPORT_DSN)%\'',
+                    '# failed: \'doctrine://default?queue_name=failed\'',
+                    '# when@test:',
+                ],
+                [
+                    'failure_transport: failed',
+                    <<<'EOA'
+                                    async:
+                                        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                                        retry_strategy:
+                                            max_retries: 0
+                        EOA,
+                    'failed: \'doctrine://default?queue_name=failed\'',
+                    <<<'EOR'
+                        when@prod:
+                            framework:
+                                messenger:
+                                    routing:
+                                        'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
 
-                    # when@test:
-                    EOR,
-            ],
-            $content,
-        );
-        file_put_contents($projectDir . '/config/packages/messenger.yaml', $content);
+                        # when@test:
+                        EOR,
+                ],
+                $content,
+            );
+            file_put_contents($projectDir . '/config/packages/messenger.yaml', $content);
+        }
     }
 
     private static function reconfigureMailer(Event $event): void
@@ -399,41 +436,47 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
-        // Set the default env to prod
-        $content = str_replace('APP_ENV=dev', 'APP_ENV=prod', $content);
-        $content = str_replace(
-            'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0',
-            'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=1',
-            $content,
-        );
-        $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
-        $insert = [
-            '###> sumocoders/framework-core-bundle ###',
-            'SITE_TITLE="Your application"',
-            'ENCRYPTION_KEY="' . $encryptionKey . '"',
-            'DEFAULT_URI="/"',
-            '###< sumocoders/framework-core-bundle ###',
-        ];
-        $content = self::insertStringAtPosition($content, mb_strlen($content), PHP_EOL . implode(PHP_EOL, $insert));
+        if ($content !== false) {
+            // Set the default env to prod
+            $content = str_replace('APP_ENV=dev', 'APP_ENV=prod', $content);
+            $content = str_replace(
+                'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0',
+                'MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=1',
+                $content,
+            );
+            $encryptionKey = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
+            $insert = [
+                '###> sumocoders/framework-core-bundle ###',
+                'SITE_TITLE="Your application"',
+                'ENCRYPTION_KEY="' . $encryptionKey . '"',
+                'DEFAULT_URI="/"',
+                '###< sumocoders/framework-core-bundle ###',
+            ];
+            $content = self::insertStringAtPosition(
+                $content,
+                mb_strlen($content),
+                PHP_EOL . implode(PHP_EOL, $insert),
+            );
 
-        $insert = [
-            '###> symfony/mailer ###',
-            'MAILER_DEFAULT_SENDER_NAME="Your application"',
-            'MAILER_DEFAULT_SENDER_EMAIL="mailer_default_sender_email_is_misconfigured@tesuta.be"',
-            'MAILER_DEFAULT_TO_NAME="Your application"',
-            'MAILER_DEFAULT_TO_EMAIL="mailer_default_to_email_is_misconfigured@tesuta.be"',
-            '###< symfony/mailer ###',
-        ];
-        $offset = strpos($content, '###< symfony/mailer ###');
-        if ($offset !== false) {
-            // remove symfony/mailer wrapper as it is already present
-            array_shift($insert);
-            array_pop($insert);
-        } else { // @mago-expect lint:no-else-clause
-            $offset = mb_strlen($content);
+            $insert = [
+                '###> symfony/mailer ###',
+                'MAILER_DEFAULT_SENDER_NAME="Your application"',
+                'MAILER_DEFAULT_SENDER_EMAIL="mailer_default_sender_email_is_misconfigured@tesuta.be"',
+                'MAILER_DEFAULT_TO_NAME="Your application"',
+                'MAILER_DEFAULT_TO_EMAIL="mailer_default_to_email_is_misconfigured@tesuta.be"',
+                '###< symfony/mailer ###',
+            ];
+            $offset = strpos($content, '###< symfony/mailer ###');
+            if ($offset !== false) {
+                // remove symfony/mailer wrapper as it is already present
+                array_shift($insert);
+                array_pop($insert);
+            } else { // @mago-expect lint:no-else-clause
+                $offset = mb_strlen($content);
+            }
+            $content = self::insertStringAtPosition($content, $offset, implode(PHP_EOL, $insert) . PHP_EOL);
+            file_put_contents($projectDir . '/.env', $content);
         }
-        $content = self::insertStringAtPosition($content, $offset, implode(PHP_EOL, $insert) . PHP_EOL);
-        file_put_contents($projectDir . '/.env', $content);
 
         $io->notice('→ Setup .env.local');
         $secret = sodium_bin2hex(random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES));
@@ -458,31 +501,35 @@ class PostCreateProject
 
         $io->notice('→ Reconfigure docker-compose.yml');
         $content = file_get_contents($projectDir . '/docker-compose.yml');
-        // remove doctrine/doctrine-bundle configuration
-        $content = preg_replace(
-            '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
-            '',
-            $content,
-        );
-        // remove empty volumes element
-        $content = preg_replace('|volumes:\n\n|mUs', '', $content);
-        $content = trim($content) . PHP_EOL;
-        file_put_contents($projectDir . '/docker-compose.yml', $content);
+        if ($content !== false) {
+            // remove doctrine/doctrine-bundle configuration
+            $content = (string) preg_replace(
+                '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
+                '',
+                $content,
+            );
+            // remove empty volumes element
+            $content = (string) preg_replace('|volumes:\n\n|mUs', '', $content);
+            $content = trim($content) . PHP_EOL;
+            file_put_contents($projectDir . '/docker-compose.yml', $content);
+        }
 
         $io->notice('→ Reconfigure docker-compose.override.yml');
         $content = file_get_contents($projectDir . '/docker-compose.override.yml');
-        // remove doctrine/doctrine-bundle configuration
-        $content = preg_replace(
-            '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
-            '',
-            $content,
-        );
-        // remove symfony/mailer configuration
-        $content = preg_replace('|###> symfony/mailer ###.*###< symfony/mailer ###|mUs', '', $content);
-        // remove empty volumes element
-        $content = preg_replace('|services:\n|mUs', '', $content);
-        $content = trim($content) . PHP_EOL;
-        file_put_contents($projectDir . '/docker-compose.override.yml', $content);
+        if ($content !== false) {
+            // remove doctrine/doctrine-bundle configuration
+            $content = (string) preg_replace(
+                '|###> doctrine/doctrine-bundle ###.*###< doctrine/doctrine-bundle ###|mUs',
+                '',
+                $content,
+            );
+            // remove symfony/mailer configuration
+            $content = (string) preg_replace('|###> symfony/mailer ###.*###< symfony/mailer ###|mUs', '', $content);
+            // remove empty volumes element
+            $content = (string) preg_replace('|services:\n|mUs', '', $content);
+            $content = trim($content) . PHP_EOL;
+            file_put_contents($projectDir . '/docker-compose.override.yml', $content);
+        }
     }
 
     private static function reconfigureNelmioSecurityBundle(Event $event): void
@@ -592,23 +639,26 @@ class PostCreateProject
         $path = $projectDir . '/' . $file;
         if (file_exists($path)) {
             $content = file_get_contents($path);
-            $content = str_replace(
-                'Object.keys(h).map(function (k) {',
-                implode("\n", [
-                    '// eslint-disable-next-line array-callback-return',
+            if ($content !== false) {
+                $content = str_replace(
                     'Object.keys(h).map(function (k) {',
-                ]),
-                $content,
-            );
-            file_put_contents($path, $content);
+                    implode("\n", [
+                        '// eslint-disable-next-line array-callback-return',
+                        'Object.keys(h).map(function (k) {',
+                    ]),
+                    $content,
+                );
+                file_put_contents($path, $content);
 
-            $output = shell_exec(sprintf(
-                'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
-                $file,
-            ));
+                $output = shell_exec(sprintf(
+                    'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
+                    $file,
+                ));
 
-            if (!is_null($output) && $io->isVerbose()) {
-                $io->write($output);
+                // @mago-expect analysis:mixed-operand
+                if (!is_null($output) && $io->isVerbose()) {
+                    $io->write($output);
+                }
             }
         }
     }
@@ -627,9 +677,10 @@ class PostCreateProject
 
         $io->notice('→ Remove reference to app.css');
         $content = file_get_contents($projectDir . '/assets/app.js');
-        $content = preg_replace('|import \'\./styles/app.css\';\n|', '', $content);
-
-        file_put_contents($projectDir . '/assets/app.js', $content);
+        if ($content !== false) {
+            $content = preg_replace('|import \'\./styles/app.css\';\n|', '', $content);
+            file_put_contents($projectDir . '/assets/app.js', $content);
+        }
 
         $io->notice('→ Remove hello_controller.js');
         $path = $projectDir . '/assets/controllers/hello_controller.js';
@@ -652,8 +703,19 @@ class PostCreateProject
         $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Remove the post-create-project-cmd.');
-        $content = json_decode(file_get_contents($projectDir . '/composer.json'), true);
-        unset($content['scripts']['post-create-project-cmd']);
+        $json = file_get_contents($projectDir . '/composer.json');
+        if ($json === false) {
+            throw new \RuntimeException('Could not read composer.json');
+        }
+        $content = json_decode(
+            $json,
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        if (($content['scripts']['post-create-project-cmd'] ?? null) !== null) {
+            unset($content['scripts']['post-create-project-cmd']);
+        }
 
         file_put_contents($projectDir . '/composer.json', json_encode(
             $content,
@@ -839,6 +901,7 @@ class PostCreateProject
 
     private static function getProjectDir(Event $event): string
     {
+        // @mago-expect analysis:mixed-operand
         $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
         if ($projectDir === false) {
             throw new \RuntimeException('Could not find project dir');
