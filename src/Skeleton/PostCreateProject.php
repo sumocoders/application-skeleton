@@ -23,7 +23,7 @@ class PostCreateProject
     {
         $io = $event->getIO();
         $io->notice('Create assets');
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Copy scss-files');
         self::copyDirectoryContent($projectDir . '/scripts/assets/css', $projectDir . '/assets/styles');
@@ -65,7 +65,7 @@ class PostCreateProject
     private static function reconfigureSymfonycastsSass(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Configure symfonycasts/sass');
         $content = <<<EOF
@@ -81,7 +81,7 @@ class PostCreateProject
     private static function reconfigureAssetMapper(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Set up asset mapper with framework-core-bundle');
         $content = file_get_contents($projectDir . '/config/packages/asset_mapper.yaml');
@@ -99,7 +99,7 @@ class PostCreateProject
     private static function reconfigureTwig(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure Twig');
         $content = file_get_contents($projectDir . '/config/packages/twig.yaml');
@@ -124,13 +124,17 @@ class PostCreateProject
     private static function reconfigureServices(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure services');
         $content = file_get_contents($projectDir . '/config/services.yaml');
         $matches = [];
         preg_match('|parameters:|', $content, $matches, PREG_OFFSET_CAPTURE);
-        $offset = mb_strpos($content, PHP_EOL, $matches[0][1]) + 1;
+        $newlinePosition = mb_strpos($content, PHP_EOL, $matches[0][1]);
+        if ($newlinePosition === false) {
+            throw new \RuntimeException('Could not find end of "parameters:" line in services.yaml');
+        }
+        $offset = $newlinePosition + 1;
         $insert = [
             '  # configuration of the locale, used for url and allowed locales',
             '  locale: \'nl\'',
@@ -157,7 +161,7 @@ class PostCreateProject
     private static function reconfigureAnnotations(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure annotations');
         $routesFile = $projectDir . '/config/routes.yaml';
@@ -180,7 +184,7 @@ class PostCreateProject
     private static function reconfigureRouting(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure routing');
         $content = file_get_contents($projectDir . '/config/packages/routing.yaml');
@@ -195,7 +199,7 @@ class PostCreateProject
     private static function reconfigureFramework(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure framework');
         $content = file_get_contents($projectDir . '/config/packages/framework.yaml');
@@ -213,7 +217,7 @@ class PostCreateProject
     private static function reconfigureSentry(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure sentry');
         $content = file_get_contents($projectDir . '/config/packages/sentry.yaml');
@@ -231,7 +235,7 @@ class PostCreateProject
     private static function reconfigureDefaultLocale(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure default locale');
         $content = file_get_contents($projectDir . '/config/packages/translation.yaml');
@@ -242,7 +246,7 @@ class PostCreateProject
     private static function reconfigureDoctrine(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure doctrine test environment');
         $content = file_get_contents($projectDir . '/config/packages/doctrine.yaml');
@@ -268,7 +272,7 @@ class PostCreateProject
     private static function reconfigureValidator(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure validator');
         $file = $projectDir . '/config/packages/validator.yaml';
@@ -292,7 +296,7 @@ class PostCreateProject
     private static function reconfigureMonolog(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure monolog');
         $content = file_get_contents($projectDir . '/config/packages/monolog.yaml');
@@ -332,7 +336,7 @@ class PostCreateProject
     private static function reconfigureMessenger(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure messenger');
         $content = file_get_contents($projectDir . '/config/packages/messenger.yaml');
@@ -371,7 +375,7 @@ class PostCreateProject
     private static function reconfigureMailer(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure mailer');
         file_put_contents($projectDir . '/config/packages/mailer.yaml', <<<'EODEV'
@@ -391,7 +395,7 @@ class PostCreateProject
     private static function reconfigureEnv(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure .env');
         $content = file_get_contents($projectDir . '/.env');
@@ -450,7 +454,7 @@ class PostCreateProject
     private static function reconfigureDockerCompose(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure docker-compose.yml');
         $content = file_get_contents($projectDir . '/docker-compose.yml');
@@ -484,7 +488,7 @@ class PostCreateProject
     private static function reconfigureNelmioSecurityBundle(Event $event): void
     {
         $io = $event->getIO();
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         // reconfigure nelmio/security-bundle
         $io->notice('→ Reconfigure nelmio/security-bundle');
@@ -581,7 +585,7 @@ class PostCreateProject
     {
         $io = $event->getIO();
         $io->notice('Fix files');
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Fix standardjs for csrf_protection_controller.js');
         $file = 'assets/controllers/csrf_protection_controller.js';
@@ -613,7 +617,7 @@ class PostCreateProject
     {
         $io = $event->getIO();
         $io->notice('Cleanup files');
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Remove app.css');
         $path = $projectDir . '/assets/styles/app.css';
@@ -645,7 +649,7 @@ class PostCreateProject
             return;
         }
 
-        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Remove the post-create-project-cmd.');
         $content = json_decode(file_get_contents($projectDir . '/composer.json'), true);
@@ -658,7 +662,12 @@ class PostCreateProject
 
         $io->notice('→ Remove the PostCreateProject file.');
         shell_exec(sprintf('rm %1$s', $projectDir . '/src/Skeleton/PostCreateProject.php'));
-        if (count(scandir($projectDir . '/src/Skeleton')) === 2) {
+        $scandir = scandir($projectDir . '/src/Skeleton');
+        if ($scandir === false) {
+            throw new \RuntimeException('Could not find src/Skeleton');
+        }
+
+        if (count($scandir) === 2) {
             shell_exec(sprintf('rm -rf %1$s', $projectDir . '/src/Skeleton'));
         }
 
@@ -793,25 +802,12 @@ class PostCreateProject
         return $before . $insert . $after;
     }
 
-    private static function findEndOfEncoreConfiguration(string $content): int
-    {
-        $matches = [];
-        preg_match('|Encore\n(.*)\n;|ms', $content, $matches, PREG_OFFSET_CAPTURE);
-
-        return $matches[0][1] + mb_strlen($matches[0][0]) - 1;
-    }
-
-    private static function findEndOfEncoreEntries(string $content): int
-    {
-        $matches = [];
-        preg_match('|.addEntry\(.*|', $content, $matches, PREG_OFFSET_CAPTURE);
-
-        return $matches[0][1] + mb_strlen($matches[0][0]) + 1;
-    }
-
     private static function copyDirectoryContent(string $source, string $destination): void
     {
         $files = scandir($source);
+        if ($files === false) {
+            return;
+        }
 
         if (!file_exists($destination)) {
             mkdir($destination);
@@ -839,5 +835,15 @@ class PostCreateProject
     private static function testCommandLocally(string $command): bool
     {
         return shell_exec(sprintf('which %s', escapeshellcmd($command))) !== null;
+    }
+
+    private static function getProjectDir(Event $event): string
+    {
+        $projectDir = realpath($event->getComposer()->getConfig()->get('vendor-dir') . '/..');
+        if ($projectDir === false) {
+            throw new \RuntimeException('Could not find project dir');
+        }
+
+        return $projectDir;
     }
 }
