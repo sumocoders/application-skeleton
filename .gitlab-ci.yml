@@ -52,6 +52,7 @@ Mago - check code styling:
         mago --config=./mago.dist.toml --colors=always fmt --dry-run
       fi
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -63,6 +64,7 @@ Mago - lint:
   script:
     - mago --config=./mago.dist.toml --colors=always lint --reporting-format=rich --minimum-fail-level=warning
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -75,6 +77,7 @@ Mago - analyse:
   script:
     - mago --config=./mago.dist.toml --colors=always analyse --reporting-format=rich --minimum-fail-level=warning
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
@@ -86,6 +89,7 @@ Mago - guard:
   script:
     - mago --config=./mago.dist.toml --colors=always guard --reporting-format=rich --minimum-fail-level=warning
   stage: code quality
+  interruptible: true
   needs: [ "Install dependencies and build assets" ]
   tags:
     - docker
