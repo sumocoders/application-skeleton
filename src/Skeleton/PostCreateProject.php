@@ -690,6 +690,12 @@ class PostCreateProject
         if (file_exists($path)) {
             unlink($path);
         }
+
+        $io->notice('→ Remove mago.toml');
+        $path = $projectDir . '/mago.toml';
+        if (file_exists($path)) {
+            unlink($path);
+        }
     }
 
     private static function cleanup(Event $event): void
