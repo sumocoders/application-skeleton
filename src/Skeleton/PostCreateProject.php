@@ -690,6 +690,12 @@ class PostCreateProject
             file_put_contents($projectDir . '/assets/app.js', $content);
         }
 
+        $io->notice('→ Remove stimulus_bootstrap.js');
+        $path = $projectDir . '/assets/stimulus_bootstrap.js';
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
         $io->notice('→ Remove hello_controller.js');
         $path = $projectDir . '/assets/controllers/hello_controller.js';
         if (file_exists($path)) {
