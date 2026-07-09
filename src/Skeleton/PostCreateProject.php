@@ -652,17 +652,22 @@ class PostCreateProject
                     $content,
                 );
                 file_put_contents($path, $content);
-
-                $output = shell_exec(sprintf(
-                    'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
-                    $file,
-                ));
-
-                // @mago-expect analysis:mixed-operand
-                if (!is_null($output) && $io->isVerbose()) {
-                    $io->write($output);
-                }
             }
+        }
+
+        $io->notice('→ Fix standardjs issues');
+        $files = [
+            'assets/bootstrap.js',
+            'assets/controllers/csrf_protection_controller.js',
+        ];
+        $output = shell_exec(sprintf(
+            'docker run --volume ./:/code sumocoders/standardjs:latest --fix %1$s',
+            implode(' ', $files),
+        ));
+
+        // @mago-expect analysis:mixed-operand
+        if (!is_null($output) && $io->isVerbose()) {
+            $io->write($output);
         }
     }
 
