@@ -749,9 +749,9 @@ class PostCreateProject
             throw new \RuntimeException('Could not find src/Skeleton');
         }
 
-        if (count($scandir) === 2) {
-            shell_exec(sprintf('rm -rf %1$s', $projectDir . '/src/Skeleton'));
-        }
+if (count($scandir) === 2) {
+    shell_exec(sprintf('rm -rf %s', escapeshellarg($projectDir . '/src/Skeleton')));
+}
 
         $io->notice('→ Remove scripts folder');
         shell_exec(sprintf('rm -rf %1$s', $projectDir . '/scripts'));
