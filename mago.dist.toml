@@ -49,7 +49,18 @@ integrations = [
 
 [linter.rules]
 literal-named-argument = { enabled = false }
+readable-literal = { enabled = false }
 strict-types = { enabled = false }
+too-many-methods = {
+    exclude = [
+        "src/Entity/**",
+    ]
+}
+too-many-properties = {
+    exclude = [
+        "src/Entity/**",
+    ]
+}
 
 [analyzer]
 find-unused-expressions = true
