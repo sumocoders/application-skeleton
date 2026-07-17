@@ -1,0 +1,112 @@
+# Welcome to Mago!
+# For full documentation, see https://mago.carthage.software/tools/overview
+version = "1"
+php-version = "8.5"
+
+[source]
+workspace = "."
+paths = [
+    "migrations/",
+    "src/",
+    "tests/",
+]
+includes = [
+    "vendor"
+]
+excludes = [
+    "var/**",
+    "tests/bootstrap.php"
+]
+
+[source.glob]
+literal-separator = true
+
+[parser]
+enable-short-tags = false
+
+[formatter]
+inline-empty-function-braces = false
+inline-empty-method-braces = false
+inline-empty-constructor-braces = false
+inline-empty-classlike-braces = false
+method-chain-breaking-style = "same-line"
+first-method-chain-on-new-line = false
+preserve-breaking-member-access-chain = true
+preserve-breaking-argument-list = true
+preserve-breaking-array-like = true
+preserve-breaking-parameter-list = true
+preserve-breaking-attribute-list = true
+preserve-breaking-conditional-expression = true
+space-before-arrow-function-parameter-list-parenthesis = true
+empty-line-before-return = true
+
+[linter]
+integrations = [
+    "symfony",
+    "phpunit",
+    "doctrine"
+]
+
+[linter.rules]
+literal-named-argument = { enabled = false }
+readable-literal = { enabled = false }
+strict-types = { enabled = false }
+too-many-methods = {
+    exclude = [
+        "src/Entity/**",
+    ]
+}
+too-many-properties = {
+    exclude = [
+        "src/Entity/**",
+    ]
+}
+
+[analyzer]
+find-unused-expressions = true
+analyze-dead-code = true
+find-unused-parameters = true
+strict-list-index-checks = true
+no-boolean-literal-comparison = true
+check-missing-type-hints = true
+check-closure-missing-type-hints = true
+check-arrow-function-missing-type-hints = true
+register-super-globals = true
+check-use-statements = true
+check-name-casing = true
+
+ignore = [
+    {
+        code = "excess-template-parameter",
+        in = "src/Form/",
+    },
+    {
+        code = "mixed-return-statement",
+        in = "src/Repository/",
+    },
+    {
+        code = "property-type-coercion",
+        in = "tests/",
+    },
+    {
+        code = "possible-method-access-on-null",
+        in = "tests/",
+    },
+    {
+        code = "ambiguous-object-method-access",
+        in = "tests/",
+    }
+]
+
+[guard]
+mode = "structural"
+excludes = [
+    "vendor/**"
+]
+
+[[guard.structural.rules]]
+on = "App\\Controller\\**"
+target = "class"
+must-be-named = "*Controller"
+must-extend = "Symfony\\Bundle\\FrameworkBundle\\Controller\\AbstractController"
+reason = "Controllers must extend AbstractController and name should end with *Controller."

@@ -40,10 +40,65 @@ Install dependencies and build assets:
 
 
 # Code Quality section
+Mago - check code styling:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always fmt --check
+  after_script:
+    - >
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
+        mago --config=./mago.dist.toml --colors=always fmt --dry-run
+      fi
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Mago - lint:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always lint --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
+Mago - analyse:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always analyse --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+
+Mago - guard:
+  image:
+    name: ghcr.io/carthage-software/mago:1
+    entrypoint: [ '' ]
+  script:
+    - mago --config=./mago.dist.toml --colors=always guard --reporting-format=rich --minimum-fail-level=warning
+  stage: code quality
+  interruptible: true
+  needs: [ "Install dependencies and build assets" ]
+  tags:
+    - docker
+  allow_failure: true
+
 PHP_CodeSniffer - check code styling:
   image: sumocoders/cli-tools-php85:latest
   script:
-    - php vendor/bin/phpcs --colors --report-full --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
+    - php vendor/bin/phpcs --colors --report-full -s --report-\\Micheh\\PhpCodeSniffer\\Report\\Gitlab=phpcs-report.json
   artifacts:
     expire_in: 1 week
     reports:
@@ -63,7 +118,7 @@ PHPStan - check for bugs:
   after_script:
     # Run it again so the output is visible in the job
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         php vendor/bin/phpstan analyse --memory-limit=-1 --no-progress
       fi
   artifacts:
@@ -83,7 +138,7 @@ Twig-CS-Fixer - check code styling:
   after_script:
     # Run it again so the output is visible in the job
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         php vendor/bin/twig-cs-fixer --no-interaction lint templates/
       fi
   artifacts:
@@ -103,7 +158,7 @@ Stylelint - check code styling:
     - stylelint --output-file=stylelint-report.json --custom-formatter=stylelint-formatter-gitlab-code-quality-report .
   after_script:
     - >
-      if [ $CI_JOB_STATUS != 'success' ]; then
+      if [ "$CI_JOB_STATUS" != 'success' ]; then
         stylelint --color .
       fi
   artifacts:
