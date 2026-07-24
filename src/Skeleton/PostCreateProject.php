@@ -640,16 +640,6 @@ class PostCreateProject
         $io->notice('→ Reconfigure .htaccess');
         file_put_contents($projectDir . '/public/.htaccess', <<<'EOF'
 
-            <IfModule !mod_rewrite.c>
-                <IfModule mod_alias.c>
-                    # When mod_rewrite is not available, we instruct a temporary redirect of
-                    # the start page to the front controller explicitly so that the website
-                    # and the generated links can still be used.
-                    RedirectMatch 307 ^/$ /index.php/
-                    # RedirectTemp cannot be used instead
-                </IfModule>
-            </IfModule>
-
             # file caching in browser
             <IfModule mod_expires.c>
                 ExpiresActive On
