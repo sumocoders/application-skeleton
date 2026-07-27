@@ -62,6 +62,7 @@ class PostCreateProject
         self::reconfigureEnv($event);
         self::reconfigureDockerCompose($event);
         self::reconfigureNelmioSecurityBundle($event);
+        self::reconfigureApachePack($event);
     }
 
     private static function reconfigureSymfonycastsSass(Event $event): void
@@ -629,6 +630,37 @@ class PostCreateProject
 
             EOF;
         file_put_contents($projectDir . '/config/packages/nelmio_security.yaml', $content);
+    }
+
+    private static function reconfigureApachePack(Event $event): void
+    {
+        $io = $event->getIO();
+        $projectDir = self::getProjectDir($event);
+
+        $io->notice('→ Reconfigure .htaccess');
+        file_put_contents($projectDir . '/public/.htaccess', <<<'EOF'
+
+            # file caching in browser
+            <IfModule mod_expires.c>
+                ExpiresActive On
+                <FilesMatch "\.(?i:ico|gif|jpe?g|png|svg|svgz|js|css|swf|ttf|otf|woff|woff2|eot)$">
+                    ExpiresDefault "access plus 1 year"
+                </FilesMatch>
+            </IfModule>
+
+            # gzip on Apache 2
+            <IfModule mod_deflate.c>
+                AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml text/javascript text/css application/x-javascript application/xhtml+xml application/javascript application/json image/svg+xml
+
+                # these browsers do not support deflate
+                BrowserMatch ^Mozilla/4 gzip-only-text/html
+                BrowserMatch ^Mozilla/4.0[678] no-gzip
+                BrowserMatch bMSIE !no-gzip !gzip-only-text/html
+
+                SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown downgrade-1.0 force
+            </IfModule>
+
+            EOF, FILE_APPEND);
     }
 
     private static function fixFiles(Event $event): void
