@@ -200,15 +200,18 @@ class PostCreateProject
         $projectDir = self::getProjectDir($event);
 
         $io->notice('→ Reconfigure routing');
-        $content = file_get_contents($projectDir . '/config/packages/routing.yaml');
-        if ($content !== false) {
-            $content = preg_replace(
-                '/#default_uri: http:\/\/localhost/smU',
-                'default_uri: \'%env(DEFAULT_URI)%\'',
-                $content,
-            );
-            file_put_contents($projectDir . '/config/packages/routing.yaml', $content);
-        }
+        // Because when using Symfony CLI server:
+        // - the DEFAULT_URI for CLI usage will be set to https://127.0.0.1:8000/
+        // - for web usage this will also be the case, unless you use a proxy, then that value will be used
+        // You can't overwrite it with a env-variable in .env or .env.local, so for local development
+        // we will use a separate env-variable, DEFAULT_URL
+        file_put_contents($projectDir . '/config/packages/routing.yaml', <<<'EOF'
+
+            when@dev:
+                framework:
+                    router:
+                        default_uri: '%env(DEFAULT_URL)%'
+            EOF, FILE_APPEND);
     }
 
     private static function reconfigureFramework(Event $event): void
@@ -453,7 +456,7 @@ class PostCreateProject
                 '###> sumocoders/framework-core-bundle ###',
                 'SITE_TITLE="Your application"',
                 'ENCRYPTION_KEY="' . $encryptionKey . '"',
-                'DEFAULT_URI="/"',
+                'DEFAULT_URL="/"',
                 '###< sumocoders/framework-core-bundle ###',
             ];
             $content = self::insertStringAtPosition(
