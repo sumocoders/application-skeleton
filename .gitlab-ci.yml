@@ -15,7 +15,6 @@ workflow:
 cache: &global_cache
   key: "$CI_PIPELINE_ID"
   paths:
-    - assets/vendor
     - node_modules
     - public/build
     - var/sass
