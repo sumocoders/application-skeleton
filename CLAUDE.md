@@ -113,6 +113,9 @@ automatically.
 menus (KnpMenuBundle-based), breadcrumbs, mailing, file/image uploads, audit trails, encrypted entity fields,
 autocomplete fields, PDF generation, and date pickers.
 
+Before any frontend or template work, read `vendor/sumocoders/framework-core-bundle/DESIGN.md`
+and `vendor/sumocoders/framework-core-bundle/docs/card-layouts.md`.
+
 ## Testing
 
 PHPUnit with `dama/doctrine-test-bundle` (wraps each test in a transaction that's rolled back). Test suite lives
