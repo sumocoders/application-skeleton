@@ -93,6 +93,8 @@ class PostCreateProject
                 '/(paths:(\r\n|\r|\n) +- assets\/(\r\n|\r|\n))/',
                 '$1            - vendor/sumocoders/framework-core-bundle/assets-public/'
                 . PHP_EOL
+                . '            - vendor/sumocoders/framework-core-bundle/assets/fonts/'
+                . PHP_EOL
                 . '            - vendor/twbs/bootstrap-icons/font/'
                 . PHP_EOL,
                 $content,
