@@ -93,8 +93,8 @@ automatically.
 - Use Symfony Messenger to decouple side effects from controllers instead of calling services directly. The `async`
   transport (`config/packages/messenger.yaml`) is Doctrine-backed in prod and consumed by a cron-triggered
   `messenger:consume` process (see Deployment below); emails (`SendEmailMessage`) are routed through it in prod.
-  There's no `sync`/`async` routing configured yet for app messages, add entries under `messenger.routing` as they're
-  introduced.
+  Route app messages with the `#[AsMessage]` attribute on the message class (e.g. `#[AsMessage('async')]`), not with
+  entries under `messenger.routing`. Messages without it are handled synchronously.
 - Security: `config/packages/security.yaml` currently only has an in-memory user provider and no access control
   rules configured, real auth still needs to be wired up when a User entity/provider is added.
 - Locale/mailer/site defaults are configured as parameters in `config/services.yaml` (`locale`, `fallbacks.site_title`,
