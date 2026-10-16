@@ -882,6 +882,7 @@ if (count($scandir) === 2) {
             'Popover' => 'controllers/popover_controller.js',
             'ajax_client' => 'js/ajax_client.js',
             'Confirm' => 'controllers/confirm_controller.js',
+            'SearchModal' => 'controllers/search_modal_controller.js',
         ];
         foreach ($packages as $name => $path) {
             $output = shell_exec(sprintf(
