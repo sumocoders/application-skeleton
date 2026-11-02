@@ -13,6 +13,7 @@ import FormCollection from 'sumocoders/FormCollection'
 import ScrollToTop from 'sumocoders/ScrollToTop'
 import Confirm from 'sumocoders/Confirm'
 import SearchModal from 'sumocoders/SearchModal'
+import SeoMetaForm from 'sumocoders/SeoMetaForm'
 
 const app = startStimulusApp()
 // register any custom, 3rd party controllers here
@@ -31,3 +32,4 @@ app.register('form-collection', FormCollection)
 app.register('scroll-to-top', ScrollToTop)
 app.register('confirm', Confirm)
 app.register('search-modal', SearchModal)
+app.register('seo-meta-form', SeoMetaForm)
